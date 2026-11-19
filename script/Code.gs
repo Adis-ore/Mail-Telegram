@@ -6,12 +6,12 @@
  * - Any other swipe-reply is emailed back (blocked for no-reply senders)
  * - Type "send email" to get a form that fills itself into your chat (or copies in one tap), and it sends
  * - Instant replies to commands and swipe-replies (optional, run setupWebhook once)
- * - Reminders (and optional calls) for emails with a date and time
+ * - Reminders and phone calls for emails with a date and time (calls are on by default, set CALL_ENABLED to false to stop them)
  * - Tells you in Telegram when a new version of this script is out
  * Never commit your real tokens or keys to GitHub.
  */
 
-const VERSION = "1.1.0";
+const VERSION = "1.1.1";
 
 // ================= SETTINGS =================
 const CONFIG = {
@@ -31,9 +31,9 @@ const CONFIG = {
 
   // Reminders and calls
   REMIND_BEFORE_MIN: [60, 10],
-  CALL_ENABLED: false,                   // true after you send /start to @CallMeBot_txtbot
+  CALL_ENABLED: true,                    // phone call with a reminder. Send /start to @CallMeBot_txtbot first. false = messages only
   CALL_AT_MIN: 10,                       // which reminder also triggers a call
-  CALLMEBOT_USER: "@your_telegram_username",
+  CALLMEBOT_USER: "@your_telegram_username",   // your Telegram username, needed for calls
 
   // Instant replies: leave empty, setupWebhook finds the URL. Paste your Web app /exec URL here if it can't.
   WEBAPP_URL: "",
@@ -553,6 +553,7 @@ function checkReminders() {
 
 function callMe(text) {
   if (!CONFIG.CALL_ENABLED) return;
+  if (!/^@?\w{4,}$/.test(String(CONFIG.CALLMEBOT_USER)) || /^@?your_/.test(CONFIG.CALLMEBOT_USER)) return; // no username set yet
   const url = "https://api.callmebot.com/start.php?user=" +
     encodeURIComponent(CONFIG.CALLMEBOT_USER) +
     "&text=" + encodeURIComponent(String(text).slice(0, 250)) +   // CallMeBot allows 256 characters

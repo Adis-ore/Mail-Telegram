@@ -38,7 +38,7 @@
 | **Summaries** | Reply `summarize` (or `shorten`, `tldr`) for a short version. Uses Google Gemini if you add a free key, a built-in summary if you don’t. |
 | **Send new email** | Type `send email` and tap **Fill it in here**: the form drops into your typing box. Fill it in and send. Or tap **Copy the form**. Empty Cc and Bcc are skipped. |
 | **Instant replies** | Optional: commands and swipe-replies answer in seconds instead of up to a minute. |
-| **Reminders** | Emails with a date and time (meetings, deadlines, interviews) get reminders 60 and 10 minutes before. Optional phone call. |
+| **Reminders** | Emails with a date and time (meetings, deadlines, interviews) get reminders 60 and 10 minutes before, plus a phone call (on by default, can be switched off). |
 | **Update alerts** | When a new version of the script is out, you get a Telegram message with what changed and a button to get it. |
 
 It all runs as a Google Apps Script in **your own** Google account, checking once a minute. Nothing goes through anyone else’s server.
@@ -58,7 +58,7 @@ It all runs as a Google Apps Script in **your own** Google account, checking onc
 7. **Test, then switch it on.** Run `testSend`. Google shows an “unverified app” warning because it is your own script: **Advanced → Go to project → Allow**. When the test message arrives, run `setupTrigger` once. That also saves your settings.
 8. **Try it.** Email yourself from another account. It shows up within about a minute. Send one that says “Meeting tomorrow at 3pm” to test reminders.
 9. **Optional: instant replies.** In Apps Script: **Deploy → New deployment → Web app**, set *Execute as: Me* and *Who has access: Anyone*, deploy, then run `setupWebhook` once. Commands and replies now answer in seconds. New mail still arrives within about a minute (Google’s limit for free scripts).
-10. **Optional: reminder calls.** Send `/start` to `@CallMeBot_txtbot`, set `CALL_ENABLED: true` and your `CALLMEBOT_USER`, then run `testCall`. This uses an unofficial free service, so it may not always be reliable.
+10. **Reminder calls (on by default).** Send `/start` to `@CallMeBot_txtbot`, put your Telegram username in `CALLMEBOT_USER`, then run `testCall`. Don’t want calls? Set `CALL_ENABLED: false` for messages only. Calls use an unofficial free service, so one can be late or missed when it’s busy; the reminder message always arrives.
 
 ## What you can do in Telegram
 
@@ -90,7 +90,7 @@ All in `CONFIG` at the top of the script.
 | `SIGNATURE` | empty | Added to emails you send from Telegram. |
 | `GEMINI_API_KEY` | empty | Optional free key from [AI Studio](https://aistudio.google.com) for better summaries. |
 | `REMIND_BEFORE_MIN` | `[60, 10]` | When reminders fire, in minutes before the event. |
-| `CALL_ENABLED`, `CALL_AT_MIN`, `CALLMEBOT_USER` | `false`, `10` | Optional phone call with a reminder. |
+| `CALL_ENABLED`, `CALL_AT_MIN`, `CALLMEBOT_USER` | `true`, `10` | Phone call with the reminder, on by default. Set `CALL_ENABLED` to `false` for messages only. Needs your Telegram username. |
 | `UPDATE_CHECK`, `UPDATE_CHECK_HOURS` | `true`, `6` | Update alerts and how often to look. |
 | `WEBAPP_URL` | empty | Only if `setupWebhook` can’t find your Web app URL: paste the `/exec` URL here. |
 

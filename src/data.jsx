@@ -151,15 +151,15 @@ export const STEPS = [
     actions: [{ label: "Open my scripts ↗", href: LINKS.scripts }],
   },
   {
-    name: "Calls", where: "optional", time: "3 min", colors: ["#4f6d8f", "#2c425e"],
-    title: "Optional: reminder calls",
+    name: "Calls", where: "on by default", time: "3 min", colors: ["#4f6d8f", "#2c425e"],
+    title: "Reminder calls (on by default)",
     icon: icon(<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" />),
     items: [
-      <>Follow the Telegram call steps on <L href={LINKS.callMeBot}>callmebot.com</L>.</>,
-      <>Set <code>CALL_ENABLED</code> to <code>true</code> and add your Telegram username.</>,
-      <>Run <code>testCall</code> to check it rings.</>,
+      <>Calls are <b>on</b>: 10 minutes before an event, your phone rings as well as getting the message.</>,
+      <>In Telegram, open <L href="https://t.me/CallMeBot_txtbot">@CallMeBot_txtbot</L> and tap <b>Start</b>, then put your Telegram username in <code>CALLMEBOT_USER</code>.</>,
+      <>Run <code>testCall</code> to check it rings. Don’t want calls? Set <code>CALL_ENABLED</code> to <code>false</code> and you’ll get messages only.</>,
     ],
-    note: <>This uses an unofficial free service, so it may not always be reliable.</>,
-    actions: [{ label: "Open CallMeBot ↗", href: LINKS.callMeBot }],
+    note: <>Calls use CallMeBot, an unofficial free service, so a call can be late or missed when it’s busy. The reminder message always arrives.</>,
+    actions: [{ label: "Open @CallMeBot_txtbot ↗", href: "https://t.me/CallMeBot_txtbot" }, { label: "Copy CALL_ENABLED: false", copy: "CALL_ENABLED: false," }],
   },
 ];
