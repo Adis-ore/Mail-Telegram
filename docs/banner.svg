@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="1200" height="420" role="img" aria-label="Mail to Telegram: your inbox, in your pocket">
+  <style>
+    :root { --bg1:#f4f3ef; --bg2:#e6e8f2; --ink:#14161f; --mute:#5d6477; --line:#c9cddc; --tile:#ffffff; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg1:#0d0e12; --bg2:#1a1f3a; --ink:#f2f3fa; --mute:#9aa1b9; --line:#3a4066; --tile:#20243a; }
+    }
+    .bg { fill:url(#bg); }
+    .title { font:600 64px Georgia,'Times New Roman',serif; fill:var(--ink); letter-spacing:-2px; }
+    .title tspan.it { font-style:italic; }
+    .tag { font:400 22px -apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; fill:var(--mute); }
+    .pill { font:600 13px -apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; fill:var(--ink); letter-spacing:1.5px; }
+    .track { fill:none; stroke:var(--line); stroke-width:2; stroke-dasharray:6 8; animation:dash 1.2s linear infinite; }
+    .tile { fill:var(--tile); stroke:var(--line); }
+    .icon { fill:none; stroke:var(--ink); stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; }
+    .pulse { fill:none; stroke:#2f6bff; stroke-width:2; opacity:0; transform-box:fill-box; transform-origin:center; animation:pulse 2.4s ease-out infinite; }
+    .pulse.b { animation-delay:1.2s; }
+    .rise { opacity:0; animation:rise .9s cubic-bezier(.2,.8,.2,1) forwards; }
+    .rise.d1 { animation-delay:.15s; } .rise.d2 { animation-delay:.35s; } .rise.d3 { animation-delay:.55s; }
+    .card { transform-box:fill-box; transform-origin:center; animation:bob 4s ease-in-out infinite; }
+    @keyframes dash { to { stroke-dashoffset:-28; } }
+    @keyframes pulse { 0% { opacity:.7; transform:scale(1); } 100% { opacity:0; transform:scale(1.7); } }
+    @keyframes rise { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+    @keyframes bob { 0%,100% { transform:translateY(0) rotate(var(--r)); } 50% { transform:translateY(-10px) rotate(calc(var(--r) * -1)); } }
+    @media (prefers-reduced-motion: reduce) { * { animation:none !important; } .rise { opacity:1; } }
+  </style>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="var(--bg1)"/><stop offset="1" stop-color="var(--bg2)"/>
+    </linearGradient>
+    <!-- small envelope that travels along the path -->
+    <g id="mini">
+      <rect x="-14" y="-10" width="28" height="20" rx="4" fill="#2f6bff"/>
+      <path d="M-12 -7 0 2 12 -7" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <path id="route" d="M210 210 C 380 90, 820 90, 990 210"/>
+  </defs>
+
+  <rect class="bg" width="1200" height="420" rx="28"/>
+
+  <!-- route with travelling envelopes -->
+  <use href="#route" class="track"/>
+  <g><use href="#mini"/><animateMotion dur="3.6s" repeatCount="indefinite" rotate="auto" keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines=".45 0 .25 1"><mpath href="#route"/></animateMotion></g>
+  <g opacity=".75"><use href="#mini" transform="scale(.8)"/><animateMotion dur="3.6s" begin="1.2s" repeatCount="indefinite" rotate="auto" keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines=".45 0 .25 1"><mpath href="#route"/></animateMotion></g>
+  <g opacity=".5"><use href="#mini" transform="scale(.65)"/><animateMotion dur="3.6s" begin="2.4s" repeatCount="indefinite" rotate="auto" keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines=".45 0 .25 1"><mpath href="#route"/></animateMotion></g>
+
+  <!-- inbox (left) -->
+  <g transform="translate(160 210)">
+    <circle class="pulse" r="58"/>
+    <rect class="tile" x="-56" y="-56" width="112" height="112" rx="28"/>
+    <g class="icon"><rect x="-28" y="-20" width="56" height="40" rx="7"/><path d="M-26 -16 0 4 26 -16"/></g>
+  </g>
+  <!-- telegram-style chat (right) -->
+  <g transform="translate(1040 210)">
+    <circle class="pulse b" r="58"/>
+    <rect class="tile" x="-56" y="-56" width="112" height="112" rx="28"/>
+    <path class="icon" d="M-26 -2 26 -24 16 26 2 10 -10 20 -8 4 18 -16 -14 0Z"/>
+  </g>
+
+  <!-- words -->
+  <g class="rise d1"><text class="title" x="600" y="230" text-anchor="middle">Mail to <tspan class="it">Telegram</tspan></text></g>
+  <g class="rise d2"><text class="tag" x="600" y="272" text-anchor="middle">Your inbox, in your pocket. Free, no server, about 10 minutes.</text></g>
+
+  <!-- the 9 step cards -->
+  <g transform="translate(339 318)"><g class="rise d3">
+    <rect class="card" style="--r:-4deg" x="0"   y="0" width="46" height="60" rx="8" fill="#5f8f88"/>
+    <rect class="card" style="--r:3deg;animation-delay:.2s"  x="60"  y="0" width="46" height="60" rx="8" fill="#2f8f5b"/>
+    <rect class="card" style="--r:-3deg;animation-delay:.4s" x="120" y="0" width="46" height="60" rx="8" fill="#5b7cfa"/>
+    <rect class="card" style="--r:4deg;animation-delay:.6s"  x="180" y="0" width="46" height="60" rx="8" fill="#c2693f"/>
+    <rect class="card" style="--r:-4deg;animation-delay:.8s" x="240" y="0" width="46" height="60" rx="8" fill="#8a5cff"/>
+    <rect class="card" style="--r:3deg;animation-delay:1s"   x="300" y="0" width="46" height="60" rx="8" fill="#2a9d8f"/>
+    <rect class="card" style="--r:-3deg;animation-delay:1.2s" x="360" y="0" width="46" height="60" rx="8" fill="#e0a030"/>
+    <rect class="card" style="--r:4deg;animation-delay:1.4s" x="420" y="0" width="46" height="60" rx="8" fill="#d8567a"/>
+    <rect class="card" style="--r:-4deg;animation-delay:1.6s" x="480" y="0" width="46" height="60" rx="8" fill="#4f6d8f"/>
+  </g></g>
+
+  <g class="rise d1"><rect x="505" y="70" width="190" height="30" rx="15" fill="none" stroke="var(--line)"/><text class="pill" x="600" y="90" text-anchor="middle">GMAIL → TELEGRAM</text></g>
+</svg>
