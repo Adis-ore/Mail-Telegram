@@ -15,9 +15,12 @@ const KNOWN_FUNCTIONS = {
   testUpdate: "Checks GitHub for a newer version of the script right now.",
   testCall: "Places a test phone call through CallMeBot (needs CALL_ENABLED: true).",
   testMeetingCall: "Fakes a meeting 11 minutes away: you get a reminder in about a minute, plus a call if calls are on.",
+  setupWebhook: "Turns on instant replies. Deploy the project as a Web app first (Deploy, New deployment, Web app), then run this once.",
+  removeWebhook: "Turns instant replies off again and goes back to checking once a minute.",
+  testCompose: "Shows the send-email form with its Fill it in and Copy buttons, as if you typed send email.",
 };
 
-const RUNNABLE = /^(setup|save|test|debug)/;
+const RUNNABLE = /^(setup|save|test|debug|remove)/;
 
 const stripTags = (s) => s.replace(/<[^>]+>/g, "").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
 
@@ -73,7 +76,7 @@ function parseFunctions(code) {
     out.push({ id: name, name, desc: KNOWN_FUNCTIONS[name] || comment || "Run it from the Apps Script editor." });
   }
   // setup first, tests after, in the order people need them
-  const rank = (n) => (n.startsWith("setup") ? 0 : n.startsWith("save") ? 1 : n.startsWith("test") ? 2 : 3);
+  const rank = (n) => (n === "setupTrigger" ? 0 : n.startsWith("save") ? 1 : n.startsWith("setup") ? 2 : n.startsWith("remove") ? 3 : n.startsWith("test") ? 4 : 5);
   return out.sort((a, b) => rank(a.name) - rank(b.name));
 }
 

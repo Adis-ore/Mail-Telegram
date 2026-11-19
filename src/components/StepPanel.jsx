@@ -94,7 +94,7 @@ export default function StepPanel({ panelRef, active, onNext }) {
         </Fragment>
       </div>
       <div className="pf">
-        <span className="pn">0{shown + 1} / 0{n}</span>
+        <span className="pn">{String(shown + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}</span>
         <button id="pbt" type="button" onClick={() => onNext(shown)}>
           {last ? "Ask questions ↓" : "Next step →"}
         </button>

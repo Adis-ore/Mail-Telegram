@@ -230,3 +230,21 @@ pre{margin:10px 0 0;background:#0f1226;color:#d9e0ff;padding:10px 12px;border-ra
 .feats.in .feat,.feats.in .feats-card,.feats.in .feats-whats{opacity:1;transform:none}
 .feats.in .feat:hover{transform:translateY(-4px)}
 @media (prefers-reduced-motion:reduce){.feats .feat,.feats .feats-card,.feats .feats-whats{opacity:1;transform:none;transition:none}.feats-live::before{animation:none}}
+/* ---------- phones ---------- */
+.cta{white-space:nowrap}
+@media (max-width:640px){
+  .nav{width:calc(100% - 32px);padding:14px 0}
+  .lg{font-size:.95rem}
+  .nav-r{gap:6px}.nav-r .cta{padding:8px 14px;font-size:.82rem}.tgl{width:38px;height:38px}
+  .hcopy{padding-top:9vh}
+  .hcopy h1{font-size:clamp(2.6rem,12.5vw,3.4rem)}
+  .orb{--hw:min(52svh,94vw);bottom:-4%}
+  .ft-fade{height:28vh}
+  .ft{padding:1.6rem;min-height:22rem}
+  #copy h2{font-size:clamp(1.9rem,9vw,2.6rem)}
+  #copy p{text-shadow:0 0 12px var(--bg),0 0 4px var(--bg)}
+  .feats{padding:10vh 16px 6vh}
+  .feat{padding:16px}
+  .feats-card{padding:18px}
+}
+@media (max-width:380px){.lg span.lg-t{display:none}}

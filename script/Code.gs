@@ -4,13 +4,14 @@
  * - OTP codes are bold and tap-to-copy
  * - Swipe-reply "summarize" or "shorten" for a short summary
  * - Any other swipe-reply is emailed back (blocked for no-reply senders)
- * - Type "send email" to get a form, fill it in, and it sends
+ * - Type "send email" to get a form that fills itself into your chat (or copies in one tap), and it sends
+ * - Instant replies to commands and swipe-replies (optional, run setupWebhook once)
  * - Reminders (and optional calls) for emails with a date and time
  * - Tells you in Telegram when a new version of this script is out
  * Never commit your real tokens or keys to GitHub.
  */
 
-const VERSION = "1.0.0";
+const VERSION = "1.1.0";
 
 // ================= SETTINGS =================
 const CONFIG = {
@@ -33,6 +34,9 @@ const CONFIG = {
   CALL_ENABLED: false,                   // true after you send /start to @CallMeBot_txtbot
   CALL_AT_MIN: 10,                       // which reminder also triggers a call
   CALLMEBOT_USER: "@your_telegram_username",
+
+  // Instant replies: leave empty, setupWebhook finds the URL. Paste your Web app /exec URL here if it can't.
+  WEBAPP_URL: "",
 
   // Update alerts
   UPDATE_CHECK: true,
@@ -199,8 +203,61 @@ function getMsg(ref) {
   return th ? th.getMessages().pop() : null;
 }
 
+// Handles one Telegram update (a message or a button tap). Used by both the
+// every-minute poller and the instant webhook (doPost).
+function handleUpdate(u) {
+  if (u.callback_query) { handleCallback(u.callback_query); return; }   // button taps
+
+  const m = u.message;
+  if (!m || !m.text || String(m.chat.id) !== String(CONFIG.CHAT_ID)) return; // only you
+
+  const props = PropertiesService.getScriptProperties();
+  const map = JSON.parse(props.getProperty("MAP") || "{}");
+  const txt = m.text.trim().replace(/^@\w+\s*/, "");   // drop "@YourBot " added by the fill-in button
+
+  if (!m.reply_to_message) {
+    if (/^\/?(help|commands|menu)(@\w+)?$/i.test(txt)) { sendTelegram(helpText()); return; }
+    if (/^\/?(update|check update|version)(@\w+)?$/i.test(txt)) { checkUpdateNow(); return; }
+    if (/^\/?(send email|send|compose|new email|email)(@\w+)?$/i.test(txt)) { sendCompose(); return; }
+    if (/^(to|email)\s*:/i.test(txt)) { composeAndSend(txt); return; }
+  }
+  if (txt.charAt(0) === "/") return;
+
+  const word = txt.toLowerCase().replace(/[.!?]+$/, "");
+  const wantsSummary = CONFIG.SUMMARY_WORDS.indexOf(word) !== -1;
+
+  let ref = m.reply_to_message ? refFrom(map[m.reply_to_message.message_id]) : null;
+  if (!ref && !m.reply_to_message && wantsSummary) {
+    ref = refFrom(JSON.parse(props.getProperty("LAST_REF") || "null"));  // typed alone: latest email
+  }
+  if (!ref) {
+    sendTelegram(m.reply_to_message
+      ? "⚠️ I can't match that to an email (too old, or not an email message)."
+      : "ℹ️ Type <b>help</b> to see what I can do.");
+    return;
+  }
+
+  const gm = getMsg(ref);
+  if (!gm) { sendTelegram("⚠️ Couldn't find that email."); return; }
+
+  if (wantsSummary) {
+    const id = sendTelegram(summaryFor(gm));
+    if (id) remember([id], ref, true);            // you can reply to the summary too
+    return;
+  }
+
+  if (ref.nr || isNoReply(gm)) {
+    sendTelegram("🚫 That sender is a no-reply address, so nothing was sent.");
+    return;
+  }
+  gm.reply(m.text);
+  sendTelegram("✅ Reply sent to " + esc(addrOf(gm.getReplyTo() || gm.getFrom())));
+}
+
+// Every-minute fallback: only used when the instant webhook is not set up.
 function pollReplies() {
   const props = PropertiesService.getScriptProperties();
+  if (props.getProperty("WEBHOOK") === "1") return;        // Telegram pushes updates to doPost instead
   const stored = props.getProperty("TG_OFFSET");
   const res = tg("getUpdates", { offset: stored || 0, timeout: 0 });
   if (!res || !res.ok) return;
@@ -212,63 +269,77 @@ function pollReplies() {
     return;
   }
 
-  const map = JSON.parse(props.getProperty("MAP") || "{}");
   let offset = Number(stored);
-
   res.result.forEach(u => {
     offset = u.update_id + 1;
-    if (u.callback_query) { handleCallback(u.callback_query); return; }   // button taps
-
-    const m = u.message;
-    if (!m || !m.text || String(m.chat.id) !== String(CONFIG.CHAT_ID)) return; // only you
-
-    const txt = m.text.trim();
-    if (!m.reply_to_message) {
-      if (/^\/?(help|commands|menu)(@\w+)?$/i.test(txt)) { sendTelegram(helpText()); return; }
-      if (/^\/?(update|check update|version)(@\w+)?$/i.test(txt)) { checkUpdateNow(); return; }
-      if (/^\/?(send email|send|compose|new email|email)(@\w+)?$/i.test(txt)) { sendTelegram(composeTemplate()); return; }
-      if (/^(to|email)\s*:/i.test(txt)) { composeAndSend(txt); return; }
-    }
-    if (m.text.charAt(0) === "/") return;
-
-    const word = txt.toLowerCase().replace(/[.!?]+$/, "");
-    const wantsSummary = CONFIG.SUMMARY_WORDS.indexOf(word) !== -1;
-
-    let ref = m.reply_to_message ? refFrom(map[m.reply_to_message.message_id]) : null;
-    if (!ref && !m.reply_to_message && wantsSummary) {
-      ref = refFrom(JSON.parse(props.getProperty("LAST_REF") || "null"));  // typed alone: latest email
-    }
-    if (!ref) {
-      sendTelegram(m.reply_to_message
-        ? "⚠️ I can't match that to an email (too old, or not an email message)."
-        : "ℹ️ Type <b>help</b> to see what I can do.");
-      return;
-    }
-
-    const gm = getMsg(ref);
-    if (!gm) { sendTelegram("⚠️ Couldn't find that email."); return; }
-
-    if (wantsSummary) {
-      const id = sendTelegram(summaryFor(gm));
-      if (id) remember([id], ref, true);            // you can reply to the summary too
-      return;
-    }
-
-    if (ref.nr || isNoReply(gm)) {
-      sendTelegram("🚫 That sender is a no-reply address, so nothing was sent.");
-      return;
-    }
-    gm.reply(m.text);
-    sendTelegram("✅ Reply sent to " + esc(addrOf(gm.getReplyTo() || gm.getFrom())));
+    try { handleUpdate(u); } catch (e) { console.error("handleUpdate", e); }
   });
-
   props.setProperty("TG_OFFSET", String(offset));
+}
+
+// ================= INSTANT REPLIES (webhook) =================
+// Telegram calls this the moment you send something. Returns nothing on purpose:
+// that gives Telegram a plain 200 instead of a redirect.
+function doPost(e) {
+  const props = PropertiesService.getScriptProperties();
+  const key = props.getProperty("WEBHOOK_KEY");
+  if (!key || !e || !e.parameter || e.parameter.k !== key) return;     // not from your Telegram webhook
+  let u;
+  try { u = JSON.parse(e.postData.contents); } catch (err) { return; }
+  if (!u || u.update_id === undefined) return;
+
+  const lock = LockService.getScriptLock();
+  const locked = lock.tryLock(25000);
+  try {
+    if (Number(u.update_id) <= Number(props.getProperty("WEBHOOK_LAST") || -1)) return; // Telegram retry
+    props.setProperty("WEBHOOK_LAST", String(u.update_id));
+    handleUpdate(u);
+  } catch (err) {
+    console.error("doPost", err);
+  } finally {
+    if (locked) lock.releaseLock();
+  }
+}
+
+function doGet() {
+  return ContentService.createTextOutput("Mail to Telegram v" + VERSION + " is running.");
+}
+
+// Run once after: Deploy > New deployment > Web app (Execute as: Me, Who has access: Anyone)
+function setupWebhook() {
+  const url = CONFIG.WEBAPP_URL || ScriptApp.getService().getUrl();
+  if (!url || !/\/exec$/.test(url)) {
+    Logger.log("Deploy this project as a Web app first (Deploy > New deployment > Web app), " +
+      "or paste its /exec URL into CONFIG.WEBAPP_URL, then run setupWebhook again.");
+    return;
+  }
+  const props = PropertiesService.getScriptProperties();
+  let key = props.getProperty("WEBHOOK_KEY");
+  if (!key) { key = Utilities.getUuid().replace(/-/g, ""); props.setProperty("WEBHOOK_KEY", key); }
+  const r = tg("setWebhook", {
+    url: url + "?k=" + key,
+    allowed_updates: JSON.stringify(["message", "callback_query"])
+  });
+  if (r && r.ok) {
+    props.setProperty("WEBHOOK", "1");
+    sendTelegram("⚡ Instant replies are on. Commands and swipe-replies now answer in seconds.");
+    Logger.log("Webhook set. Instant replies are on.");
+  } else {
+    Logger.log("Telegram refused the webhook: " + JSON.stringify(r));
+  }
+}
+
+// Goes back to checking once a minute
+function removeWebhook() {
+  tg("deleteWebhook", {});
+  PropertiesService.getScriptProperties().deleteProperty("WEBHOOK");
+  sendTelegram("ℹ️ Instant replies are off. I'll check for your messages once a minute.");
 }
 
 function helpText() {
   return "<b>What I understand</b> (v" + VERSION + ")\n\n" +
     "<b>Type on its own</b>\n" +
-    "• <code>send email</code>: get a form to fill in and send\n" +
+    "• <code>send email</code>: a form that fills itself into your chat, then send it\n" +
     "• <code>summarize</code>: summary of the latest email\n" +
     "• <code>update</code>: check for a new version of this script\n" +
     "• <code>help</code>: this list\n\n" +
@@ -338,7 +409,8 @@ function sendUpdateNotice(info) {
     "<b>To update</b>\n" +
     "1. Tap “Open the new script” and copy all of it\n" +
     "2. Open your project at script.google.com, select everything and paste\n" +
-    "3. Save. Your token and settings are kept if you ran saveSettings once.";
+    "3. Save. Your token and settings are kept if you ran saveSettings once.\n" +
+    "4. If instant replies are on: Deploy > Manage deployments > edit (pencil) > Version: New version > Deploy.";
   return sendTelegram(text, { inline_keyboard: [
     [{ text: "Open the new script", url: info.url }],
     [{ text: "Remind me in 1 hour", callback_data: "upd:1h" }, { text: "Tomorrow", callback_data: "upd:1d" }],
@@ -542,30 +614,40 @@ function findDate(text, base) {
 }
 
 // ================= 5. COMPOSE NEW EMAIL FROM TELEGRAM =================
+const COMPOSE_FORM = "To: \nCc: \nBcc: \nSubject: \nMessage: ";
+
 function composeTemplate() {
-  return "✉️ <b>New email</b>\nCopy this, fill it in and send it back. " +
-    "Separate several addresses with commas. Cc and Bcc can stay empty.\n\n" +
-    "<pre>To: \nCc: \nBcc: \nSubject: \nMessage: \n</pre>";
+  return "✉️ <b>New email</b>\nTap <b>Fill it in here</b> to get the form in your typing box, " +
+    "or <b>Copy the form</b>. Separate several addresses with commas. Cc and Bcc can stay empty.\n\n" +
+    "<pre>" + esc(COMPOSE_FORM) + "</pre>";
 }
 
+function sendCompose() {
+  sendTelegram(composeTemplate(), { inline_keyboard: [
+    [{ text: "✏️ Fill it in here", switch_inline_query_current_chat: COMPOSE_FORM }],
+    [{ text: "📋 Copy the form", copy_text: { text: COMPOSE_FORM } }]
+  ] });
+}
+
+// Reads "To: / Cc: / Bcc: / Subject: / Message:" whether on separate lines or one line.
+// Everything after "Message:" is the body, line breaks included.
 function parseCompose(text) {
   const out = { to: "", cc: "", bcc: "", subject: "", body: "" };
-  const bodyLines = [];
-  let cur = null;
-  text.replace(/\r/g, "").split("\n").forEach(line => {
-    if (cur === "body") { bodyLines.push(line); return; }
-    const m = line.match(/^\s*(to|email|cc|bcc|subject|message|body)\s*:\s*(.*)$/i);
-    if (m) {
-      let key = m[1].toLowerCase();
-      if (key === "email") key = "to";
-      if (key === "message") key = "body";
-      cur = key;
-      if (key === "body") bodyLines.push(m[2]); else out[key] = m[2];
-    } else if (cur) {
-      out[cur] += " " + line.trim();
-    }
+  text = String(text).replace(/\r/g, "").replace(/^@\w+\s*/, "");
+  const marks = [];
+  const re = /(?:^|\s)(to|email|cc|bcc|subject|message|body)\s*:/gi;
+  let m;
+  while ((m = re.exec(text))) {
+    let key = m[1].toLowerCase();
+    if (key === "email") key = "to";
+    if (key === "message") key = "body";
+    marks.push({ key: key, start: m.index, end: re.lastIndex });
+    if (key === "body") break;
+  }
+  marks.forEach((mk, i) => {
+    const val = text.slice(mk.end, i + 1 < marks.length ? marks[i + 1].start : text.length);
+    out[mk.key] = mk.key === "body" ? val.trim() : val.replace(/\s+/g, " ").trim();
   });
-  out.body = bodyLines.join("\n").trim();
   return out;
 }
 
@@ -646,6 +728,9 @@ function setupTrigger() {
 function testSend() { Logger.log(sendTelegram("✅ Test from Apps Script")); }
 function testCall() { callMe("This is a test call from your mail bot."); }
 function testUpdate() { checkUpdateNow(); }
+
+// Shows the send-email form with its buttons, as if you typed "send email"
+function testCompose() { sendCompose(); }
 
 // Fakes a meeting 11 minutes away: in about a minute you get the reminder here, plus the call if enabled
 function testMeetingCall() {

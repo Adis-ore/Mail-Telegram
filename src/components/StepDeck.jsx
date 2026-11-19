@@ -94,8 +94,8 @@ export default function StepDeck({ trackRef, onSelectStep }) {
         const ix = Math.sin(a0) * R0, iy = pY0 - Math.cos(a0) * R0 + H * 0.15, ir = (i - mid) * sp0;
         // scattered position
         const an = (i / n) * 6.2832 - 1.2;
-        const sx = Math.cos(an) * W * (nar ? 0.4 : 0.36);
-        const sy = Math.sin(an) * H * (nar ? 0.36 : 0.33) - H * 0.02;
+        const sx = Math.cos(an) * W * (nar ? 0.42 : 0.36);
+        const sy = nar ? Math.sin(an) * H * 0.26 + H * 0.14 : Math.sin(an) * H * 0.33 - H * 0.02;
         const sr = Math.sin(i * 2.3) * 14;
 
         let x = mix(mix(ix, sx, o), fx, bk), y = mix(mix(iy, sy, o), fy, bk), r = mix(mix(ir, sr, o), fr, bk);
@@ -145,7 +145,7 @@ export default function StepDeck({ trackRef, onSelectStep }) {
       });
       copy.style.opacity = between(P, 0.08, 0.06) * (1 - between(P, 0.3, 0.1));
 
-      const pv = between(P, 0.46, 0.08) * (1 - between(P, 0.78, 0.05));
+      const pv = between(P, STEP_START - 0.06, 0.06) * (1 - between(P, STEP_START + STEP_SPAN, 0.05));
       const av = between(P, 0.88, 0.07);
       ask.style.opacity = av;
       ask.style.pointerEvents = av > 0.5 ? "auto" : "none";

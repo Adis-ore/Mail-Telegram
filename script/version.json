@@ -1,5 +1,5 @@
 {
-  "version": "1.0.1",
-  "notes": "Test release, please ignore.",
+  "version": "1.1.0",
+  "notes": "Instant replies: commands and swipe-replies can now answer in seconds (run setupWebhook once). Send email: tap \"Fill it in here\" to get the form in your typing box, or copy it in one tap.",
   "url": "https://github.com/Adis-ore/Mail-Telegram/blob/main/script/Code.gs"
 }

@@ -14,7 +14,7 @@ export default function Card({ step, index, onSelect, cardRef, sheenRef }) {
       <span className="nm">{step.name}</span>
       <span className="ic"><span>{step.icon}</span></span>
       <span className="cp">{step.where}</span>
-      <span className="no">0{index + 1}</span>
+      <span className="no">{String(index + 1).padStart(2, "0")}</span>
     </button>
   );
 }

@@ -4,7 +4,7 @@ export const GITHUB_URL = "https://github.com/Adis-ore/Mail-Telegram/";
 export const X_URL = "https://x.com/adisdtechie";
 export const LINKEDIN_URL = "https://www.linkedin.com/in/adigun-oreoluwa-78b500237/";
 
-export const HEADLINE = "Nine cards. One free setup.".split(" ");
+export const HEADLINE = "Ten cards. One free setup.".split(" ");
 
 // Where the live Apps Script lives (same paths the script itself checks for updates).
 // To release: update script/Code.gs, bump VERSION in it, and bump script/version.json to match.
@@ -137,6 +137,18 @@ export const STEPS = [
       <>Send “Meeting tomorrow at 3pm” to test reminders.</>,
     ],
     actions: [{ label: "Write a test email ↗", href: LINKS.testEmail }],
+  },
+  {
+    name: "Fast", where: "Deploy > Web app", time: "2 min", colors: ["#3f8fd2", "#24609a"],
+    title: "Optional: make replies instant",
+    icon: icon(<path d="M13 2 4 14h7l-1 8 9-12h-7Z" />),
+    items: [
+      <>In Apps Script, click <b>Deploy → New deployment</b>, pick type <b>Web app</b>.</>,
+      <>Set <b>Execute as: Me</b> and <b>Who has access: Anyone</b>, then <b>Deploy</b> and allow access.</>,
+      <>Run <code>setupWebhook</code> once. Commands and swipe-replies now answer in seconds instead of up to a minute.</>,
+    ],
+    note: <>New mail still arrives within about a minute: that’s Google’s limit. When you update the script later, also do <b>Deploy → Manage deployments → edit → New version</b>.</>,
+    actions: [{ label: "Open my scripts ↗", href: LINKS.scripts }],
   },
   {
     name: "Calls", where: "optional", time: "3 min", colors: ["#4f6d8f", "#2c425e"],
