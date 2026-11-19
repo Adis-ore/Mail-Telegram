@@ -14,7 +14,7 @@
 
 <p align="center">
   <a href="script/Code.gs"><b>Get the script</b></a> ·
-  <a href="#set-it-up-in-9-steps">Setup</a> ·
+  <a href="#set-it-up-in-10-steps">Setup</a> ·
   <a href="#what-you-can-do-in-telegram">Commands</a> ·
   <a href="#updating">Updating</a> ·
   <a href="#the-setup-website">Website</a>
@@ -36,13 +36,14 @@
 | **OTP codes** | Verification codes are bold and tap-to-copy, right at the top. |
 | **Reply from Telegram** | Swipe-reply to an email and your text is sent back as an email reply. No-reply senders are blocked so nothing gets lost. |
 | **Summaries** | Reply `summarize` (or `shorten`, `tldr`) for a short version. Uses Google Gemini if you add a free key, a built-in summary if you don’t. |
-| **Send new email** | Type `send email`, fill in the form it sends you, send it back. |
+| **Send new email** | Type `send email` and tap **Fill it in here**: the form drops into your typing box. Fill it in and send. Or tap **Copy the form**. Empty Cc and Bcc are skipped. |
+| **Instant replies** | Optional: commands and swipe-replies answer in seconds instead of up to a minute. |
 | **Reminders** | Emails with a date and time (meetings, deadlines, interviews) get reminders 60 and 10 minutes before. Optional phone call. |
 | **Update alerts** | When a new version of the script is out, you get a Telegram message with what changed and a button to get it. |
 
 It all runs as a Google Apps Script in **your own** Google account, checking once a minute. Nothing goes through anyone else’s server.
 
-## Set it up in 9 steps
+## Set it up in 10 steps
 
 > The setup website walks through the same steps with links and copy buttons.
 
@@ -56,7 +57,8 @@ It all runs as a Google Apps Script in **your own** Google account, checking onc
 6. **Add your details.** At the top, fill in `BOT_TOKEN` and `CHAT_ID`. In **Project Settings**, tick “Show appsscript.json” and set `timeZone` to [your time zone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (for example `Africa/Lagos`). Save.
 7. **Test, then switch it on.** Run `testSend`. Google shows an “unverified app” warning because it is your own script: **Advanced → Go to project → Allow**. When the test message arrives, run `setupTrigger` once. That also saves your settings.
 8. **Try it.** Email yourself from another account. It shows up within about a minute. Send one that says “Meeting tomorrow at 3pm” to test reminders.
-9. **Optional: reminder calls.** Send `/start` to `@CallMeBot_txtbot`, set `CALL_ENABLED: true` and your `CALLMEBOT_USER`, then run `testCall`. This uses an unofficial free service, so it may not always be reliable.
+9. **Optional: instant replies.** In Apps Script: **Deploy → New deployment → Web app**, set *Execute as: Me* and *Who has access: Anyone*, deploy, then run `setupWebhook` once. Commands and replies now answer in seconds. New mail still arrives within about a minute (Google’s limit for free scripts).
+10. **Optional: reminder calls.** Send `/start` to `@CallMeBot_txtbot`, set `CALL_ENABLED: true` and your `CALLMEBOT_USER`, then run `testCall`. This uses an unofficial free service, so it may not always be reliable.
 
 ## What you can do in Telegram
 
@@ -64,7 +66,7 @@ It all runs as a Google Apps Script in **your own** Google account, checking onc
 
 | Message | What happens |
 |---|---|
-| `send email` | Sends you a form (`To`, `Cc`, `Bcc`, `Subject`, `Message`). Fill it in and send it back. |
+| `send email` | Sends a form with **Fill it in here** (puts it in your typing box) and **Copy the form** buttons. Fill in `To`, `Subject`, `Message` (Cc and Bcc are optional) and send. |
 | `summarize` | Summary of the latest email. |
 | `update` | Checks for a new version of the script. |
 | `help` | Lists everything. |
@@ -90,6 +92,7 @@ All in `CONFIG` at the top of the script.
 | `REMIND_BEFORE_MIN` | `[60, 10]` | When reminders fire, in minutes before the event. |
 | `CALL_ENABLED`, `CALL_AT_MIN`, `CALLMEBOT_USER` | `false`, `10` | Optional phone call with a reminder. |
 | `UPDATE_CHECK`, `UPDATE_CHECK_HOURS` | `true`, `6` | Update alerts and how often to look. |
+| `WEBAPP_URL` | empty | Only if `setupWebhook` can’t find your Web app URL: paste the `/exec` URL here. |
 
 ## Updating
 
@@ -98,6 +101,7 @@ When an update is out, the bot tells you in Telegram (and the website tells you 
 1. Tap **Open the new script** and copy all of it.
 2. In your project at script.google.com, select everything and paste.
 3. Save. Your token, chat ID and keys are kept, because `setupTrigger` saved them. If you set things up before this version, run `saveSettings` once first.
+4. If you turned on instant replies: **Deploy → Manage deployments → edit (pencil) → Version: New version → Deploy**. The web app keeps running the old code until you do.
 
 You can snooze the alert (1 hour, tomorrow, next week) or skip a version from the buttons on the message.
 
