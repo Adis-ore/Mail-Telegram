@@ -57,7 +57,16 @@ It all runs as a Google Apps Script in **your own** Google account, checking onc
 6. **Add your details.** At the top, fill in `BOT_TOKEN` and `CHAT_ID`. In **Project Settings**, tick “Show appsscript.json” and set `timeZone` to [your time zone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (for example `Africa/Lagos`). Save.
 7. **Test, then switch it on.** Run `testSend`. Google shows an “unverified app” warning because it is your own script: **Advanced → Go to project → Allow**. When the test message arrives, run `setupTrigger` once. That also saves your settings.
 8. **Try it.** Email yourself from another account. It shows up within about a minute. Send one that says “Meeting tomorrow at 3pm” to test reminders.
-9. **Optional: instant replies.** In Apps Script: **Deploy → New deployment → Web app**, set *Execute as: Me* and *Who has access: Anyone*, deploy, then run `setupWebhook` once. Commands and replies now answer in seconds. New mail still arrives within about a minute (Google’s limit for free scripts).
+9. **Optional: instant replies.** Skip this and the bot still works, answering within about a minute. To make it answer in seconds:
+   1. In Apps Script, click **Deploy** (top right) → **New deployment**.
+   2. Click the gear next to **Select type** → **Web app**.
+   3. Set **Execute as: Me** and **Who has access: Anyone** → **Deploy** → **Authorize access** and allow.
+   4. Copy the **Web app URL** (it ends in `/exec`).
+   5. At the top of the script, paste it into `WEBAPP_URL: "",` between the quotes, and save.
+   6. Run `setupWebhook`. Telegram says “⚡ Instant replies are on”.
+   7. Type `help` to your bot: it answers in a second or two.
+
+   New emails still arrive within about a minute (Google’s limit). After pasting a newer script later, also do **Deploy → Manage deployments → pencil → Version: New version → Deploy**.
 10. **Reminder calls (on by default).** Send `/start` to `@CallMeBot_txtbot`, put your Telegram username in `CALLMEBOT_USER`, then run `testCall`. Don’t want calls? Set `CALL_ENABLED: false` for messages only. Calls use an unofficial free service, so one can be late or missed when it’s busy; the reminder message always arrives.
 
 ## What you can do in Telegram
