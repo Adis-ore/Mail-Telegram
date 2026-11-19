@@ -14,7 +14,7 @@
 
 <p align="center">
   <a href="script/Code.gs"><b>Get the script</b></a> ·
-  <a href="#set-it-up-in-11-steps">Setup</a> ·
+  <a href="#set-it-up-in-10-steps">Setup</a> ·
   <a href="#what-you-can-do-in-telegram">Commands</a> ·
   <a href="#updating">Updating</a> ·
   <a href="#the-setup-website">Website</a>
@@ -43,7 +43,7 @@
 
 It all runs as a Google Apps Script in **your own** Google account, checking once a minute. Nothing goes through anyone else’s server.
 
-## Set it up in 11 steps
+## Set it up in 10 steps
 
 > The setup website walks through the same steps with links and copy buttons.
 
@@ -57,10 +57,12 @@ It all runs as a Google Apps Script in **your own** Google account, checking onc
 6. **Add your details.** At the top, fill in `BOT_TOKEN` and `CHAT_ID`. In **Project Settings**, tick “Show appsscript.json” and set `timeZone` to [your time zone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (for example `Africa/Lagos`). Save.
 7. **Test, then switch it on.** Run `testSend`. Google shows an “unverified app” warning because it is your own script: **Advanced → Go to project → Allow**. When the test message arrives, run `setupTrigger` once. That also saves your settings.
 8. **Try it.** Email yourself from another account. It shows up within about a minute. Send one that says “Meeting tomorrow at 3pm” to test reminders.
-9. **Make reminders ring loud.** Give your bot’s chat its own sound so you notice reminders.
+9. **Make reminders ring.** Give your bot’s chat its own loud sound so every email and reminder stands out.
    - **Android:** open the chat with your bot → tap its name → **Notifications** → **Customize** → pick a loud, long **Sound**, set **Importance** to **Urgent**, turn on **Vibrate**.
    - **iPhone:** open the chat with your bot → tap its name → **Notifications** → **Sound** → pick a loud one.
-   - Test: run `testMeetingCall` in Apps Script; the reminder arrives in about a minute with your new sound.
+   - **Louder still:** send yourself a short alarm sound in Telegram, long-press it → **Save for notifications**, then choose it as the bot’s sound.
+   - **Optional phone call too:** send `/start` to `@CallMeBot_txtbot` and put your Telegram username in `CALLMEBOT_USER`. Your phone then also rings 10 minutes before. Set `CALL_ENABLED: false` to stop calls. CallMeBot is a free service that is sometimes busy; the reminder message always arrives.
+   - Test: run `testMeetingCall` in Apps Script.
 10. **Optional: instant replies.** Skip this and the bot still works, answering within about a minute. To make it answer in seconds:
    1. In Apps Script, click **Deploy** (top right) → **New deployment**.
    2. Click the gear next to **Select type** → **Web app**.
@@ -71,7 +73,6 @@ It all runs as a Google Apps Script in **your own** Google account, checking onc
    7. Type `help` to your bot: it answers in a second or two.
 
    New emails still arrive within about a minute (Google’s limit). After pasting a newer script later, also do **Deploy → Manage deployments → pencil → Version: New version → Deploy**.
-11. **Reminder calls (on by default).** Send `/start` to `@CallMeBot_txtbot`, put your Telegram username in `CALLMEBOT_USER`, then run `testCall`. Don’t want calls? Set `CALL_ENABLED: false` for messages only. Calls use an unofficial free service, so one can be late or missed when it’s busy; the reminder message always arrives.
 
 ## What you can do in Telegram
 

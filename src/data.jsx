@@ -4,7 +4,7 @@ export const GITHUB_URL = "https://github.com/Adis-ore/Mail-Telegram/";
 export const X_URL = "https://x.com/adisdtechie";
 export const LINKEDIN_URL = "https://www.linkedin.com/in/adigun-oreoluwa-78b500237/";
 
-export const HEADLINE = "Eleven cards. One free setup.".split(" ");
+export const HEADLINE = "Ten cards. One free setup.".split(" ");
 
 // Where the live Apps Script lives (same paths the script itself checks for updates).
 // To release: update script/Code.gs, bump VERSION in it, and bump script/version.json to match.
@@ -139,16 +139,18 @@ export const STEPS = [
     actions: [{ label: "Write a test email ↗", href: LINKS.testEmail }],
   },
   {
-    name: "Loud", where: "your phone", time: "1 min", colors: ["#5aa832", "#3c7a1e"],
-    title: "Make reminders ring loud",
+    name: "Ring", where: "your phone", time: "2 min", colors: ["#5aa832", "#3c7a1e"],
+    title: "Make reminders ring",
     icon: icon(<><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0M2 8c0-2 1-4 2.5-5.5M22 8c0-2-1-4-2.5-5.5" /></>),
     items: [
-      <><b>Android:</b> open the chat with your bot, tap its <b>name</b> at the top, then <b>Notifications</b> → <b>Customize</b>.</>,
-      <>Pick a loud, long <b>Sound</b>, set <b>Importance</b> to <b>Urgent</b> and turn on <b>Vibrate</b>.</>,
+      <><b>Android:</b> open the chat with your bot, tap its <b>name</b> at the top, then <b>Notifications</b> → <b>Customize</b>. Pick a loud, long <b>Sound</b>, set <b>Importance</b> to <b>Urgent</b> and turn on <b>Vibrate</b>.</>,
       <><b>iPhone:</b> open the chat with your bot, tap its <b>name</b> at the top, then <b>Notifications</b> → <b>Sound</b>, and pick a loud one.</>,
-      <>Test it: in Apps Script run <code>testMeetingCall</code>. In about a minute the reminder arrives with your new sound.</>,
+      <><b>Louder still:</b> send yourself a short alarm sound in Telegram, long-press it, tap <b>Save for notifications</b>, then choose it as the bot’s sound.</>,
+      <>Test it: in Apps Script run <code>testMeetingCall</code>. In about a minute the reminder arrives with your sound.</>,
+      <><b>Optional phone call too:</b> open <L href="https://t.me/CallMeBot_txtbot">@CallMeBot_txtbot</L>, tap <b>Start</b>, and put your Telegram username in <code>CALLMEBOT_USER</code>. Your phone then also rings 10 minutes before. Don’t want calls? Set <code>CALL_ENABLED</code> to <code>false</code>.</>,
     ],
-    note: <>Your bot’s messages now sound different from every other chat, so you notice reminders. Silent mode and Do Not Disturb still mute them, so leave Telegram allowed in your phone’s notification settings.</>,
+    note: <>Every message from your bot now plays your sound, so new emails and reminders stand out. Silent mode and Do Not Disturb still mute it. The phone call uses CallMeBot, a free service that is sometimes busy; the reminder message always arrives.</>,
+    actions: [{ label: "Open @CallMeBot_txtbot ↗", href: "https://t.me/CallMeBot_txtbot" }, { label: "Copy CALL_ENABLED: false", copy: "CALL_ENABLED: false," }],
   },
   {
     name: "Fast", where: "optional", time: "3 min", colors: ["#3f8fd2", "#24609a"],
@@ -165,17 +167,5 @@ export const STEPS = [
     ],
     note: <><b>You can skip this card.</b> Without it everything still works, the bot just answers within about a minute. New emails always take up to a minute (Google’s limit). If you use this, then every time you paste a newer script: <b>Deploy → Manage deployments → pencil → Version: New version → Deploy</b>.</>,
     actions: [{ label: "Open my scripts ↗", href: LINKS.scripts }, { label: "Copy WEBAPP_URL line", copy: 'WEBAPP_URL: "",' }],
-  },
-  {
-    name: "Calls", where: "on by default", time: "3 min", colors: ["#4f6d8f", "#2c425e"],
-    title: "Reminder calls (on by default)",
-    icon: icon(<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" />),
-    items: [
-      <>Calls are <b>on</b>: 10 minutes before an event, your phone rings as well as getting the message.</>,
-      <>In Telegram, open <L href="https://t.me/CallMeBot_txtbot">@CallMeBot_txtbot</L> and tap <b>Start</b>, then put your Telegram username in <code>CALLMEBOT_USER</code>.</>,
-      <>Run <code>testCall</code> to check it rings. Don’t want calls? Set <code>CALL_ENABLED</code> to <code>false</code> and you’ll get messages only.</>,
-    ],
-    note: <>Calls use CallMeBot, an unofficial free service, so a call can be late or missed when it’s busy. The reminder message always arrives.</>,
-    actions: [{ label: "Open @CallMeBot_txtbot ↗", href: "https://t.me/CallMeBot_txtbot" }, { label: "Copy CALL_ENABLED: false", copy: "CALL_ENABLED: false," }],
   },
 ];
