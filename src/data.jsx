@@ -4,7 +4,7 @@ export const GITHUB_URL = "https://github.com/Adis-ore/Mail-Telegram/";
 export const X_URL = "https://x.com/adisdtechie";
 export const LINKEDIN_URL = "https://www.linkedin.com/in/adigun-oreoluwa-78b500237/";
 
-export const HEADLINE = "Ten cards. One free setup.".split(" ");
+export const HEADLINE = "Eleven cards. One free setup.".split(" ");
 
 // Where the live Apps Script lives (same paths the script itself checks for updates).
 // To release: update script/Code.gs, bump VERSION in it, and bump script/version.json to match.
@@ -137,6 +137,18 @@ export const STEPS = [
       <>Send “Meeting tomorrow at 3pm” to test reminders.</>,
     ],
     actions: [{ label: "Write a test email ↗", href: LINKS.testEmail }],
+  },
+  {
+    name: "Loud", where: "your phone", time: "1 min", colors: ["#5aa832", "#3c7a1e"],
+    title: "Make reminders ring loud",
+    icon: icon(<><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0M2 8c0-2 1-4 2.5-5.5M22 8c0-2-1-4-2.5-5.5" /></>),
+    items: [
+      <><b>Android:</b> open the chat with your bot, tap its <b>name</b> at the top, then <b>Notifications</b> → <b>Customize</b>.</>,
+      <>Pick a loud, long <b>Sound</b>, set <b>Importance</b> to <b>Urgent</b> and turn on <b>Vibrate</b>.</>,
+      <><b>iPhone:</b> open the chat with your bot, tap its <b>name</b> at the top, then <b>Notifications</b> → <b>Sound</b>, and pick a loud one.</>,
+      <>Test it: in Apps Script run <code>testMeetingCall</code>. In about a minute the reminder arrives with your new sound.</>,
+    ],
+    note: <>Your bot’s messages now sound different from every other chat, so you notice reminders. Silent mode and Do Not Disturb still mute them, so leave Telegram allowed in your phone’s notification settings.</>,
   },
   {
     name: "Fast", where: "optional", time: "3 min", colors: ["#3f8fd2", "#24609a"],
