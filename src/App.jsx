@@ -5,6 +5,7 @@ import { startSmoothScroll } from "./lib/smoothScroll";
 import Hero from "./components/Hero";
 import StepDeck from "./components/StepDeck";
 import Footer from "./components/Footer";
+import Features from "./components/Features";
 import { UpdateToast } from "./components/ScriptViewer";
 import "./index.css";
 
@@ -22,6 +23,7 @@ export default function App() {
     <>
       <Hero onSelectStep={goToStep} />
       <StepDeck trackRef={trackRef} onSelectStep={goToStep} />
+      <Features />
       <Footer />
       <UpdateToast onOpen={() => goToStep(STEPS.findIndex((s) => s.showScript))} />
     </>

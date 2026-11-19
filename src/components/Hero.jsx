@@ -9,6 +9,7 @@ import { useDarkMode } from "../lib/useDarkMode";
 const NAV_ITEMS = [
   { label: "Home", href: "#hero" },
   { label: "How it works", href: "#track" },
+  { label: "Features", href: "#features" },
   { label: "Questions", href: "#contact" },
 ];
 

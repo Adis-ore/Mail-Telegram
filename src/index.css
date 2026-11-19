@@ -196,3 +196,37 @@ pre{margin:10px 0 0;background:#0f1226;color:#d9e0ff;padding:10px 12px;border-ra
 @keyframes toastIn{from{opacity:0;transform:translateY(16px)}}
 @media (max-width:640px){.nav-gooey{display:none!important}}
 .lg{display:inline-flex;align-items:center;gap:10px}.lg img{border-radius:8px;box-shadow:0 4px 12px -4px rgba(36,82,214,.5)}
+/* ---------- everything the script does (read live from Code.gs) ---------- */
+.feats{position:relative;padding:14vh 6vw 8vh;max-width:1200px;margin:0 auto}
+.feats-h{text-align:center;margin-bottom:44px}
+.feats-k{margin:0 0 10px;font-size:.78rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ac)}
+.feats-h h2{margin:0;font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.02;letter-spacing:-.035em}
+.feats-v{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;margin-top:18px;font-size:.82rem;color:var(--mu)}
+.feats-pill{padding:6px 12px;border-radius:999px;background:var(--cd);border:1px solid var(--ln)}.feats-pill b{color:var(--tx)}
+.feats-live{display:inline-flex;align-items:center;gap:7px}.feats-live::before{content:"";width:7px;height:7px;border-radius:50%;background:#2fbf71;box-shadow:0 0 0 0 rgba(47,191,113,.6);animation:live 2s infinite}
+@keyframes live{70%{box-shadow:0 0 0 8px rgba(47,191,113,0)}100%{box-shadow:0 0 0 0 rgba(47,191,113,0)}}
+.feats-m{text-align:center;color:var(--mu)}.feats-m a{color:var(--ac)}
+.feats-whats{max-width:640px;margin:0 auto 34px;padding:14px 18px;border-radius:16px;border:1px dashed var(--ac);background:color-mix(in srgb,var(--ac) 7%,transparent);text-align:center}
+.feats-whats-k{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ac)}.feats-whats p{margin:4px 0 0}
+.feats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.feat{position:relative;padding:20px;border-radius:20px;background:var(--cd);border:1px solid var(--ln);box-shadow:0 18px 40px -30px rgba(20,24,40,.5);transition:transform .3s cubic-bezier(.2,.8,.2,1),border-color .3s}
+.feat:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--c0) 60%,var(--ln))}
+.feat-i{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;color:#fff;background:linear-gradient(160deg,var(--c0),var(--c1))}.feat-i svg{width:21px;height:21px}
+.feat h3{margin:14px 0 4px;font-size:1.02rem;line-height:1.3;letter-spacing:-.01em}.feat p{margin:0;color:var(--mu);font-size:.88rem}
+.feats-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:14px;margin-top:14px}
+.feats-card{padding:22px;border-radius:20px;background:var(--cd);border:1px solid var(--ln)}
+.feats-card h3{margin:0 0 12px;font-size:1.02rem}.feats-card h3.sub{margin-top:22px}
+.feats-hint{margin:-6px 0 12px;color:var(--mu);font-size:.85rem}
+.cmds,.fns{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.cmds li,.fns li{display:grid;grid-template-columns:minmax(120px,auto) 1fr;gap:14px;align-items:baseline;padding:9px 0;border-top:1px solid var(--ln);font-size:.9rem}
+.cmds li:first-child,.fns li:first-child{border-top:0}
+.cmd-w{display:flex;flex-wrap:wrap;gap:5px}.cmd-w em{font-style:italic;color:var(--mu)}
+.fns li{grid-template-columns:minmax(150px,auto) 1fr}.fns code{font-weight:600}
+.ft-new{display:inline-block;margin-left:8px;padding:2px 7px;border-radius:999px;background:#2fbf71;color:#fff;font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;vertical-align:2px;animation:pop .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes pop{from{transform:scale(.6);opacity:0}}
+@media (max-width:560px){.cmds li,.fns li{grid-template-columns:1fr;gap:4px}}
+/* reveal on scroll */
+.feats .feat,.feats .feats-card,.feats .feats-whats{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.2,.8,.2,1) var(--d,0ms),transform .7s cubic-bezier(.2,.8,.2,1) var(--d,0ms),border-color .3s}
+.feats.in .feat,.feats.in .feats-card,.feats.in .feats-whats{opacity:1;transform:none}
+.feats.in .feat:hover{transform:translateY(-4px)}
+@media (prefers-reduced-motion:reduce){.feats .feat,.feats .feats-card,.feats .feats-whats{opacity:1;transform:none;transition:none}.feats-live::before{animation:none}}
