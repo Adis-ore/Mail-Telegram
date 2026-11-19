@@ -40,7 +40,8 @@ export default function StepDeck({ trackRef, onSelectStep }) {
     const cards = cardsRef.current, sheens = sheensRef.current, words = wordsRef.current;
     const n = STEPS.length, mid = (n - 1) / 2, still = prefersReducedMotion();
 
-    let W = 0, H = 0, nar = false, cw = 0, WR = 0, hubX = 0, sp = 0;
+    let W = 0, H = 0, nar = false, cw = 0, ch = 0, WR = 0, hubX = 0, baseY = 0, sp = 0;
+    let panelTop = 0, panelX1 = 0, panelX2 = 0;   // panel box in stage-centre coordinates
     let target = 0, shown = 0, born = -1, prev = 0, visible = true, act = -1, raf = 0;
     let ptr = { x: 0, y: 0 };
     const ease = { x: 0, y: 0 };
@@ -50,20 +51,34 @@ export default function StepDeck({ trackRef, onSelectStep }) {
       cw = nar ? Math.min(104, Math.max(80, W * 0.24)) : Math.min(180, Math.max(110, W * 0.13));
       stage.style.setProperty("--u", cw / 300 + "px");
       layer.style.perspective = H * 1.744 + "px";
-      // Upright wheel whose hub is off to the left: the active card is the rightmost
-      // point of the rim and the neighbours curve back toward the left edge, so the
-      // panel sits boxed in between the left border and the cards.
-      const ch = (cw * 4) / 3;
-      WR = H * (nar ? 0.6 : 0.66);
-      sp = ((ch * 1.12) / WR) * (180 / Math.PI);
-      const panelLeft = nar ? 10 : Math.max(24, W * 0.06);
-      const panelW = nar ? W - cw * 0.97 - 22 : Math.min(400, W * 0.34);
-      const activeX = nar ? W / 2 - cw * 0.35 : -W / 2 + panelLeft + panelW + 64 + cw * 0.62;
-      hubX = activeX - WR;
-      panel.style.left = panelLeft + "px";
-      panel.style.top = "50%";
-      panel.style.width = panelW + "px";
-      panel.style.maxHeight = H - 28 + "px";
+      ch = (cw * 4) / 3;
+      if (nar) {
+        // Phones: the cards hang in an arc across the top (hub above the screen), the
+        // active card lowest in the middle, and the step panel sits underneath it.
+        WR = W * 0.85;
+        sp = ((cw * 1.18) / WR) * (180 / Math.PI);
+        baseY = -H / 2 + 16 + ch * 0.6;
+        panelTop = 16 + ch * 1.2 + 18;
+        panel.style.left = "12px";
+        panel.style.width = W - 24 + "px";
+        panel.style.top = panelTop + "px";
+        panel.style.maxHeight = H - panelTop - 12 + "px";
+        panelX1 = -W / 2 + 12; panelX2 = W / 2 - 12;
+      } else {
+        // Desktop: upright wheel with its hub off to the left. The active card is the
+        // rightmost point of the rim; the shorter panel sits between the left border and the cards.
+        WR = H * 0.82;
+        sp = ((ch * 1.12) / WR) * (180 / Math.PI);
+        const panelLeft = Math.max(24, W * 0.06);
+        const panelW = Math.min(400, W * 0.34);
+        const activeX = -W / 2 + panelLeft + panelW + 80 + cw * 0.62;
+        hubX = activeX - WR;
+        panel.style.left = panelLeft + "px";
+        panel.style.width = panelW + "px";
+        panel.style.top = "50%";
+        panel.style.maxHeight = Math.min(H * 0.74, 640) + "px";
+        panelX1 = -W / 2 + panelLeft; panelX2 = panelX1 + panelW;
+      }
     }
 
     const progress = () => {
@@ -79,6 +94,11 @@ export default function StepDeck({ trackRef, onSelectStep }) {
       const fe = mix(mid, f, turn);
       const st = easeInOut4(between(P, 0.8, 0.14));
 
+      // Keep-out box around the step panel: cards fade before they can touch it.
+      const pv = between(P, STEP_START - 0.06, 0.06) * (1 - between(P, STEP_START + STEP_SPAN, 0.05));
+      const ph = panel.offsetHeight;
+      const py1 = nar ? panelTop - H / 2 : -ph / 2, py2 = py1 + ph;
+
       cards.forEach((el, i) => {
         const rk = Math.abs(i - mid);
         const o = easeOut4(between(P, 0.03 + 0.01 * rk, 0.14));
@@ -87,8 +107,10 @@ export default function StepDeck({ trackRef, onSelectStep }) {
         // wheel position
         const d = (((i - fe + n / 2) % n) + n) % n - n / 2;
         const a = (d * sp * Math.PI) / 180;
-        const fx = hubX + Math.cos(a) * WR, fy = Math.sin(a) * WR, fr = d * sp;
-        const fz = -(1 - Math.cos(a)) * WR * 0.45;
+        const fx = nar ? Math.sin(a) * WR : hubX + Math.cos(a) * WR;
+        const fy = nar ? baseY - (1 - Math.cos(a)) * WR : Math.sin(a) * WR;
+        const fr = nar ? -d * sp : d * sp;
+        const fz = -(1 - Math.cos(a)) * WR * (nar ? 0.3 : 0.45);
         // initial hand position
         const a0 = ((i - mid) * sp0 * Math.PI) / 180;
         const ix = Math.sin(a0) * R0, iy = pY0 - Math.cos(a0) * R0 + H * 0.15, ir = (i - mid) * sp0;
@@ -114,6 +136,18 @@ export default function StepDeck({ trackRef, onSelectStep }) {
           r = mix(r, -24, st); tx = mix(tx, 0.9, st); ty = mix(ty, -0.35, st);
           sc = mix(sc, nar ? 1.05 : 1.25, st); z = mix(z, 0, st);
         }
+
+        let fadeOut = 0;
+        if (pv > 0) {
+          const rr = (r * Math.PI) / 180, hw = (cw * sc) / 2, hh = (ch * sc) / 2;
+          const ex = hw * Math.abs(Math.cos(rr)) + hh * Math.abs(Math.sin(rr));
+          const ey = hw * Math.abs(Math.sin(rr)) + hh * Math.abs(Math.cos(rr));
+          const m = 16;                          // minimum gap between a card and the panel
+          const gap = Math.max(panelX1 - m - (x + ex), x - ex - (panelX2 + m), py1 - m - (y + ey), y - ey - (py2 + m));
+          fadeOut = (1 - clamp01(gap / 28)) * pv;
+        }
+        el.style.opacity = (1 - fadeOut).toFixed(3);
+        el.style.pointerEvents = fadeOut > 0.6 ? "none" : "";
 
         el.style.transform =
           `translate(-50%,-50%) translate3d(${x.toFixed(1)}px,${(y + rise * 0.9 * H).toFixed(1)}px,${z.toFixed(1)}px) ` +
@@ -145,12 +179,13 @@ export default function StepDeck({ trackRef, onSelectStep }) {
       });
       copy.style.opacity = between(P, 0.08, 0.06) * (1 - between(P, 0.3, 0.1));
 
-      const pv = between(P, STEP_START - 0.06, 0.06) * (1 - between(P, STEP_START + STEP_SPAN, 0.05));
       const av = between(P, 0.88, 0.07);
       ask.style.opacity = av;
       ask.style.pointerEvents = av > 0.5 ? "auto" : "none";
       panel.style.opacity = pv;
-      panel.style.transform = `translateY(calc(-50% + ${(20 * (1 - pv)).toFixed(1)}px))`;
+      panel.style.transform = nar
+        ? `translateY(${(20 * (1 - pv)).toFixed(1)}px)`
+        : `translateY(calc(-50% + ${(20 * (1 - pv)).toFixed(1)}px))`;
       panel.style.pointerEvents = pv > 0.5 ? "auto" : "none";
 
       const ai = Math.round(f);

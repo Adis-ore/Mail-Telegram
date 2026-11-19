@@ -39,6 +39,15 @@ function useReveal() {
 }
 
 const New = () => <span className="ft-new">New</span>;
+
+// Two-or-three-word labels for the phone layout (key points only). Unknown features
+// fall back to their first few words, so new ones still show up.
+const SHORT = [
+  [/forward/i, "Full emails"], [/otp/i, "OTP codes"], [/summar|shorten/i, "Summaries"],
+  [/swipe-reply is emailed|emailed back/i, "Reply by email"], [/send email/i, "Send email"],
+  [/instant/i, "Instant replies"], [/remind|call/i, "Reminders + calls"], [/version|update/i, "Update alerts"],
+];
+const shortLabel = (t) => (SHORT.find(([re]) => re.test(t)) || [null, t.split(/\s+/).slice(0, 3).join(" ")])[1];
 const LOGO = "/favicon.svg";
 
 export default function Features() {
@@ -80,7 +89,7 @@ export default function Features() {
 
       <div className="bento">
         {/* brand */}
-        <div className="tile t-brand solid" data-crosshair-target style={{ "--d": "0ms" }}>
+        <div className="btile t-brand solid" data-crosshair-target style={{ "--d": "0ms" }}>
           <img src={LOGO} alt="" width="56" height="56" />
           <div>
             <b>Mail to Telegram</b>
@@ -89,7 +98,7 @@ export default function Features() {
         </div>
 
         {/* what's new + phone */}
-        <div className="tile t-news soft" data-crosshair-target style={{ "--d": "60ms" }}>
+        <div className="btile t-news soft" data-crosshair-target style={{ "--d": "60ms" }}>
           <div className="t-news-copy">
             <span className="k">{s.version ? `What’s new in v${s.version}` : "What’s new"}</span>
             <p>{failed ? "Couldn’t reach GitHub right now." : s.notes || loading || "Every update shows up here."}</p>
@@ -105,7 +114,7 @@ export default function Features() {
         </div>
 
         {/* functions (tall, scrolls inside) */}
-        <div className="tile t-fns soft" style={{ "--d": "120ms" }}>
+        <div className="btile t-fns soft" style={{ "--d": "120ms" }}>
           <span className="k">Run in Apps Script</span>
           <p className="hint">Pick it next to <b>Run</b>, then press Run.</p>
           <ul className="fns" data-lenis-prevent>
@@ -120,14 +129,14 @@ export default function Features() {
         </div>
 
         {/* stat: features */}
-        <div className="tile t-stat soft" data-crosshair-target style={{ "--d": "180ms" }}>
+        <div className="btile t-stat soft" data-crosshair-target style={{ "--d": "180ms" }}>
           <span className="k">Things it does</span>
           <strong>{features.length || "–"}</strong>
           <em className={newCount ? "up" : ""}>{newCount ? `+${newCount} new since your last visit` : "and counting"}</em>
         </div>
 
         {/* stat: setup time */}
-        <a className="tile t-time soft" href="#track" data-crosshair-target style={{ "--d": "240ms" }}>
+        <a className="btile t-time soft" href="#track" data-crosshair-target style={{ "--d": "240ms" }}>
           <div className="t-time-top">
             <strong>10<small>min</small></strong>
             <span className="arrow" aria-hidden="true">↗</span>
@@ -140,7 +149,7 @@ export default function Features() {
         </a>
 
         {/* headline (tall) */}
-        <div className="tile t-head pale" style={{ "--d": "300ms" }}>
+        <div className="btile t-head pale" style={{ "--d": "300ms" }}>
           <span className="k">Everything the script does</span>
           <h2>One script.<br /><i>Everything in your chat.</i></h2>
           <svg className="star" viewBox="0 0 200 200" aria-hidden="true">
@@ -157,7 +166,7 @@ export default function Features() {
         </div>
 
         {/* features (wide, waves) */}
-        <div className="tile t-feats solid" style={{ "--d": "360ms" }}>
+        <div className="btile t-feats solid" style={{ "--d": "360ms" }}>
           <svg className="waves" viewBox="0 0 600 200" preserveAspectRatio="none" aria-hidden="true">
             <path d="M0 120 C100 60 180 160 300 110 S500 60 600 100 V200 H0Z" fill="rgba(255,255,255,.10)" />
             <path d="M0 150 C120 100 200 180 320 140 S520 110 600 140 V200 H0Z" fill="rgba(255,255,255,.12)" />
@@ -167,7 +176,7 @@ export default function Features() {
           <ul className="flist">
             {features.map((f) => (
               <li key={f.id} data-crosshair-target title={f.detail ? `${f.title} (${f.detail})` : f.title}>
-                {f.title}{fresh.has("f:" + f.id) && <New />}
+                <span className="long">{f.title}</span><span className="short">{shortLabel(f.title)}</span>{fresh.has("f:" + f.id) && <New />}
               </li>
             ))}
             {!features.length && <li>{loading || <a href={SCRIPT.view}>See the script on GitHub ↗</a>}</li>}
@@ -175,7 +184,7 @@ export default function Features() {
         </div>
 
         {/* commands (donut) */}
-        <div className="tile t-cmds solid" style={{ "--d": "420ms" }}>
+        <div className="btile t-cmds solid" style={{ "--d": "420ms" }}>
           <svg className="donut" viewBox="0 0 120 120" aria-hidden="true">
             <circle cx="60" cy="60" r="42" fill="none" stroke="rgba(255,255,255,.18)" strokeWidth="20" />
             <circle cx="60" cy="60" r="42" fill="none" stroke="rgba(255,255,255,.45)" strokeWidth="20" strokeDasharray="180 264" transform="rotate(-90 60 60)" />
