@@ -47,6 +47,10 @@ export default function HowItWorks() {
           {POINTS.slice(2).map((p, j) => <Point key={p.title} p={p} i={j + 2} open={open === j + 2} onToggle={() => toggle(j + 2)} />)}
         </ul>
       </div>
+      {/* phones: the tapped card's detail shows here, so the cards all stay the same size */}
+      <div className={`hw-detail${open >= 0 ? ` on tone-${POINTS[open].tone}` : ""}`} aria-live="polite">
+        {open >= 0 ? <><b>{POINTS[open].title}</b><p key={open}>{POINTS[open].text}</p></> : <p>Tap a card to see more.</p>}
+      </div>
       <p className="hw-hint">Hover or tap a card to see more.</p>
     </section>
   );
