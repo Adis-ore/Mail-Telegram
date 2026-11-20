@@ -58,7 +58,7 @@ Single page, top to bottom:
 
 | Section | Component | Notes |
 |---|---|---|
-| Nav | `Nav.jsx` | One top bar on every screen: logo, a pill dock of sections in the middle (raised Setup button, dot on the current section), theme toggle, GitHub |
+| Nav | `Nav.jsx` | Top bar on every screen (logo, theme toggle, GitHub). Phones also get a floating section dock at the bottom with a raised Setup button; desktop has no dock |
 | Hero | `Hero.jsx`, `HeroDemo.jsx` | One-line pitch plus an animated demo: Gmail inbox → Telegram chat (code copy, swipe reply, reminder call). Captions under it jump to each scene |
 | How it works | `HowItWorks.jsx` | Four short cards, two each side of the logo (2 × 2 under it on phones); details open on hover or tap |
 | What you can do | `Features.jsx` | One card per feature showing the real Telegram message; a swipeable row on phones. Swipeable row on phones |

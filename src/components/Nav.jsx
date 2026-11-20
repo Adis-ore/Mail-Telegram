@@ -42,8 +42,8 @@ const ORDER = ["top", "how", "features", "setup", "faq"];
 const IDS = ORDER;
 
 /**
- * One top bar on every screen size: logo, the section dock in the middle (pill with a raised
- * Setup button), theme toggle and GitHub. No burger menu. Gets a background once you scroll.
+ * Top bar on every screen: logo, theme toggle, GitHub (gets a background once you scroll).
+ * Phones also get a floating section dock at the bottom with a raised Setup button; no burger menu.
  */
 export default function Nav() {
   const [solid, setSolid] = useState(false);
@@ -57,35 +57,36 @@ export default function Nav() {
   }, []);
 
   return (
-    <header className={`nv${solid ? " solid" : ""}`}>
-      <div className="nv-in">
-        <a className="nv-lg" href="#top" aria-label="Mail to Telegram, back to top">
-          <Logo size={30} />
-          <span>Mail to Telegram</span>
-        </a>
-
-        <nav className="dock" aria-label="Sections">
-          {ITEMS.map((it) => (
-            <a
-              key={it.id}
-              href={`#${it.id}`}
-              className={`${it.mid ? "dk-mid" : ""}${active === it.id ? " on" : ""}`}
-              aria-label={it.label}
-              aria-current={active === it.id ? "true" : undefined}
-              data-label={it.label}
-            >
-              {it.icon}
-            </a>
-          ))}
-        </nav>
-
-        <div className="nv-r">
-          <ThemeToggle />
-          <a className="nv-gh" href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="Code on GitHub">
-            <Github />
+    <>
+      <header className={`nv${solid ? " solid" : ""}`}>
+        <div className="nv-in">
+          <a className="nv-lg" href="#top" aria-label="Mail to Telegram, back to top">
+            <Logo size={30} />
+            <span>Mail to Telegram</span>
           </a>
+          <div className="nv-r">
+            <ThemeToggle />
+            <a className="nv-gh" href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="Code on GitHub">
+              <Github />
+            </a>
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+
+      {/* phones only (hidden on larger screens in CSS) */}
+      <nav className="dock" aria-label="Sections">
+        {ITEMS.map((it) => (
+          <a
+            key={it.id}
+            href={`#${it.id}`}
+            className={`${it.mid ? "dk-mid" : ""}${active === it.id ? " on" : ""}`}
+            aria-label={it.label}
+            aria-current={active === it.id ? "true" : undefined}
+          >
+            {it.icon}
+          </a>
+        ))}
+      </nav>
+    </>
   );
 }
