@@ -30,7 +30,7 @@ export default function App() {
   const goToStep = useCallback((i) => {
     setStep(i);
     const el = document.getElementById("setup");
-    if (el) scrollToY(window.scrollY + el.getBoundingClientRect().top - 80);
+    if (el) scrollToY(window.scrollY + el.getBoundingClientRect().top);
   }, []);
   const start = useCallback(() => goToStep(0), [goToStep]);
 

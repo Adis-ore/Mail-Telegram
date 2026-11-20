@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, CheckCircle, Info, RotateLeft, Tick } from "../icons";
 import { LINKEDIN_URL, STEPS, X_URL } from "../data";
-import { scrollToY } from "../lib/smoothScroll";
 import ScriptViewer, { CopyScriptButton } from "./ScriptViewer";
 
 /*
- * The setup guide: every step listed on the left (with progress), one step open on the right.
- * Next marks the step done and opens the next one. Progress is remembered in this browser.
+ * The setup guide as one screen: title, ten tappable progress segments, one step card
+ * (long steps scroll inside it) and Back / Next. Next marks the step done. Progress is
+ * remembered in this browser.
  */
 
 const DONE_KEY = "setupDone";
@@ -76,8 +76,7 @@ function StepBody({ s }) {
 export default function Setup({ step, onStep }) {
   const [done, setDone] = useState(load);
   const [finished, setFinished] = useState(false);
-  const panelRef = useRef(null);
-  const railRef = useRef(null);
+  const bodyRef = useRef(null);
   const n = STEPS.length;
   const s = STEPS[step];
 
@@ -85,69 +84,51 @@ export default function Setup({ step, onStep }) {
     try { localStorage.setItem(DONE_KEY, JSON.stringify(done)); } catch { /* storage blocked */ }
   }, [done]);
 
-  // keep the active step visible in the phone's sideways list
-  useEffect(() => {
-    const rail = railRef.current, el = rail?.querySelector(".on");
-    if (rail && el && rail.scrollWidth > rail.clientWidth) {
-      rail.scrollTo({ left: el.offsetLeft - rail.clientWidth / 2 + el.offsetWidth / 2, behavior: "smooth" });
-    }
-  }, [step]);
+  // a new step starts at the top of the card
+  useEffect(() => { if (bodyRef.current) bodyRef.current.scrollTop = 0; }, [step, finished]);
 
-  // after Back/Next, bring the top of the step into view if it scrolled away
-  const reveal = () => requestAnimationFrame(() => {
-    const top = panelRef.current?.getBoundingClientRect().top ?? 0;
-    if (top < 100 || top > window.innerHeight * 0.6) scrollToY(window.scrollY + top - 110);
-  });
-
-  const go = (i) => { setFinished(false); onStep(i); reveal(); };
+  const go = (i) => { setFinished(false); onStep(i); };
   const next = () => {
     setDone((d) => (d.includes(step) ? d : [...d, step]));
     if (step < n - 1) go(step + 1);
-    else { setFinished(true); reveal(); }
+    else setFinished(true);
   };
   const reset = () => { setDone([]); go(0); };
 
   return (
-    <section className="sec setup" id="setup">
-      <div className="sec-h">
-        <h2>Set it up in <em>10 minutes.</em></h2>
-        <p>Ten short steps. Copy, paste, done. No coding needed, and your progress is saved on this device.</p>
-      </div>
-
+    <section className="setup" id="setup" aria-label="Set it up">
       <div className="su">
-        <nav className="su-side" aria-label="Setup steps">
-          <div className="su-prog">
-            <span><b>{done.length}</b> of {n} done</span>
+        <header className="su-top">
+          <h2>Set it up in <em>10 minutes.</em></h2>
+          <div className="su-meta">
+            <span>{finished ? "All done" : <>Step <b>{step + 1}</b> of {n}</>} · {done.length} done</span>
             {done.length > 0 && (
               <button type="button" className="su-reset" onClick={reset}><RotateLeft /> Start over</button>
             )}
-            <i style={{ "--w": `${(done.length / n) * 100}%` }} />
           </div>
-          <ol className="su-list" ref={railRef}>
+          {/* ten segments: tap one to jump to that step */}
+          <ol className="su-seg" aria-label="Setup steps">
             {STEPS.map((st, i) => {
-              const ok = done.includes(i);
+              const ok = done.includes(i), on = i === step && !finished;
               return (
                 <li key={st.name}>
                   <button
                     type="button"
-                    className={`${i === step && !finished ? "on" : ""}${ok ? " ok" : ""}`}
-                    aria-current={i === step && !finished ? "step" : undefined}
+                    className={`${on ? "on" : ""}${ok ? " ok" : ""}`}
+                    aria-current={on ? "step" : undefined}
+                    aria-label={`Step ${i + 1}: ${st.title}${ok ? " (done)" : ""}`}
                     onClick={() => go(i)}
                   >
-                    <span className="su-n">{ok ? <Tick variant="Bold" /> : i + 1}</span>
-                    <span className="su-l">
-                      <b>{st.title}</b>
-                      <small>{st.where} · {st.time}</small>
-                    </span>
-                    <span className="su-s">{st.name}</span>
+                    <i />
+                    <span>{st.name}</span>
                   </button>
                 </li>
               );
             })}
           </ol>
-        </nav>
+        </header>
 
-        <article className="su-panel" ref={panelRef} aria-live="polite">
+        <article className="su-card" style={{ "--c0": s.colors[0], "--c1": s.colors[1] }} aria-live="polite">
           {finished ? (
             <div className="su-fin" key="fin">
               <CheckCircle variant="Bold" />
@@ -159,30 +140,40 @@ export default function Setup({ step, onStep }) {
               </div>
             </div>
           ) : (
-            <div className="su-step" key={step}>
-              <header className="su-hd">
-                <span className="su-ic" style={{ background: `linear-gradient(160deg,${s.colors[0]},${s.colors[1]})` }}>{s.icon}</span>
-                <span className="su-k">Step {step + 1} of {n} <em>·</em> {s.time} <em>·</em> {s.where}</span>
-              </header>
-              <h3>{s.title}</h3>
-              <StepBody s={s} />
-              <footer className="su-ft">
-                <button type="button" className="btn ghost" onClick={() => go(step - 1)} disabled={step === 0}>
-                  <ArrowLeft /> Back
-                </button>
-                <button type="button" className="btn" onClick={next}>
-                  {step < n - 1 ? <>Done, next step <ArrowRight /></> : <>Finish <CheckCircle /></>}
-                </button>
-              </footer>
-            </div>
+            <>
+              <div className="su-band" key={`b${step}`}>
+                <span className="su-ic">{s.icon}</span>
+                <div>
+                  <span className="su-k">Step {step + 1} · {s.time} · {s.where}</span>
+                  <h3>{s.title}</h3>
+                </div>
+                <span className="su-big" aria-hidden="true">{String(step + 1).padStart(2, "0")}</span>
+              </div>
+              {/* long steps scroll here, inside the card */}
+              <div className="su-body" ref={bodyRef} data-lenis-prevent key={step}>
+                <StepBody s={s} />
+              </div>
+            </>
           )}
+          <footer className="su-ft">
+            <button type="button" className="btn ghost su-back" onClick={() => go(Math.max(0, step - 1))} disabled={step === 0 && !finished} aria-label="Previous step">
+              <ArrowLeft />
+            </button>
+            {finished ? (
+              <button type="button" className="btn" onClick={reset}>Start again</button>
+            ) : (
+              <button type="button" className="btn su-next" onClick={next}>
+                {step < n - 1 ? <>Done, next step <ArrowRight /></> : <>Finish <Tick /></>}
+              </button>
+            )}
+          </footer>
         </article>
-      </div>
 
-      <p className="su-help">
-        Stuck on a step? Message me on <a href={X_URL} target="_blank" rel="noopener noreferrer">X</a> or{" "}
-        <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer">LinkedIn</a> and I’ll help you get it running.
-      </p>
+        <p className="su-help">
+          Stuck? Message me on <a href={X_URL} target="_blank" rel="noopener noreferrer">X</a> or{" "}
+          <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer">LinkedIn</a>.
+        </p>
+      </div>
     </section>
   );
 }
