@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Mail, Plus, ShieldCheck, SourceCode, Telegram } from "../icons";
 import { useReveal } from "../lib/useReveal";
 import Logo from "./Logo";
@@ -16,6 +16,13 @@ export default function HowItWorks() {
   const ref = useReveal();
   const [open, setOpen] = useState(-1);
   const hoverable = typeof window !== "undefined" && window.matchMedia("(hover: hover)").matches;
+
+  // an opened card closes back by itself after a few seconds
+  useEffect(() => {
+    if (open < 0) return;
+    const t = setTimeout(() => setOpen(-1), 6000);
+    return () => clearTimeout(t);
+  }, [open]);
 
   return (
     <section className="sec how" id="how" ref={ref}>

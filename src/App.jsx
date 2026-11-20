@@ -10,6 +10,7 @@ import Faq from "./components/Faq";
 import LatestVersion from "./components/LatestVersion";
 import Footer from "./components/Footer";
 import { UpdateToast } from "./components/ScriptViewer";
+import TapRipple from "./components/TapRipple";
 import "./index.css";
 import "./site.css";
 
@@ -46,6 +47,7 @@ export default function App() {
         <LatestVersion />
       </main>
       <Footer />
+      <TapRipple />
       <UpdateToast onOpen={() => goToStep(STEPS.findIndex((s) => s.showScript))} />
     </>
   );
