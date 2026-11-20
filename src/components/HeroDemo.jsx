@@ -1,7 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import {
-  ArrowBendUpLeft, BellRinging, CheckCircle, Copy, EnvelopeSimple, PaperPlaneRight, Phone, PhoneDisconnect,
-} from "@phosphor-icons/react";
+import { ArrowBendUpLeft, CheckCircle, EnvelopeSimple, PaperPlaneRight, Phone, PhoneDisconnect } from "@phosphor-icons/react";
 import { prefersReducedMotion } from "../lib/motion";
 
 /*
@@ -19,13 +17,14 @@ const BASE_INBOX = [
 
 const REPLY = "3pm works. See you then!";
 
+// The story told next to the demo; t = when each part starts (ms).
 export const SCENES = [
-  { t: 0, label: "A new email arrives", icon: <EnvelopeSimple weight="bold" /> },
-  { t: 3300, label: "Copy the code", icon: <Copy weight="bold" /> },
-  { t: 5200, label: "Swipe to reply", icon: <ArrowBendUpLeft weight="bold" /> },
-  { t: 12900, label: "Reminder rings", icon: <BellRinging weight="bold" /> },
+  { t: 0, title: "An email lands in your Gmail", text: "It shows up in your Telegram chat within a minute, the whole message." },
+  { t: 3300, title: "Tap a code to copy it", text: "Sign-in codes are picked out for you. No more digging through your inbox." },
+  { t: 5200, title: "Swipe to reply", text: "Type your answer in Telegram. It goes out as a normal email from your Gmail." },
+  { t: 12900, title: "Reminders ring your phone", text: "Interviews and meetings in your emails get a reminder and a call before they start." },
 ];
-const TOTAL = 18200;
+export const TOTAL = 18200;
 
 const START = () => ({
   inbox: BASE_INBOX, hot: null, fly: null, chat: [], tap: false, copied: false,
@@ -60,7 +59,7 @@ const EVENTS = [
 
 const stateAt = (t) => EVENTS.reduce((s, [at, fn]) => (at <= t ? fn(s) : s), START());
 
-function useTimeline(rootRef) {
+export function useTimeline(rootRef) {
   const [state, setState] = useState(START);
   const [scene, setScene] = useState(0);
   const timers = useRef([]);
@@ -152,14 +151,12 @@ function Bubble({ m, state }) {
   );
 }
 
-export default function HeroDemo() {
-  const rootRef = useRef(null);
+export default function HeroDemo({ state }) {
   const wrapRef = useRef(null);
   const phoneRef = useRef(null);
   const narrow = useNarrow();
   const W = narrow ? 340 : 640, H = narrow ? 612 : 570;
   const scale = useFit(wrapRef, W, H);
-  const { state, scene, seek } = useTimeline(rootRef);
   // a short buzz each time a message lands
   useEffect(() => {
     if (!state.buzz || prefersReducedMotion() || !phoneRef.current?.animate) return;
@@ -171,7 +168,7 @@ export default function HeroDemo() {
   const inboxRows = narrow ? state.inbox.slice(0, 2) : state.inbox.slice(0, 6);
 
   return (
-    <div className="demo" ref={rootRef}>
+    <div className="demo">
       <div className="demo-fit" ref={wrapRef} style={{ height: H * scale }}>
         <div
           className={`demo-stage${narrow ? " n" : ""}${state.out ? " out" : ""}`}
@@ -241,26 +238,6 @@ export default function HeroDemo() {
         </div>
       </div>
 
-      <div className="scenes" role="tablist" aria-label="What the demo shows">
-        {SCENES.map((sc, i) => {
-          const next = SCENES[i + 1]?.t ?? TOTAL;
-          return (
-            <button
-              key={sc.label}
-              type="button"
-              role="tab"
-              aria-selected={scene === i}
-              className={scene === i ? "on" : ""}
-              onClick={() => seek(i)}
-              style={{ "--dur": `${next - sc.t}ms` }}
-            >
-              <span className="sc-i">{sc.icon}</span>
-              <span className="sc-l">{sc.label}</span>
-              <i className="sc-p" key={scene === i ? "on" : "off"} />
-            </button>
-          );
-        })}
-      </div>
     </div>
   );
 }

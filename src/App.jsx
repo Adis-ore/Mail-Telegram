@@ -28,7 +28,7 @@ export default function App() {
     <>
       <Nav onStart={start} />
       <main>
-        <Hero />
+        <Hero onStart={start} />
         <HowItWorks />
         <Features />
         <StepDeck trackRef={trackRef} onSelectStep={goToStep} />

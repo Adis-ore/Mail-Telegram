@@ -20,7 +20,7 @@ body{font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
   box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 10px 24px -10px rgba(29,149,212,.7);transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,background .25s}
 .btn:hover{transform:translateY(-2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 16px 30px -12px rgba(29,149,212,.85)}
 .btn:active{transform:scale(.97)}
-.btn:focus-visible,.nv a:focus-visible,.nv button:focus-visible,.scenes button:focus-visible,.faq summary:focus-visible,.live-a:focus-visible{outline:3px solid var(--tg);outline-offset:3px}
+.btn:focus-visible,.nv a:focus-visible,.nv button:focus-visible,.faq summary:focus-visible,.live-a:focus-visible{outline:3px solid var(--tg);outline-offset:3px}
 .btn svg{width:16px;height:16px}
 .btn.ghost{background:var(--card);color:var(--tx);border-color:var(--ln);box-shadow:none}
 .btn.ghost:hover{border-color:var(--tg);color:var(--tgi)}
@@ -67,19 +67,50 @@ body{font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
              radial-gradient(35% 40% at 8% 12%,color-mix(in srgb,#ea4335 9%,transparent),transparent 70%)}
 .hx::after{content:"";position:absolute;inset:0;z-index:-1;background-image:radial-gradient(color-mix(in srgb,var(--tx) 14%,transparent) 1px,transparent 1.2px);background-size:26px 26px;
   -webkit-mask-image:radial-gradient(70% 60% at 50% 40%,#000,transparent);mask-image:radial-gradient(70% 60% at 50% 40%,#000,transparent)}
-.hx-in{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:56px;align-items:center}
-.hx-copy{max-width:36rem}
+.hx-in{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);grid-template-rows:1fr auto auto auto 1fr;column-gap:56px;
+  grid-template-areas:". demo" "h demo" "story demo" "go demo" ". demo"}
+.hx-h{grid-area:h}.hx .demo{grid-area:demo;align-self:center}.story{grid-area:story}.hx-go{grid-area:go}
 .hx h1{text-wrap:balance;margin:0;font-size:clamp(2.4rem,4.3vw,3.9rem);line-height:1.02;font-weight:600;letter-spacing:-.04em}
 .hx h1 em{display:inline-block;color:var(--tgi);font-size:1.1em;line-height:.9}
 @media (max-width:980px){
   .hx{padding-top:calc(96px + env(safe-area-inset-top,0px));padding-bottom:56px}
-  .hx-in{grid-template-columns:1fr;gap:40px}
-  .hx-copy{max-width:40rem;margin:0 auto;text-align:center}
+  .hx-in{grid-template-columns:1fr;grid-template-rows:none;grid-template-areas:"h" "demo" "story" "go"}
+  .hx-h{max-width:40rem;margin:0 auto;text-align:center}
+  .hx .demo{margin-top:36px}
+  .story{width:100%;max-width:34rem;margin-inline:auto}
+  .hx-go{justify-content:center;text-align:center}
 }
 @media (max-width:560px){
   .hx{padding-left:16px;padding-right:16px}
   .hx h1{font-size:clamp(2.2rem,10.5vw,2.9rem)}
 }
+
+/* the story beside the demo: the line that matches the animation lights up */
+@property --p{syntax:"<number>";inherits:false;initial-value:0}
+.story{list-style:none;margin:34px 0 0;padding:0}
+.story li{position:relative}
+.story li:not(:last-child)::after{content:"";position:absolute;left:17px;top:44px;bottom:2px;width:2px;border-radius:2px;background:var(--ln);transition:background .4s}
+.story li.done::after{background:color-mix(in srgb,var(--tg) 55%,var(--ln))}
+.story button{display:flex;align-items:flex-start;gap:16px;width:100%;padding:6px 0 14px;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.story button:focus-visible{outline:3px solid var(--tg);outline-offset:4px;border-radius:12px}
+.st-n{flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;--p:0;background:conic-gradient(var(--tg) calc(var(--p) * 360deg),var(--ln) 0)}
+.st-n i{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--bg);color:var(--mu);font:600 .85rem/1 inherit;font-style:normal;transition:background .3s,color .3s}
+.story .done .st-n{--p:1}
+.story .done .st-n i{color:var(--tgi)}
+.story .on .st-n{animation:ringfill var(--dur) linear forwards}
+.story .on .st-n i{background:var(--tg);color:#fff}
+@keyframes ringfill{from{--p:0}to{--p:1}}
+.st-t{min-width:0;padding-top:5px}
+.st-t b{display:block;font-size:1.12rem;font-weight:600;line-height:1.35;letter-spacing:-.01em;color:var(--mu);transition:color .3s}
+.story button:hover b,.story .on b{color:var(--tx)}
+.st-x{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .45s cubic-bezier(.2,.8,.2,1),opacity .35s}
+.st-x>span{overflow:hidden;color:var(--mu);font-size:.95rem;line-height:1.6}
+.story .on .st-x{grid-template-rows:1fr;opacity:1}
+.story .on .st-x>span{padding-top:4px}
+.hx-go{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin-top:22px}
+.hx-meta{color:var(--mu);font-size:.84rem}
+@media (max-width:560px){.st-t b{font-size:1.02rem}.st-x>span{font-size:.9rem}.hx-go .btn{flex:1 1 100%}}
+@media (prefers-reduced-motion:reduce){.story .on .st-n{animation:none;--p:1}.st-x{transition:none}}
 
 /* ---------- hero demo (fixed-size stage, scaled to fit) ---------- */
 .demo{width:100%;max-width:660px;margin:0 auto}
@@ -190,23 +221,6 @@ body{font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .demo-stage.n .fly.out{offset-path:path("M 170 575 C 10 510, 10 220, 250 90")}
 @keyframes fly{0%{offset-distance:0%;transform:scale(.6);opacity:0}12%{opacity:1;transform:scale(1)}85%{opacity:1;transform:scale(1)}100%{offset-distance:100%;transform:scale(.5);opacity:0}}
 
-/* scene captions under the demo */
-.scenes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:18px}
-.scenes button{position:relative;overflow:hidden;display:flex;align-items:center;gap:8px;padding:11px 12px 13px;border-radius:14px;border:1px solid var(--ln);background:var(--card);color:var(--mu);
-  font:500 .76rem/1.25 inherit;text-align:left;cursor:pointer;transition:color .25s,border-color .25s,transform .25s}
-.scenes button:hover{color:var(--tx);transform:translateY(-1px)}
-.scenes button.on{color:var(--tx);border-color:color-mix(in srgb,var(--tg) 60%,var(--ln))}
-.sc-i{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:var(--so);color:var(--mu);transition:background .25s,color .25s}
-.sc-i svg{width:15px;height:15px}
-.scenes button.on .sc-i{background:var(--tg);color:#fff}
-.sc-p{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--tg)}
-.scenes button.on .sc-p{animation:fillbar var(--dur) linear forwards}
-@keyframes fillbar{to{width:100%}}
-@media (max-width:620px){
-  .scenes{gap:6px}
-  .scenes button{flex-direction:column;justify-content:flex-start;text-align:center;gap:6px;padding:10px 6px 12px;font-size:.68rem}
-}
-
 /* ---------- sections ---------- */
 .sec{max-width:1200px;margin:0 auto;padding:110px 20px}
 .sec-h{max-width:40rem;margin:0 auto 52px;text-align:center}
@@ -303,5 +317,5 @@ body{font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 @media (prefers-reduced-motion:reduce){
   .rv{opacity:1;transform:none;transition:none}
   .live,.how-line i,.ringer,.call-av,.call-b .cb-yes,.tph.ring,.caret,.fly,.dm,.gm-list li{animation:none!important}
-  .btn,.fcard,.scenes button{transition:none}
+  .btn,.fcard{transition:none}
 }
