@@ -58,7 +58,8 @@ export default function Nav() {
     };
     on();
     window.addEventListener("scroll", on, { passive: true });
-    return () => window.removeEventListener("scroll", on);
+    document.addEventListener("animationend", on);   // the setup phone opening/closing changes its size
+    return () => { window.removeEventListener("scroll", on); document.removeEventListener("animationend", on); };
   }, []);
 
   return (

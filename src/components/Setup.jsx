@@ -1,9 +1,10 @@
 import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Attach, BackArrow, Battery, Signal, Wifi, Bookmark, CheckCircle, Info, Menu, Mic, More, RotateLeft, Search, Send, Smile } from "../icons";
+import { Attach, BackArrow, Battery, Close, ShieldCheck, Signal, Telegram, Wifi, Bookmark, CheckCircle, Info, Menu, Mic, More, RotateLeft, Search, Send, Smile } from "../icons";
 import { SCRIPT, STEPS } from "../data";
 import { buildScript, checkToken, findChat, isToken, maskToken, sayHello } from "../lib/telegramConnect";
 import { markCopied, useLatestScript } from "../lib/useLatestScript";
 import { prefersReducedMotion } from "../lib/motion";
+import { scrollToY } from "../lib/smoothScroll";
 import ScriptViewer, { CopyScriptButton } from "./ScriptViewer";
 import Logo from "./Logo";
 import Connect from "./Connect";
@@ -150,6 +151,12 @@ export default function Setup({ focus }) {
   const [creds, setCreds] = useState(null);      // { token, bot, chatId, username, firstName }
   const [log, setLog] = useState([]);            // the connect conversation: { id, me, body, acts }
   const [draft, setDraft] = useState("");
+  // closing the chat: it shrinks into a Telegram icon; tapping the icon reopens it with "continue or start over?"
+  const [shut, setShut] = useState(() => { try { return localStorage.getItem("setupClosed") === "1"; } catch { return false; } });
+  const [anim, setAnim] = useState("");           // "closing" | "opening" while animating
+  const [welcome, setWelcome] = useState(false);  // the "welcome back" question after reopening
+  const canPaste = typeof navigator !== "undefined" && !!navigator.clipboard?.readText;
+  const paste = async () => { try { const t = await navigator.clipboard.readText(); if (t) setDraft(t.trim()); } catch { /* permission denied */ } };
   const [busy, setBusy] = useState(false);
   const say = (m) => { setLog((l) => [...l, { id: Date.now() + Math.random(), ...m }]); scrollTo.current = "end"; };
 
@@ -231,7 +238,24 @@ export default function Setup({ focus }) {
       scrollTo.current = to < n ? to : "end";
     }, prefersReducedMotion() ? 0 : 850);
   };
-  const reset = () => { setTyping(false); setUpto(0); setLog([]); setCreds(null); scrollTo.current = 0; };
+  const reset = () => { setTyping(false); setUpto(0); setLog([]); setCreds(null); setWelcome(false); scrollTo.current = 0; };
+
+  useEffect(() => { try { localStorage.setItem("setupClosed", shut ? "1" : "0"); } catch { /* storage blocked */ } }, [shut]);
+  const quick = prefersReducedMotion();
+  const closeChat = () => {
+    if (anim) return;
+    if (quick) { setShut(true); return; }
+    setAnim("closing");
+    setTimeout(() => { setShut(true); setAnim(""); }, 560);
+  };
+  const openChat = () => {
+    setShut(false);
+    setWelcome(true);
+    const sec = document.getElementById("setup");
+    if (sec) scrollToY(window.scrollY + sec.getBoundingClientRect().top);
+    scrollTo.current = "end";
+    if (!quick) { setAnim("opening"); setTimeout(() => setAnim(""), 600); }
+  };
 
   const shown = Math.floor(upto);               // last bot step message in the chat
   const replied = upto % 1 !== 0 ? shown : shown - 1; // user has said "Done" to steps 0..replied
@@ -246,7 +270,17 @@ export default function Setup({ focus }) {
     <section className="setup" id="setup" aria-label="Set it up in 10 minutes">
       <div className="su">
         {/* a Telegram window: chat list on the left (desktop), the setup chat on the right */}
-        <div className="tgw">
+        {shut ? (
+          <div className="tg-dock">
+            <button type="button" className="tg-app" onClick={openChat} aria-label="Open the setup chat">
+              <span className="tg-ic"><Telegram /></span>
+              <em>1</em>
+            </button>
+            <b>Setup guide</b>
+            <span>Tap to open the chat</span>
+          </div>
+        ) : (
+        <div className={`tgw${anim ? " " + anim : ""}`}>
           <aside className="tgw-side" aria-hidden="true">
             <div className="tgw-sh"><Menu /><span className="tgw-search"><Search /> Search</span></div>
             <ul className="tgw-list">
@@ -281,7 +315,7 @@ export default function Setup({ focus }) {
               <span><Signal /><Wifi /><Battery /></span>
             </div>
             <header className="chat-h">
-              <span className="chat-back" aria-hidden="true"><BackArrow /></span>
+              <button type="button" className="chat-back" onClick={closeChat} aria-label="Close chat"><BackArrow /></button>
               <Logo size={40} round />
               <span className="chat-who">
                 <b>Setup guide</b>
@@ -289,6 +323,7 @@ export default function Setup({ focus }) {
               </span>
               {upto > 0 && <button type="button" className="chat-reset" onClick={reset} title="Start over"><RotateLeft /><span>Start over</span></button>}
               <span className="chat-ico" aria-hidden="true"><Search /><More /></span>
+              <button type="button" className="chat-x" onClick={closeChat} aria-label="Close chat" title="Close chat"><Close /></button>
             </header>
 
             <div className="chat-b" ref={bodyRef}>
@@ -318,7 +353,18 @@ export default function Setup({ focus }) {
               {finished && (
                 <div className="msg msg-bot msg-fin">
                   <CheckCircle variant="Bold" />
-                  <b>You’re all set.</b> New emails will now arrive here within a minute. Try replying to one with a swipe.
+                  <b>You’re all set.</b> New emails will now arrive in your bot within a minute. Try replying to one with a swipe.
+                  You can close this chat now.
+                  <div className="su-acts"><button type="button" className="btn sm" onClick={closeChat}>Close chat</button></div>
+                </div>
+              )}
+              {welcome && (
+                <div className="msg msg-bot">
+                  👋 Welcome back! Do you want to continue where you left off, or start over?
+                  <div className="su-acts">
+                    <button type="button" className="btn ghost sm" onClick={() => { setWelcome(false); scrollTo.current = finished ? "end" : Math.floor(upto); setTick((t) => t + 1); }}>Continue</button>
+                    <button type="button" className="btn sm" onClick={reset}>Start over</button>
+                  </div>
                 </div>
               )}
               <span className="msg-end" />
@@ -327,7 +373,7 @@ export default function Setup({ focus }) {
             <footer className="chat-f">
               {/* Telegram reply keyboard */}
               {finished ? (
-                <button type="button" className="chat-btn" onClick={reset}>Start again</button>
+                <button type="button" className="chat-btn" onClick={closeChat}>Close chat</button>
               ) : (
                 <button type="button" className="chat-btn" onClick={next} disabled={typing || busy}>
                   {shown >= n - 1 ? "Done ✓ Finish" : onConnect && !creds?.chatId ? "Skip, I’ll fill it in myself" : "Done ✓ Next step"}
@@ -335,16 +381,22 @@ export default function Setup({ focus }) {
               )}
               {onConnect && !creds?.chatId ? (
                 /* the message bar is live on the connect step: paste the bot token here */
-                <form className="chat-in live" onSubmit={sendToken}>
-                  <Attach aria-hidden="true" />
-                  <input
-                    value={draft}
-                    onChange={(e) => setDraft(e.target.value)}
-                    placeholder={creds ? "Send another token…" : "Paste your bot token…"}
-                    aria-label="Your bot token"
-                    autoComplete="off" autoCapitalize="off" autoCorrect="off" spellCheck="false"
-                  />
-                  <button type="submit" className="chat-mic" aria-label="Send" disabled={!draft.trim() || busy}><Send /></button>
+                <form className="chat-live" onSubmit={sendToken}>
+                  <p className="chat-hint"><ShieldCheck /> Stays in your browser. Only sent to Telegram.</p>
+                  <div className="chat-row">
+                    <label className="chat-field">
+                      <span className="sr">Your bot token</span>
+                      <input
+                        value={draft}
+                        onChange={(e) => setDraft(e.target.value)}
+                        placeholder={creds ? "Paste another token" : "Paste your bot token"}
+                        autoComplete="off" autoCapitalize="off" autoCorrect="off" spellCheck="false" enterKeyHint="send"
+                      />
+                      {canPaste && !draft && <button type="button" className="chat-paste" onClick={paste}>Paste</button>}
+                      {draft && <button type="button" className="chat-clear" onClick={() => setDraft("")} aria-label="Clear"><Close /></button>}
+                    </label>
+                    <button type="submit" className="chat-send" aria-label="Send" disabled={!draft.trim() || busy}><Send /></button>
+                  </div>
                 </form>
               ) : (
                 <div className="chat-in" aria-hidden="true">
@@ -357,6 +409,7 @@ export default function Setup({ focus }) {
             </footer>
           </div>
         </div>
+        )}
 
         <Connect className="su-cx" />
       </div>

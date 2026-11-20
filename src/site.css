@@ -515,7 +515,7 @@ main,.ft-fade{position:relative;z-index:1}
 .chat-h{flex:none;display:flex;align-items:center;gap:12px;padding:8px 16px;background:var(--tgw-side);border-bottom:1px solid color-mix(in srgb,var(--btx) 8%,transparent)}
 .chat-h svg{flex:none}
 .chat-sb{display:none}
-.chat-back{display:none;color:var(--bac)}.chat-back svg{width:24px;height:24px}
+.chat-back{display:none;padding:0;border:0;background:none;color:var(--bac);cursor:pointer}.chat-back svg{width:24px;height:24px}
 .chat-who{flex:1;min-width:0}
 .chat-who b{display:block;font-size:.98rem;color:var(--btx)}
 .chat-who small{color:var(--bmu);font-size:.8rem}.chat-who small.on{color:var(--bac)}
@@ -576,13 +576,52 @@ main,.ft-fade{position:relative;z-index:1}
 .chat-in>span:first-of-type{flex:1}
 .chat-in svg{width:22px;height:22px;flex:none}
 .chat-mic{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#3390ec;color:#fff}.chat-mic svg{width:19px;height:19px}
-/* the live message bar on the connect step */
-.chat-in.live{color:var(--btx)}
-.chat-in.live input{flex:1;min-width:0;padding:8px 0;border:0;background:none;color:var(--btx);font:inherit;outline:none}
-.chat-in.live input::placeholder{color:var(--bmu)}
-.chat-in.live button{border:0;cursor:pointer;transition:transform .2s,opacity .2s}
-.chat-in.live button:disabled{opacity:.45;cursor:default}
-.chat-in.live:focus-within{box-shadow:inset 0 2px 0 var(--tg)}
+/* the live message bar on the connect step: a rounded field + round send button */
+.chat-live{width:min(680px,100%);margin:0 auto;padding:8px 12px 12px}
+.chat-hint{display:flex;align-items:center;gap:6px;margin:0 4px 8px;color:var(--bmu);font-size:.74rem}
+.chat-hint svg{width:13px;height:13px;flex:none;color:var(--ok)}
+.chat-row{display:flex;align-items:center;gap:8px}
+.chat-field{flex:1;min-width:0;display:flex;align-items:center;gap:6px;height:46px;padding:0 6px 0 16px;border-radius:23px;border:1.5px solid color-mix(in srgb,var(--btx) 12%,transparent);
+  background:color-mix(in srgb,var(--btx) 4%,var(--tgw-side));transition:border-color .2s,box-shadow .2s,background .2s;cursor:text}
+.chat-field:focus-within{border-color:var(--tg);background:var(--tgw-side);box-shadow:0 0 0 4px color-mix(in srgb,var(--tg) 18%,transparent)}
+.chat-field input{flex:1;min-width:0;height:100%;padding:0;border:0;background:none;color:var(--btx);font:500 .95rem var(--font-body);outline:none;text-overflow:ellipsis}
+.chat-field input::placeholder{color:var(--bmu);font-weight:400}
+.chat-paste{flex:none;padding:7px 12px;border:0;border-radius:16px;background:color-mix(in srgb,var(--tg) 14%,transparent);color:var(--bac);font:600 .8rem var(--font-body);cursor:pointer}
+.chat-paste:hover{background:color-mix(in srgb,var(--tg) 24%,transparent)}
+.chat-clear{flex:none;display:grid;place-items:center;width:28px;height:28px;padding:0;border:0;border-radius:50%;background:color-mix(in srgb,var(--btx) 8%,transparent);color:var(--bmu);cursor:pointer}
+.chat-clear svg{width:14px;height:14px}
+.chat-send{flex:none;display:grid;place-items:center;width:46px;height:46px;padding:0;border:0;border-radius:50%;background:#3390ec;color:#fff;cursor:pointer;
+  box-shadow:0 6px 16px -6px rgba(51,144,236,.7);transition:transform .25s cubic-bezier(.2,.9,.25,1.3),background .2s,box-shadow .2s,opacity .2s}
+.chat-send svg{width:20px;height:20px;margin-left:-2px}
+.chat-send:disabled{background:color-mix(in srgb,var(--btx) 14%,var(--tgw-side));color:var(--bmu);box-shadow:none;transform:scale(.9);cursor:default}
+.chat-send:not(:disabled):hover{transform:scale(1.07)}
+.chat-send:not(:disabled):active{transform:scale(.94)}
+.chat-field input:focus-visible,.chat-send:focus-visible,.chat-paste:focus-visible{outline:none}
+.chat-send:focus-visible{box-shadow:0 0 0 4px color-mix(in srgb,var(--tg) 35%,transparent)}
+/* close button in the chat header */
+.chat-x{display:grid;place-items:center;width:32px;height:32px;padding:0;border:0;border-radius:50%;background:none;color:var(--bmu);cursor:pointer}
+.chat-x:hover{background:color-mix(in srgb,var(--btx) 8%,transparent);color:var(--btx)}
+.chat-x svg{width:18px;height:18px}
+/* closing: the window shrinks into the Telegram icon; opening plays it backwards */
+.tgw.closing{animation:tgClose .56s cubic-bezier(.55,0,.75,.3) forwards;pointer-events:none}
+.tgw.opening{animation:tgOpen .6s cubic-bezier(.2,.9,.25,1.05) both}
+@keyframes tgClose{0%{transform:none;opacity:1;border-radius:16px}60%{opacity:1}100%{transform:scale(.08) translateY(30%);opacity:0;border-radius:50%}}
+@keyframes tgOpen{0%{transform:scale(.08) translateY(30%);opacity:0;border-radius:50%}40%{opacity:1}100%{transform:none;opacity:1}}
+/* the closed state: a Telegram app icon to tap */
+.tg-dock{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:420px;text-align:center}
+.tg-app{position:relative;padding:0;border:0;background:none;cursor:pointer;animation:appIn .5s cubic-bezier(.2,.9,.25,1.4) both}
+.tg-ic{display:grid;place-items:center;width:96px;height:96px;border-radius:28px;background:linear-gradient(180deg,#40bcf5,#1c8ee0);color:#fff;
+  box-shadow:0 18px 36px -14px rgba(28,142,224,.75),inset 0 1px 0 rgba(255,255,255,.35);transition:transform .3s cubic-bezier(.2,.9,.25,1.3)}
+.tg-ic svg{width:50px;height:50px;margin-left:-4px}
+.tg-app:hover .tg-ic{transform:translateY(-4px) scale(1.06)}
+.tg-app:active .tg-ic{transform:scale(.94)}
+.tg-app:focus-visible{outline:3px solid var(--tg);outline-offset:6px;border-radius:30px}
+.tg-app em{position:absolute;right:-6px;top:-6px;display:grid;place-items:center;min-width:26px;height:26px;padding:0 7px;border-radius:13px;background:#ea4335;color:#fff;font:700 .8rem var(--font-body);font-style:normal;box-shadow:0 0 0 3px var(--bg)}
+.tg-app::after{content:"";position:absolute;inset:-6px;border-radius:34px;border:2px solid color-mix(in srgb,var(--tg) 55%,transparent);animation:hwping 2.6s ease-out 1s infinite;pointer-events:none}
+.tg-dock b{margin-top:12px;font-size:1.05rem}
+.tg-dock>span{color:var(--mu);font-size:.88rem}
+@keyframes appIn{from{transform:scale(.3);opacity:0}}
+@media (prefers-reduced-motion:reduce){.tgw.closing,.tgw.opening,.tg-app,.tg-app::after{animation:none}}
 /* the ready-made script's filled-in lines */
 .rs{margin:12px 0 0;padding:12px 14px;border-radius:12px;background:#0f1117;color:#d6dbe8;font:12.5px/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-all}
 .rs-c{color:#6b7389;font-style:italic}.rs-s{color:#a6e3a1}
@@ -658,6 +697,10 @@ main,.ft-fade{position:relative;z-index:1}
   .chat-btn{padding:10px;font-size:.88rem}
   .chat-in{padding:8px 12px 10px;gap:10px;font-size:.88rem}
   .chat-mic{width:34px;height:34px}
+  .chat-live{padding:6px 10px 10px}.chat-hint{font-size:.7rem;margin-bottom:6px}
+  .chat-field,.chat-send{height:42px}.chat-send{width:42px}.chat-field{padding-left:14px}
+  .tg-dock{height:min(calc(100svh - 92px),780px);min-height:600px}
+  .chat-x{display:none}
 }
 
 @media (prefers-reduced-motion:reduce){
