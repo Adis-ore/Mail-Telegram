@@ -1,82 +1,80 @@
-import { useEffect, useRef, useState } from "react";
-import { Close, Github, Menu } from "../icons";
+import { useEffect, useState } from "react";
+import { Features, Github, Help, Home, Plus, Workflow } from "../icons";
 import { GITHUB_URL } from "../data";
 import ThemeToggle from "./ThemeToggle";
 import Logo from "./Logo";
 
-const LINKS = [
-  { label: "How it works", href: "#how" },
-  { label: "Features", href: "#features" },
-  { label: "Setup", href: "#setup" },
-  { label: "FAQ", href: "#faq" },
+// The dock's items; the middle one (Setup) is the raised button.
+const ITEMS = [
+  { id: "top", label: "Home", icon: <Home /> },
+  { id: "how", label: "How it works", icon: <Workflow /> },
+  { id: "setup", label: "Set it up", icon: <Plus />, mid: true },
+  { id: "features", label: "Features", icon: <Features /> },
+  { id: "faq", label: "FAQ", icon: <Help /> },
 ];
 
+/** Which section is in the middle of the screen right now. */
+function useActiveSection(ids) {
+  const [active, setActive] = useState(ids[0]);
+  useEffect(() => {
+    if (!("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) setActive(e.target.id); });
+    }, { rootMargin: "-45% 0px -50% 0px" });
+    ids.forEach((id) => { const el = document.getElementById(id); if (el) io.observe(el); });
+    return () => io.disconnect();
+  }, [ids]);
+  return active;
+}
+
+const IDS = ITEMS.map((i) => i.id);
+
 /**
- * Fixed top bar. Gets a background once you scroll, hides while scrolling down,
- * shows again on scroll up.
- * Phones get a menu button with the same links.
+ * Top: a slim bar with the logo, theme toggle and GitHub (fades in a background once you scroll).
+ * Bottom: a floating pill dock with the sections, the same on desktop and phones. No burger menu.
  */
-export default function Nav({ onStart }) {
-  const [open, setOpen] = useState(false);
+export default function Nav() {
   const [solid, setSolid] = useState(false);
-  const [hidden, setHidden] = useState(false);
-  const last = useRef(0);
+  const active = useActiveSection(IDS);
 
   useEffect(() => {
-    const on = () => {
-      const y = window.scrollY;
-      setSolid(y > 8);
-      if (y > last.current + 4 && y > 120) setHidden(true);
-      else if (y < last.current - 4) setHidden(false);
-      last.current = y;
-    };
+    const on = () => setSolid(window.scrollY > 8);
     on();
     window.addEventListener("scroll", on, { passive: true });
     return () => window.removeEventListener("scroll", on);
   }, []);
 
-  useEffect(() => {
-    if (!open) return;
-    const esc = (e) => e.key === "Escape" && setOpen(false);
-    window.addEventListener("keydown", esc);
-    return () => window.removeEventListener("keydown", esc);
-  }, [open]);
-
-  const start = () => { setOpen(false); onStart(); };
-
   return (
-    <nav className={`nv${solid ? " solid" : ""}${hidden && !open ? " hide" : ""}${open ? " open" : ""}`} aria-label="Main">
-      <div className="nv-in">
-        <a className="nv-lg" href="#top" onClick={() => setOpen(false)}>
-          <Logo size={30} />
-          <span>Mail to Telegram</span>
-        </a>
-        <div className="nv-links">
-          {LINKS.map((l) => <a key={l.href} href={l.href}>{l.label}</a>)}
-        </div>
-        <div className="nv-r">
-          <ThemeToggle />
-          <a className="nv-gh" href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="Code on GitHub">
-            <Github />
+    <>
+      <header className={`nv${solid ? " solid" : ""}`}>
+        <div className="nv-in">
+          <a className="nv-lg" href="#top">
+            <Logo size={30} />
+            <span>Mail to Telegram</span>
           </a>
-          <button type="button" className="btn sm" onClick={start}>Set it up free</button>
-          <button
-            type="button"
-            className="nv-menu"
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            aria-controls="nv-sheet"
-            onClick={() => setOpen((o) => !o)}
-          >
-            {open ? <Close /> : <Menu />}
-          </button>
+          <div className="nv-r">
+            <ThemeToggle />
+            <a className="nv-gh" href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="Code on GitHub">
+              <Github />
+            </a>
+          </div>
         </div>
-      </div>
-      <div className="nv-sheet" id="nv-sheet" hidden={!open}>
-        {LINKS.map((l) => <a key={l.href} href={l.href} onClick={() => setOpen(false)}>{l.label}</a>)}
-        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer"><Github /> Code on GitHub</a>
-        <button type="button" className="btn" onClick={start}>Set it up free</button>
-      </div>
-    </nav>
+      </header>
+
+      <nav className="dock" aria-label="Sections">
+        {ITEMS.map((it) => (
+          <a
+            key={it.id}
+            href={`#${it.id}`}
+            className={`${it.mid ? "dk-mid" : ""}${active === it.id ? " on" : ""}`}
+            aria-label={it.label}
+            aria-current={active === it.id ? "true" : undefined}
+            data-label={it.label}
+          >
+            {it.icon}
+          </a>
+        ))}
+      </nav>
+    </>
   );
 }

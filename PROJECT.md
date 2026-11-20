@@ -58,7 +58,7 @@ Single page, top to bottom:
 
 | Section | Component | Notes |
 |---|---|---|
-| Nav | `Nav.jsx` | Fixed bar; hides while scrolling down and while the setup cards are pinned. Menu button on phones |
+| Nav | `Nav.jsx` | Slim top bar (logo, theme, GitHub) and a floating section dock at the bottom on every screen size; the raised middle button opens Setup |
 | Hero | `Hero.jsx`, `HeroDemo.jsx` | One-line pitch plus an animated demo: Gmail inbox → Telegram chat (code copy, swipe reply, reminder call). Captions under it jump to each scene |
 | How it works | `HowItWorks.jsx` | Gmail → your script → your bot, and the privacy note |
 | What you can do | `Features.jsx` | One card per feature showing the real Telegram message; a swipeable row on phones. Bottom strip is live from the script (version, what's new, commands) |

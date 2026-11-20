@@ -35,7 +35,7 @@ export default function App() {
 
   return (
     <>
-      <Nav onStart={start} />
+      <Nav />
       <main>
         <Hero onStart={start} />
         <HowItWorks />
