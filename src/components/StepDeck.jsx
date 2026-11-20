@@ -259,7 +259,7 @@ export default function StepDeck({ trackRef, onSelectStep }) {
         <div id="intro" ref={introRef}>
           <h1 className="techtext-title">
             <TechText
-              text="Mail to Telegram"
+              text="Set it up"
               fontWeight={700}
               fontSize={150}
               letterSpacing={-0.05}
@@ -284,7 +284,7 @@ export default function StepDeck({ trackRef, onSelectStep }) {
               sweep
             />
           </h1>
-          <p>Your Gmail as Telegram DMs. Free, no server, about 10 minutes.</p>
+          <p>10 short cards, about 10 minutes. No coding, just copy and paste.</p>
         </div>
 
         <div id="copy" ref={copyRef}>

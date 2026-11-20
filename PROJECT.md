@@ -58,27 +58,32 @@ Single page, top to bottom:
 
 | Section | Component | Notes |
 |---|---|---|
-| Hero | `Hero.jsx` | Dithered glass head (`DitherVeil`), ring of step tiles, GooeyNav, theme toggle |
+| Nav | `Nav.jsx` | Fixed bar; hides while scrolling down and while the setup cards are pinned. Menu button on phones |
+| Hero | `Hero.jsx`, `HeroDemo.jsx` | One-line pitch plus an animated demo: Gmail inbox → Telegram chat (code copy, swipe reply, reminder call). Captions under it jump to each scene |
+| How it works | `HowItWorks.jsx` | Gmail → your script → your bot, and the privacy note |
+| What you can do | `Features.jsx` | One card per feature showing the real Telegram message; a swipeable row on phones. Bottom strip is live from the script (version, what's new, commands) |
 | Setup steps | `StepDeck.jsx`, `StepPanel.jsx`, `Card.jsx` | Scroll-driven card wheel, step panel, light tunnel background, live script window on the Copy step (`ScriptViewer.jsx`) |
-| Everything the script does | `Features.jsx` | Built from the live script (see below), with a crosshair cursor |
+| FAQ | `Faq.jsx` | Plain questions and answers |
 | Footer | `Footer.jsx` | Animated arch lines |
 | Update notice | `ScriptViewer.jsx` (`UpdateToast`) | Shown to visitors whose copied script is out of date |
 
 **Where to edit things**
 - Step text, links and buttons: `src/data.jsx` (`STEPS`). Each step can have `items`, `note`, `code` and `actions` (`{ label, href }` opens a link, `{ label, copy }` copies text, `{ copyScript: true }` copies the live script).
 - Descriptions of Apps Script functions on the site: `KNOWN_FUNCTIONS` in `src/lib/scriptInfo.js`. Anything not listed falls back to the `//` comment above the function.
-- Colours and layout: `src/index.css` (theme tokens at the top; light/dark both defined).
+- Colours and layout: `src/index.css` (setup deck, footer) and `src/site.css` (nav, hero, sections). Theme tokens sit at the top of each, light and dark both defined.
+- Hero demo script (emails, timings, captions): `EVENTS` and `SCENES` at the top of `src/components/HeroDemo.jsx`.
+- FAQ text: `QA` in `src/components/Faq.jsx`. Feature cards: `FEATURES` in `src/components/Features.jsx`.
 
 **Live data from GitHub** (`src/lib/useLatestScript.js`, `src/lib/scriptInfo.js`)
 - Fetches `script/Code.gs`, `script/version.json` and the last commit date from GitHub on page load.
 - `scriptInfo.js` reads the features (header bullets), commands (`helpText()`) and runnable functions (`setup…`, `save…`, `test…`, `remove…`, `debug…`) out of the script.
-- Remembers in the visitor's browser which version they copied and which items they've seen, for the update notice and **New** badges.
+- Remembers in the visitor's browser which version they copied, for the update notice.
 - GitHub caches raw files for a few minutes, and the commit-date lookup is limited to 60 requests an hour per visitor (the rest of the page works without it).
 
 **Third-party pieces**
-- From React Bits, copied into `src/components/`: `DitherVeil` (hero head; we added a `cutout` option so the photo's plain background is transparent), `TechText` (deck title), `LightTunnel` (deck background), `GooeyNav` (navbar), `Crosshair` (features section).
-- npm: `react`, `ogl` (WebGL for DitherVeil), `lenis` (smooth scrolling).
-- Hero photo: Unsplash image set in `HEAD_SRC` in `src/data.jsx`.
+- From React Bits, copied into `src/components/`: `TechText` (deck title), `LightTunnel` (deck background).
+- npm: `react`, `lenis` (smooth scrolling), `@phosphor-icons/react` (icons).
+- Fonts: Poppins and Instrument Serif (italic accents) from Google Fonts.
 
 ## Running and building
 

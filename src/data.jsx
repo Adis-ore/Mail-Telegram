@@ -17,8 +17,6 @@ export const SCRIPT = {
   view: GITHUB_URL + "blob/main/script/Code.gs",
 };
 
-// Hero head photo (dithered by DitherVeil; plain backdrop is cut out).
-export const HEAD_SRC = "https://images.unsplash.com/photo-1737071371043-761e02b1ef95?q=80&w=1400&auto=format&fit=crop";
 
 
 // Inline link inside step text.
