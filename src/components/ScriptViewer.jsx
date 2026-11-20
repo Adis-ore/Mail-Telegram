@@ -44,15 +44,15 @@ export function CopyScriptButton({ label = "Copy script", className = "pab" }) {
   return <button type="button" className={className} onClick={copy} disabled={!ready}>{text}</button>;
 }
 
-/** Code window shown beside the panel while the Copy step is active. */
-export default function ScriptViewer({ open }) {
+/** The live script, shown inside the Copy step. */
+export default function ScriptViewer() {
   const s = useLatestScript();
   const code = s.status === "ready" ? s.code.replace(/\s+$/, "") : "";
   const lines = useMemo(() => (code ? code.split("\n").length : 0), [code]);
   const body = useMemo(() => (code ? highlight(code) : null), [code]);
 
   return (
-    <aside className={`sv${open ? " on" : ""}`} aria-label="Apps Script code" aria-hidden={!open} {...(!open && { inert: "" })}>
+    <aside className="sv" aria-label="Apps Script code">
       <header className="sv-h">
         <span className="sv-dots" aria-hidden="true"><i /><i /><i /></span>
         <span className="sv-f">Code.gs</span>

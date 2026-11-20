@@ -142,7 +142,7 @@ npm run build    # production build in dist/
 | Path | What’s there |
 |---|---|
 | `src/data.jsx` | All steps, links and the script location. Edit text here. |
-| `src/components/` | Nav, hero demo (Gmail → Telegram animation), how it works, feature cards, the step wheel, panel, script window, FAQ, footer. |
+| `src/components/` | Nav, hero demo (Gmail → Telegram animation), how it works, feature cards, the setup guide, script window, FAQ, footer. |
 | `src/lib/useLatestScript.js` | Fetches the live script and version, and remembers what a visitor copied. |
 | `script/` | The Apps Script and its `version.json`. |
 | `docs/` | The animated images in this README. |

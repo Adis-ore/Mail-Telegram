@@ -5,8 +5,6 @@ export const GITHUB_URL = "https://github.com/Adis-ore/Mail-Telegram/";
 export const X_URL = "https://x.com/adisdtechie";
 export const LINKEDIN_URL = "https://www.linkedin.com/in/adigun-oreoluwa-78b500237/";
 
-export const HEADLINE = "Ten cards. One free setup.".split(" ");
-
 // Where the live Apps Script lives (same paths the script itself checks for updates).
 // To release: update script/Code.gs, bump VERSION in it, and bump script/version.json to match.
 const RAW = "https://raw.githubusercontent.com/Adis-ore/Mail-Telegram/main/script/";

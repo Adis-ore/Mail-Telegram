@@ -1,26 +1,35 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { STEPS } from "./data";
-import { scrollToTrack, stepFraction } from "./lib/motion";
-import { startSmoothScroll } from "./lib/smoothScroll";
+import { scrollToY, startSmoothScroll } from "./lib/smoothScroll";
 import Nav from "./components/Nav";
 import Hero from "./components/Hero";
 import HowItWorks from "./components/HowItWorks";
 import Features from "./components/Features";
-import StepDeck from "./components/StepDeck";
+import Setup from "./components/Setup";
 import Faq from "./components/Faq";
 import Footer from "./components/Footer";
 import { UpdateToast } from "./components/ScriptViewer";
 import "./index.css";
 import "./site.css";
 
+const STEP_KEY = "setupStep";
+const savedStep = () => {
+  try { const v = Number(localStorage.getItem(STEP_KEY)); return v >= 0 && v < STEPS.length ? v : 0; } catch { return 0; }
+};
+
 export default function App() {
-  const trackRef = useRef(null);
+  const [step, setStep] = useState(savedStep);
 
   useEffect(() => startSmoothScroll(), []);
+  useEffect(() => {
+    try { localStorage.setItem(STEP_KEY, String(step)); } catch { /* storage blocked */ }
+  }, [step]);
 
-  // Scrolls the setup deck to a step's card.
+  // Opens a setup step and scrolls the guide into view.
   const goToStep = useCallback((i) => {
-    if (trackRef.current) scrollToTrack(trackRef.current, stepFraction(i, STEPS.length));
+    setStep(i);
+    const el = document.getElementById("setup");
+    if (el) scrollToY(window.scrollY + el.getBoundingClientRect().top - 20);
   }, []);
   const start = useCallback(() => goToStep(0), [goToStep]);
 
@@ -31,7 +40,7 @@ export default function App() {
         <Hero onStart={start} />
         <HowItWorks />
         <Features />
-        <StepDeck trackRef={trackRef} onSelectStep={goToStep} />
+        <Setup step={step} onStep={setStep} />
         <Faq />
       </main>
       <Footer />

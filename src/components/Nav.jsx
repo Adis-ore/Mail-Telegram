@@ -6,13 +6,13 @@ import ThemeToggle from "./ThemeToggle";
 const LINKS = [
   { label: "How it works", href: "#how" },
   { label: "Features", href: "#features" },
-  { label: "Setup", href: "#track" },
+  { label: "Setup", href: "#setup" },
   { label: "FAQ", href: "#faq" },
 ];
 
 /**
- * Fixed top bar. Gets a background once you scroll, hides while scrolling down
- * (and while the setup cards are pinned, so it never covers them), shows again on scroll up.
+ * Fixed top bar. Gets a background once you scroll, hides while scrolling down,
+ * shows again on scroll up.
  * Phones get a menu button with the same links.
  */
 export default function Nav({ onStart }) {
@@ -24,12 +24,9 @@ export default function Nav({ onStart }) {
   useEffect(() => {
     const on = () => {
       const y = window.scrollY;
-      const track = document.getElementById("track");
-      const r = track?.getBoundingClientRect();
-      const inDeck = r ? r.top <= 0 && r.bottom >= window.innerHeight : false;
       setSolid(y > 8);
-      setHidden(inDeck || (y > last.current + 4 && y > 120));
-      if (y < last.current - 4) setHidden(inDeck);
+      if (y > last.current + 4 && y > 120) setHidden(true);
+      else if (y < last.current - 4) setHidden(false);
       last.current = y;
     };
     on();
