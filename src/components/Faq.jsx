@@ -1,4 +1,4 @@
-import { Plus } from "@phosphor-icons/react";
+import { Add } from "../icons";
 import { LINKEDIN_URL, X_URL } from "../data";
 
 const QA = [
@@ -36,7 +36,7 @@ export default function Faq() {
       <div className="faq-l">
         {QA.map(([q, a]) => (
           <details key={q}>
-            <summary>{q}<Plus weight="bold" aria-hidden="true" /></summary>
+            <summary>{q}<Add aria-hidden="true" /></summary>
             <p>{a}</p>
           </details>
         ))}

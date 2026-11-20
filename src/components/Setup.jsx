@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Check, CheckCircle, Info, ArrowCounterClockwise } from "@phosphor-icons/react";
+import { ArrowLeft, ArrowRight, InfoCircle, RotateLeft, TickCircle } from "../icons";
 import { LINKEDIN_URL, STEPS, X_URL } from "../data";
 import { scrollToY } from "../lib/smoothScroll";
 import ScriptViewer, { CopyScriptButton } from "./ScriptViewer";
@@ -58,7 +58,7 @@ function StepBody({ s }) {
           <code>{s.code}</code>
         </div>
       )}
-      {s.note && <p className="su-note"><Info weight="bold" aria-hidden="true" /><span>{s.note}</span></p>}
+      {s.note && <p className="su-note"><InfoCircle aria-hidden="true" /><span>{s.note}</span></p>}
       {s.actions && (
         <div className="su-acts">
           {s.actions.map((a) => a.href
@@ -120,7 +120,7 @@ export default function Setup({ step, onStep }) {
           <div className="su-prog">
             <span><b>{done.length}</b> of {n} done</span>
             {done.length > 0 && (
-              <button type="button" className="su-reset" onClick={reset}><ArrowCounterClockwise weight="bold" /> Start over</button>
+              <button type="button" className="su-reset" onClick={reset}><RotateLeft /> Start over</button>
             )}
             <i style={{ "--w": `${(done.length / n) * 100}%` }} />
           </div>
@@ -135,7 +135,7 @@ export default function Setup({ step, onStep }) {
                     aria-current={i === step && !finished ? "step" : undefined}
                     onClick={() => go(i)}
                   >
-                    <span className="su-n">{ok ? <Check weight="bold" /> : i + 1}</span>
+                    <span className="su-n">{ok ? <TickCircle variant="Bold" /> : i + 1}</span>
                     <span className="su-l">
                       <b>{st.title}</b>
                       <small>{st.where} · {st.time}</small>
@@ -151,7 +151,7 @@ export default function Setup({ step, onStep }) {
         <article className="su-panel" ref={panelRef} aria-live="polite">
           {finished ? (
             <div className="su-fin" key="fin">
-              <CheckCircle weight="fill" />
+              <TickCircle variant="Bold" />
               <h3>You’re all set.</h3>
               <p>New emails will now arrive in your Telegram within a minute. Try replying to one with a swipe.</p>
               <div className="su-acts">
@@ -169,10 +169,10 @@ export default function Setup({ step, onStep }) {
               <StepBody s={s} />
               <footer className="su-ft">
                 <button type="button" className="btn ghost" onClick={() => go(step - 1)} disabled={step === 0}>
-                  <ArrowLeft weight="bold" /> Back
+                  <ArrowLeft /> Back
                 </button>
                 <button type="button" className="btn" onClick={next}>
-                  {step < n - 1 ? <>Done, next step <ArrowRight weight="bold" /></> : <>Finish <Check weight="bold" /></>}
+                  {step < n - 1 ? <>Done, next step <ArrowRight /></> : <>Finish <TickCircle /></>}
                 </button>
               </footer>
             </div>

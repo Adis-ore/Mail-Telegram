@@ -81,7 +81,7 @@ Single page, top to bottom:
 - GitHub caches raw files for a few minutes, and the commit-date lookup is limited to 60 requests an hour per visitor (the rest of the page works without it).
 
 **Third-party pieces**
-- npm: `react`, `lenis` (smooth scrolling), `@phosphor-icons/react` (icons).
+- npm: `react`, `lenis` (smooth scrolling), `iconsax-react` (icons, wrapped in `src/icons.jsx`; GitHub, LinkedIn and X logos are drawn there too).
 - Fonts: Poppins and Instrument Serif (italic accents) from Google Fonts.
 
 ## Running and building

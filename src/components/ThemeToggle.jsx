@@ -1,4 +1,4 @@
-import { Moon, Sun } from "@phosphor-icons/react";
+import { Moon, Sun1 } from "../icons";
 import { useDarkMode } from "../lib/useDarkMode";
 
 /** Switches between light and dark and remembers the choice for next visit. */
@@ -11,7 +11,7 @@ export default function ThemeToggle() {
   };
   return (
     <button type="button" className="tgl" onClick={toggle} aria-label={dark ? "Switch to light mode" : "Switch to dark mode"} title={dark ? "Light mode" : "Dark mode"}>
-      {dark ? <Sun weight="bold" aria-hidden="true" /> : <Moon weight="bold" aria-hidden="true" />}
+      {dark ? <Sun1 aria-hidden="true" /> : <Moon aria-hidden="true" />}
     </button>
   );
 }

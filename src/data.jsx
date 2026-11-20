@@ -1,4 +1,4 @@
-import { BellRinging, CheckCircle, Copy, EnvelopeSimple, FileCode, GitFork, IdentificationCard, Lightning, Robot, SlidersHorizontal } from "@phosphor-icons/react";
+import { Android, Copy, DocumentCode, Flash, Hierarchy, NotificationBing, Personalcard, Setting4, Sms, TickCircle } from "./icons";
 // Content for the setup guide. Edit text, links and steps here.
 
 export const GITHUB_URL = "https://github.com/Adis-ore/Mail-Telegram/";
@@ -38,7 +38,7 @@ export const STEPS = [
   {
     name: "Fork", where: "github.com", time: "2 min", colors: ["#5f8f88", "#3c6660"],
     title: "Fork the project on GitHub",
-    icon: <GitFork weight="bold" />,
+    icon: <Hierarchy />,
     items: [
       <>Sign in to <L href="https://github.com/login">GitHub</L> (a free account is fine).</>,
       <>Open <L href={GITHUB_URL}>the project</L> and tap <b>Fork</b> at the top right.</>,
@@ -50,7 +50,7 @@ export const STEPS = [
   {
     name: "Copy", where: "this page", time: "1 min", colors: ["#2f8f5b", "#1d6440"],
     title: "Or just copy the script", showScript: true,
-    icon: <Copy weight="bold" />,
+    icon: <Copy />,
     items: [
       <>No GitHub account needed. The full script is shown here, always the latest version.</>,
       <>Tap <b>Copy script</b>.</>,
@@ -62,7 +62,7 @@ export const STEPS = [
   {
     name: "Bot", where: "@BotFather", time: "1 min", colors: ["#5b7cfa", "#3a4fc4"],
     title: "Create your Telegram bot",
-    icon: <Robot weight="bold" />,
+    icon: <Android />,
     items: [
       <>In Telegram, open <L href={LINKS.botFather}>@BotFather</L> and send <code>/newbot</code>.</>,
       <>Pick a name, then a username ending in <code>bot</code>.</>,
@@ -74,7 +74,7 @@ export const STEPS = [
   {
     name: "ID", where: "getUpdates", time: "1 min", colors: ["#c2693f", "#8e4121"],
     title: "Get your chat ID",
-    icon: <IdentificationCard weight="bold" />,
+    icon: <Personalcard />,
     items: [
       <>Open your new bot, tap <b>Start</b>, and send “hi”.</>,
       <>Copy the link below, paste it in your browser, and put your token in place of <code>YOUR_TOKEN</code>.</>,
@@ -87,7 +87,7 @@ export const STEPS = [
   {
     name: "Script", where: "script.google.com", time: "1 min", colors: ["#8a5cff", "#5a35c4"],
     title: "Create your Google script",
-    icon: <FileCode weight="bold" />,
+    icon: <DocumentCode />,
     items: [
       <>Go to <L href={LINKS.scripts}>script.google.com</L> signed in to the Gmail you want to forward.</>,
       <>Tap <b>New project</b> and delete the sample code.</>,
@@ -98,7 +98,7 @@ export const STEPS = [
   {
     name: "Setup", where: "your details", time: "1 min", colors: ["#2a9d8f", "#1b6b62"],
     title: "Add your details",
-    icon: <SlidersHorizontal weight="bold" />,
+    icon: <Setting4 />,
     items: [
       <>At the top, set <code>BOT_TOKEN</code> and <code>CHAT_ID</code>.</>,
       <>Open <b>Project Settings</b>, tick “Show appsscript.json”, and set <code>timeZone</code> to <L href={LINKS.timeZones}>your time zone</L> (for example <code>Africa/Lagos</code>).</>,
@@ -109,7 +109,7 @@ export const STEPS = [
   {
     name: "Test", where: "testSend", time: "2 min", colors: ["#e0a030", "#a8700f"],
     title: "Test it, then switch it on",
-    icon: <CheckCircle weight="bold" />,
+    icon: <TickCircle />,
     items: [
       <>Choose <code>testSend</code> and press <b>Run</b>.</>,
       <>You’ll see an “unverified app” warning. That’s normal for your own script: <b>Advanced → Go to project → Allow</b>.</>,
@@ -121,7 +121,7 @@ export const STEPS = [
   {
     name: "Try", where: "real email", time: "1 min", colors: ["#d8567a", "#9c2c4d"],
     title: "Try it for real",
-    icon: <EnvelopeSimple weight="bold" />,
+    icon: <Sms />,
     items: [
       <>Email yourself from another account.</>,
       <>It shows up in Telegram within about a minute.</>,
@@ -133,7 +133,7 @@ export const STEPS = [
   {
     name: "Ring", where: "your phone", time: "1 min", colors: ["#5aa832", "#3c7a1e"],
     title: "Make reminders ring",
-    icon: <BellRinging weight="bold" />,
+    icon: <NotificationBing />,
     tabs: [
       { label: "Android", items: [
         <>Open your bot’s chat → tap its <b>name</b> → <b>Notifications</b> → <b>Customize</b>.</>,
@@ -154,7 +154,7 @@ export const STEPS = [
   {
     name: "Fast", where: "optional", time: "3 min", colors: ["#3f8fd2", "#24609a"],
     title: "Optional: make replies instant",
-    icon: <Lightning weight="bold" />,
+    icon: <Flash />,
     items: [
       <>In your Apps Script project, click the blue <b>Deploy</b> button (top right), then <b>New deployment</b>.</>,
       <>Click the gear icon next to <b>Select type</b> and choose <b>Web app</b>.</>,

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { GithubLogo, List, X } from "@phosphor-icons/react";
+import { CloseCircle, GithubLogo, HambergerMenu } from "../icons";
 import { GITHUB_URL } from "../data";
 import ThemeToggle from "./ThemeToggle";
 
@@ -56,7 +56,7 @@ export default function Nav({ onStart }) {
         <div className="nv-r">
           <ThemeToggle />
           <a className="nv-gh" href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="Code on GitHub">
-            <GithubLogo weight="bold" />
+            <GithubLogo />
           </a>
           <button type="button" className="btn sm" onClick={start}>Set it up free</button>
           <button
@@ -67,13 +67,13 @@ export default function Nav({ onStart }) {
             aria-controls="nv-sheet"
             onClick={() => setOpen((o) => !o)}
           >
-            {open ? <X weight="bold" /> : <List weight="bold" />}
+            {open ? <CloseCircle /> : <HambergerMenu />}
           </button>
         </div>
       </div>
       <div className="nv-sheet" id="nv-sheet" hidden={!open}>
         {LINKS.map((l) => <a key={l.href} href={l.href} onClick={() => setOpen(false)}>{l.label}</a>)}
-        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer"><GithubLogo weight="bold" /> Code on GitHub</a>
+        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer"><GithubLogo /> Code on GitHub</a>
         <button type="button" className="btn" onClick={start}>Set it up free</button>
       </div>
     </nav>

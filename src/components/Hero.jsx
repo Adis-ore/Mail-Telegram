@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { ArrowRight } from "@phosphor-icons/react";
+import { ArrowRight } from "../icons";
 import HeroDemo, { SCENES, TOTAL, useTimeline } from "./HeroDemo";
 
 /**
@@ -39,7 +39,7 @@ export default function Hero({ onStart }) {
 
         <div className="hx-go">
           <button type="button" className="btn big" onClick={onStart}>
-            Set it up free <ArrowRight weight="bold" />
+            Set it up free <ArrowRight />
           </button>
           <span className="hx-meta">About 10 minutes · No server · Runs in your own Google account</span>
         </div>

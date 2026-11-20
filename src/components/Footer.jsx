@@ -1,4 +1,4 @@
-import { GithubLogo, LinkedinLogo, XLogo } from "@phosphor-icons/react";
+import { GithubLogo, LinkedinLogo, XLogo } from "../icons";
 import { useEffect, useRef } from "react";
 import { GITHUB_URL, LINKEDIN_URL, X_URL } from "../data";
 import { observeVisibility, prefersReducedMotion } from "../lib/motion";
@@ -71,13 +71,13 @@ export default function Footer() {
         <p className="tg">Your inbox, in your pocket.<br />Free to fork and share.</p>
         <div className="so">
           <a href={X_URL} target="_blank" rel="noopener noreferrer" aria-label="Adis on X">
-            <XLogo size={19} weight="bold" />
+            <XLogo size={19} />
           </a>
           <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" aria-label="Adis on LinkedIn">
-            <LinkedinLogo size={19} weight="bold" />
+            <LinkedinLogo size={19} />
           </a>
           <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="Project on GitHub">
-            <GithubLogo size={19} weight="bold" />
+            <GithubLogo size={19} />
           </a>
         </div>
         <small>Built by Adis · Stuck? Message me on X or LinkedIn.</small>
