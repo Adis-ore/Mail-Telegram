@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Attach, BackArrow, Bookmark, CheckCircle, Info, Menu, Mic, More, RotateLeft, Search, Smile } from "../icons";
+import { Attach, BackArrow, Battery, Signal, Wifi, Bookmark, CheckCircle, Info, Menu, Mic, More, RotateLeft, Search, Smile } from "../icons";
 import { STEPS } from "../data";
 import { prefersReducedMotion } from "../lib/motion";
 import ScriptViewer, { CopyScriptButton } from "./ScriptViewer";
@@ -89,6 +89,17 @@ function StepMsg({ s, i, n }) {
   );
 }
 
+/** "9:41" style time, kept current. */
+function useClock() {
+  const fmt = () => new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }).replace(/\s?[AP]M$/i, "");
+  const [t, setT] = useState(fmt);
+  useEffect(() => {
+    const id = setInterval(() => setT(fmt()), 15000);
+    return () => clearInterval(id);
+  }, []);
+  return t;
+}
+
 export default function Setup({ focus }) {
   const n = STEPS.length;
   const [upto, setUpto] = useState(loadUpto);   // steps 0..upto are in the chat; upto === n means finished
@@ -142,6 +153,7 @@ export default function Setup({ focus }) {
   const replied = upto % 1 !== 0 ? shown : shown - 1; // user has said "Done" to steps 0..replied
   const finished = upto >= n;
 
+  const clock = useClock();
   const status = typing ? "typing…" : finished ? "bot · all done" : `bot · step ${Math.min(shown, n - 1) + 1} of ${n}`;
   const preview = finished ? "You’re all set." : STEPS[Math.min(shown, n - 1)].title;
 
@@ -177,6 +189,12 @@ export default function Setup({ focus }) {
           </aside>
 
           <div className="chat">
+            {/* phones: a status bar with the time, Dynamic Island, signal, Wi-Fi and battery */}
+            <div className="chat-sb" aria-hidden="true">
+              <b>{clock}</b>
+              <i className="chat-island" />
+              <span><Signal /><Wifi /><Battery /></span>
+            </div>
             <header className="chat-h">
               <span className="chat-back" aria-hidden="true"><BackArrow /></span>
               <Logo size={40} round />

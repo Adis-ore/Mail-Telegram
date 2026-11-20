@@ -1,6 +1,6 @@
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Add01Icon, ArrowLeft01Icon, Attachment01Icon, Bookmark01Icon, Mic01Icon, MoreVerticalIcon, Search01Icon, SmileIcon, DashboardSquare01Icon, HelpCircleIcon, Home01Icon, WorkflowSquare03Icon, ArrowLeft02Icon, ArrowRight02Icon, ArrowTurnBackwardIcon, BotIcon, Call02Icon, CallEnd01Icon,
+  Add01Icon, BatteryFullIcon, SignalFull02Icon, Wifi01Icon, ArrowLeft01Icon, Attachment01Icon, Bookmark01Icon, Mic01Icon, MoreVerticalIcon, Search01Icon, SmileIcon, DashboardSquare01Icon, HelpCircleIcon, Home01Icon, WorkflowSquare03Icon, ArrowLeft02Icon, ArrowRight02Icon, ArrowTurnBackwardIcon, BotIcon, Call02Icon, CallEnd01Icon,
   Cancel01Icon, CheckmarkCircle02Icon, Copy01Icon, FileScriptIcon, FlashIcon, GitForkIcon, GithubIcon, IdIcon,
   InformationCircleIcon, Linkedin01Icon, Mail01Icon, Menu01Icon, Moon02Icon, NewTwitterIcon, Notification03Icon,
   RotateLeft01Icon, SecurityCheckIcon, SentIcon, SlidersHorizontalIcon, SourceCodeIcon, Sun03Icon, SwipeLeft01Icon,
@@ -21,6 +21,9 @@ const make = (icon, name) => {
 
 export const ArrowLeft = make(ArrowLeft02Icon, "ArrowLeft");
 export const Attach = make(Attachment01Icon, "Attach");
+export const Battery = make(BatteryFullIcon, "Battery");
+export const Signal = make(SignalFull02Icon, "Signal");
+export const Wifi = make(Wifi01Icon, "Wifi");
 export const BackArrow = make(ArrowLeft01Icon, "BackArrow");
 export const Bookmark = make(Bookmark01Icon, "Bookmark");
 export const Mic = make(Mic01Icon, "Mic");

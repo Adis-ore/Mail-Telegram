@@ -47,10 +47,15 @@ const IDS = ORDER;
  */
 export default function Nav() {
   const [solid, setSolid] = useState(false);
+  const [away, setAway] = useState(false); // phones: the dock hides while the setup phone fills the bottom of the screen
   const active = useActiveSection(IDS);
 
   useEffect(() => {
-    const on = () => setSolid(window.scrollY > 8);
+    const on = () => {
+      setSolid(window.scrollY > 8);
+      const r = document.querySelector(".tgw")?.getBoundingClientRect();
+      setAway(!!r && r.top < window.innerHeight * 0.5 && r.bottom > window.innerHeight - 60);
+    };
     on();
     window.addEventListener("scroll", on, { passive: true });
     return () => window.removeEventListener("scroll", on);
@@ -74,7 +79,7 @@ export default function Nav() {
       </header>
 
       {/* phones only (hidden on larger screens in CSS) */}
-      <nav className="dock" aria-label="Sections">
+      <nav className={`dock${away ? " away" : ""}`} aria-label="Sections">
         {ITEMS.map((it) => (
           <a
             key={it.id}
