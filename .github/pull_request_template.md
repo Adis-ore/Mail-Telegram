@@ -5,7 +5,6 @@
 ## How I tested it
 
 - [ ] Script: ran it in my own Apps Script project with a test bot (`testSend`, then a real email)
-- [ ] Website: `npm run build` passes, and I checked it on a phone-sized window, light and dark mode
 - [ ] Not applicable (docs only)
 
 ## Checklist

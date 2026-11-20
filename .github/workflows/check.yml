@@ -1,6 +1,6 @@
 name: Check
 
-# Runs on every pull request (and on main): the site must build, the script must be valid
+# Runs on every pull request (and on main): the script must be valid
 # JavaScript, version.json must be valid, and no real bot token may be committed.
 on:
   pull_request:
@@ -19,12 +19,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
-
-      - name: Build the website
-        run: |
-          npm ci
-          npm run build
 
       - name: Script is valid JavaScript
         run: |

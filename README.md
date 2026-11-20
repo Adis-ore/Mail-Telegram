@@ -135,21 +135,14 @@ Copies of the script check every 6 hours. The website picks it up within a few m
 
 ## The setup website
 
-The setup guide is a React + Vite site in this repo. It reads the script and `version.json` straight from GitHub, so it always shows the latest version.
+[mail-telegram.vercel.app](https://mail-telegram.vercel.app/) walks you through setup as a chat: paste your bot token and it hands you this script with your token and chat ID already filled in. Your token goes straight from your browser to Telegram and is never stored.
 
-```bash
-npm install
-npm run dev      # local dev server
-npm run build    # production build in dist/
-```
+The website reads `script/Code.gs` and `script/version.json` from this repo, so it always shows the latest version.
 
 | Path | What’s there |
 |---|---|
-| `src/data.jsx` | All steps, links and the script location. Edit text here. |
-| `src/components/` | Nav, hero demo (Gmail → Telegram animation), how it works, feature cards, the setup guide, script window, FAQ, footer. |
-| `src/lib/useLatestScript.js` | Fetches the live script and version, and remembers what a visitor copied. |
 | `script/` | The Apps Script and its `version.json`. |
-| `docs/` | The animated images in this README. |
+| `docs/` | The images in this README. |
 
 ## Privacy and safety
 

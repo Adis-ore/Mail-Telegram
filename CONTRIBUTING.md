@@ -1,6 +1,6 @@
 # Contributing to Mail to Telegram
 
-Thanks for helping. Bug fixes, new features, better wording on the site and translations are all welcome.
+Thanks for helping. Bug fixes, new features, better wording and translations for the script are all welcome.
 
 ## Before you start
 
@@ -25,26 +25,18 @@ Nothing goes live until it is reviewed and merged. Every installed copy of the s
 2. Paste your version of `Code.gs`, fill in your test `BOT_TOKEN` and `CHAT_ID`.
 3. Run `testSend`, then email yourself and check it arrives. Test whatever you changed (replies, reminders, summaries, …).
 
-**The website (`src/`)**
-
-```bash
-npm install
-npm run dev     # opens http://localhost:5173
-npm run build   # must pass
-```
-
-Check it on a phone-sized window and in both light and dark mode. Each pull request also gets a Vercel preview link.
+**The website** is kept in a separate private repo. If you spot a problem on it, [open an issue](https://github.com/Adis-ore/Mail-Telegram/issues/new/choose) here.
 
 ## Rules
 
 - **Never commit a real bot token, chat ID, API key or username.** The script must keep its placeholders (`PASTE_YOUR_BOT_TOKEN_HERE`, `PASTE_YOUR_CHAT_ID_HERE`, `@your_telegram_username`). The automatic check fails if it finds a token.
 - **Don't change the version numbers** (`VERSION` in `Code.gs`, `script/version.json`). The maintainer bumps them when releasing, because bumping them tells every user to update.
 - **No new servers or third-party calls without discussing it first.** The promise of this project is that mail goes from Gmail to the user's own bot and nowhere else.
-- Plain, simple wording on the site. Many users don't code.
+- Plain, simple wording in messages the bot sends. Many users don't code.
 
 ## What happens after you open a pull request
 
-1. The automatic check builds the site and checks the script for syntax errors and leaked tokens.
+1. The automatic check looks at the script for syntax errors and leaked tokens.
 2. The maintainer reviews the code and tests it with a test bot.
 3. Once it's merged, it goes out with the next release.
 
