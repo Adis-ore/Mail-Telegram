@@ -307,3 +307,18 @@ pre{margin:10px 0 0;background:#0f1226;color:#d9e0ff;padding:10px 12px;border-ra
 /* step panel: long text scrolls inside the card (like a phone screen), never the page */
 #pc{overscroll-behavior:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch;padding-bottom:30px;
   -webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 30px),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - 30px),transparent)}
+/* Android / iPhone tabs inside a step */
+.ptabs{display:inline-flex;gap:4px;margin:2px 0 10px;padding:4px;border-radius:12px;background:rgba(255,255,255,.08)}
+.ptabs button{border:0;cursor:pointer;padding:6px 14px;border-radius:9px;background:none;color:rgba(255,255,255,.7);font:inherit;font-size:.8rem;font-weight:600}
+.ptabs button.on{background:#fff;color:#14161f}
+.ptabs + ol{margin-bottom:6px}
+/* Phosphor icon sizes */
+.t-time .arrow svg{width:18px;height:18px}.ft .so a svg{width:19px;height:19px}.hn.r svg{width:16px;height:16px}
+/* scrolled step text fades out under the top edge instead of showing above the card */
+#pc[data-scrolled]{-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 64px,#000 calc(100% - 30px),transparent);mask-image:linear-gradient(to bottom,transparent 0,#000 64px,#000 calc(100% - 30px),transparent)}
+#panel .tag{z-index:3}
+/* GridScan room behind the hero; fades out at the bottom into the next section */
+.hero-grid{position:absolute!important;inset:0;width:auto!important;height:auto!important;z-index:0;pointer-events:none;
+  -webkit-mask-image:linear-gradient(to bottom,#000 55%,transparent);mask-image:linear-gradient(to bottom,#000 55%,transparent)}
+.lg{white-space:nowrap}
+@media (max-width:390px){.lg span.lg-t{display:none}}

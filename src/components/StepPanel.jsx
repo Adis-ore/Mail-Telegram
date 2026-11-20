@@ -1,4 +1,5 @@
-import { Fragment, useEffect, useState } from "react";
+import { SealCheck } from "@phosphor-icons/react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { STEPS } from "../data";
 import { CopyScriptButton } from "./ScriptViewer";
 
@@ -21,20 +22,22 @@ function CopyButton({ label, text }) {
   return <button type="button" className="pab" onClick={copy}>{done ? "Copied ✓" : label}</button>;
 }
 
-// Scalloped blue seal with a white tick.
-function VerifiedBadge() {
-  const bumps = Array.from({ length: 8 }, (_, i) => {
-    const a = (i / 8) * Math.PI * 2;
-    return [12 + Math.cos(a) * 7, 12 + Math.sin(a) * 7];
-  });
+// Blue verified seal next to the bot name
+const VerifiedBadge = () => <SealCheck weight="fill" color="#3b9cff" aria-label="Verified" />;
+
+/** Android / iPhone switch for steps that differ by phone. Starts on the visitor's own platform. */
+function PlatformTabs({ tabs }) {
+  const [i, setI] = useState(() => (typeof navigator !== "undefined" && /iPhone|iPad|iPod/i.test(navigator.userAgent) ? 1 : 0));
+  const tab = tabs[i] || tabs[0];
   return (
-    <svg viewBox="0 0 24 24" aria-label="Verified" role="img">
-      <g fill="#3b9cff">
-        <circle cx="12" cy="12" r="8" />
-        {bumps.map(([x, y], i) => <circle key={i} cx={x.toFixed(2)} cy={y.toFixed(2)} r="3.6" />)}
-      </g>
-      <path d="m8.2 12.2 2.6 2.6 5-5.3" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    <>
+      <div className="ptabs" role="tablist">
+        {tabs.map((t, j) => (
+          <button key={t.label} type="button" role="tab" aria-selected={j === i} className={j === i ? "on" : ""} onClick={() => setI(j)}>{t.label}</button>
+        ))}
+      </div>
+      <ol>{tab.items.map((item, j) => <li key={j}>{item}</li>)}</ol>
+    </>
   );
 }
 
@@ -45,6 +48,12 @@ function VerifiedBadge() {
  */
 export default function StepPanel({ panelRef, active, onNext }) {
   const [shown, setShown] = useState(active);
+  const pcRef = useRef(null);
+  // a new step always starts scrolled to the top
+  useEffect(() => {
+    const pc = pcRef.current;
+    if (pc) { pc.scrollTop = 0; pc.removeAttribute("data-scrolled"); }
+  }, [shown]);
   const [leaving, setLeaving] = useState(false);
 
   useEffect(() => {
@@ -67,7 +76,13 @@ export default function StepPanel({ panelRef, active, onNext }) {
   return (
     <div id="panel" ref={panelRef} aria-live="polite" style={{ "--c0": s.colors[0], "--c1": s.colors[1] }}>
       <span className="tag"><i>{s.icon}</i>{s.name}</span>
-      <div id="pc" className={leaving ? "out" : undefined} data-lenis-prevent>
+      <div
+        id="pc"
+        ref={pcRef}
+        className={leaving ? "out" : undefined}
+        data-lenis-prevent
+        onScroll={(e) => e.currentTarget.toggleAttribute("data-scrolled", e.currentTarget.scrollTop > 4)}
+      >
         <Fragment key={shown}>
           <div className="ph">
             <span className="pi">{s.icon}</span>
@@ -79,7 +94,10 @@ export default function StepPanel({ panelRef, active, onNext }) {
             <div><small>Time</small>{s.time}</div>
             <div><small>Up next</small>{last ? "Questions" : STEPS[shown + 1].name}</div>
           </div>
-          <ol>{s.items.map((item, j) => <li key={j}>{item}</li>)}</ol>
+          {s.tabs && <PlatformTabs tabs={s.tabs} />}
+          {s.items && (
+            <ol start={s.tabs ? 3 : 1}>{s.items.map((item, j) => <li key={j}>{item}</li>)}</ol>
+          )}
           {s.code && <pre>{s.code}</pre>}
           {s.note && <div className="nt">{s.note}</div>}
           {s.actions && (

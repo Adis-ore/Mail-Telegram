@@ -1,9 +1,11 @@
 import { useEffect, useRef } from "react";
+import { EnvelopeSimple, Sparkle } from "@phosphor-icons/react";
 import { GITHUB_URL, HEAD_SRC, STEPS } from "../data";
 import { clamp01, observeVisibility, prefersReducedMotion } from "../lib/motion";
 import DitherVeil from "./DitherVeil";
 import ThemeToggle from "./ThemeToggle";
 import GooeyNav from "./GooeyNav";
+import GridScan from "./GridScan";
 import { useDarkMode } from "../lib/useDarkMode";
 
 const NAV_ITEMS = [
@@ -13,12 +15,6 @@ const NAV_ITEMS = [
   { label: "Questions", href: "#contact" },
 ];
 
-const SPARKLE = "M12 2C12.6 8 16 11.4 22 12C16 12.6 12.6 16 12 22C11.4 16 8 12.6 2 12C8 11.4 11.4 8 12 2Z";
-const MAIL_ICON = (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" />
-  </svg>
-);
 
 /** Small overlapping circles in step colours, like an avatar stack. */
 function StepDots({ picks }) {
@@ -130,8 +126,35 @@ export default function Hero({ onSelectStep }) {
 
   return (
     <header className="hero" id="hero" ref={heroRef}>
+      <GridScan
+        className="hero-grid"
+        aria-hidden="true"
+        lightMode={!dark}
+        linesColor={dark ? "#4d4757" : undefined}
+        scanColor={dark ? "#7dd3fc" : undefined}
+        cells={8}
+        depth={3}
+        scanDuration={2.4}
+        scanDelay={1.6}
+        clickEffect="ping"
+        lineThickness={1}
+        lineStyle="solid"
+        depthFade={0.6}
+        shading={0.7}
+        reflection={0.35}
+        points
+        scanDirection="forward"
+        scanWidth={1}
+        trail={0.5}
+        glow={0.6}
+        parallax={1}
+        autoScan
+        interactive
+        enableWebcam={false}
+        intro
+      />
       <div className="nav">
-        <a className="lg" href="#hero"><img src="/favicon.svg" alt="" width="30" height="30" />Mail to Telegram</a>
+        <a className="lg" href="#hero"><img src="/favicon.svg" alt="" width="30" height="30" /><span className="lg-t">Mail to Telegram</span></a>
         <GooeyNav
           className="nav-gooey"
           items={NAV_ITEMS}
@@ -162,7 +185,7 @@ export default function Hero({ onSelectStep }) {
       </svg>
 
       <div className="fc l">
-        <span className="fi">{MAIL_ICON}</span>
+        <span className="fi"><EnvelopeSimple weight="bold" /></span>
         <b>Whole email, instantly.</b>
         <span>Sender, time and the full body.</span>
       </div>
@@ -178,7 +201,7 @@ export default function Hero({ onSelectStep }) {
           <g className="rt">
             <text><textPath href="#badge-circle">Free · no server · 10 minutes ·</textPath></text>
           </g>
-          <path d={SPARKLE} fill="currentColor" transform="translate(36 36) scale(.84)" />
+          <Sparkle weight="fill" x="35" y="35" width="22" height="22" />
         </svg>
       </div>
 
@@ -187,7 +210,7 @@ export default function Hero({ onSelectStep }) {
         <StepDots picks={[0, 4, 5]} />
       </div>
       <div className="hn r">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d={SPARKLE} fill="currentColor" /></svg>
+        <Sparkle weight="fill" aria-hidden="true" />
         Less checking.<br />More doing.
       </div>
 

@@ -4,6 +4,7 @@ import { parseScript } from "../lib/scriptInfo";
 import { timeAgo, useLatestScript } from "../lib/useLatestScript";
 import { useDarkMode } from "../lib/useDarkMode";
 import Crosshair from "./Crosshair";
+import { ArrowUpRight } from "@phosphor-icons/react";
 
 /*
  * "Everything the script does" as a one-screen bento grid (stacks on phones).
@@ -139,7 +140,7 @@ export default function Features() {
         <a className="btile t-time soft" href="#track" data-crosshair-target style={{ "--d": "240ms" }}>
           <div className="t-time-top">
             <strong>10<small>min</small></strong>
-            <span className="arrow" aria-hidden="true">↗</span>
+            <span className="arrow" aria-hidden="true"><ArrowUpRight weight="bold" /></span>
           </div>
           <span className="k">to set up, in {STEPS.length} cards</span>
           <div className="dots" aria-hidden="true">

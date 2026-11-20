@@ -1,3 +1,4 @@
+import { BellRinging, CheckCircle, Copy, EnvelopeSimple, FileCode, GitFork, IdentificationCard, Lightning, Robot, SlidersHorizontal } from "@phosphor-icons/react";
 // Content for the setup guide. Edit text, links and steps here.
 
 export const GITHUB_URL = "https://github.com/Adis-ore/Mail-Telegram/";
@@ -19,11 +20,6 @@ export const SCRIPT = {
 // Hero head photo (dithered by DitherVeil; plain backdrop is cut out).
 export const HEAD_SRC = "https://images.unsplash.com/photo-1737071371043-761e02b1ef95?q=80&w=1400&auto=format&fit=crop";
 
-const icon = (paths) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    {paths}
-  </svg>
-);
 
 // Inline link inside step text.
 const L = ({ href, children }) => (
@@ -46,7 +42,7 @@ export const STEPS = [
   {
     name: "Fork", where: "github.com", time: "2 min", colors: ["#5f8f88", "#3c6660"],
     title: "Fork the project on GitHub",
-    icon: icon(<><circle cx="12" cy="18" r="3" /><circle cx="6" cy="6" r="3" /><circle cx="18" cy="6" r="3" /><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9M12 12v3" /></>),
+    icon: <GitFork weight="bold" />,
     items: [
       <>Sign in to <L href="https://github.com/login">GitHub</L> (a free account is fine).</>,
       <>Open <L href={GITHUB_URL}>the project</L> and tap <b>Fork</b> at the top right.</>,
@@ -58,7 +54,7 @@ export const STEPS = [
   {
     name: "Copy", where: "this page", time: "1 min", colors: ["#2f8f5b", "#1d6440"],
     title: "Or just copy the script", showScript: true,
-    icon: icon(<><rect x="8" y="8" width="12" height="12" rx="2" /><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" /></>),
+    icon: <Copy weight="bold" />,
     items: [
       <>No GitHub account needed. The full script is shown here, always the latest version.</>,
       <>Tap <b>Copy script</b>.</>,
@@ -70,7 +66,7 @@ export const STEPS = [
   {
     name: "Bot", where: "@BotFather", time: "1 min", colors: ["#5b7cfa", "#3a4fc4"],
     title: "Create your Telegram bot",
-    icon: icon(<><rect x="4" y="8" width="16" height="12" rx="3" /><path d="M12 8V5" /><circle cx="12" cy="4" r="1" /><path d="M9 14v1M15 14v1" /></>),
+    icon: <Robot weight="bold" />,
     items: [
       <>In Telegram, open <L href={LINKS.botFather}>@BotFather</L> and send <code>/newbot</code>.</>,
       <>Pick a name, then a username ending in <code>bot</code>.</>,
@@ -82,7 +78,7 @@ export const STEPS = [
   {
     name: "ID", where: "getUpdates", time: "1 min", colors: ["#c2693f", "#8e4121"],
     title: "Get your chat ID",
-    icon: icon(<><rect x="3" y="5" width="18" height="14" rx="2" /><circle cx="9" cy="11" r="2" /><path d="M6 16c.5-1.5 1.7-2 3-2s2.5.5 3 2M14 10h4M14 13h3" /></>),
+    icon: <IdentificationCard weight="bold" />,
     items: [
       <>Open your new bot, tap <b>Start</b>, and send “hi”.</>,
       <>Copy the link below, paste it in your browser, and put your token in place of <code>YOUR_TOKEN</code>.</>,
@@ -95,7 +91,7 @@ export const STEPS = [
   {
     name: "Script", where: "script.google.com", time: "1 min", colors: ["#8a5cff", "#5a35c4"],
     title: "Create your Google script",
-    icon: icon(<><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5M10 13l-2 2 2 2M14 13l2 2-2 2" /></>),
+    icon: <FileCode weight="bold" />,
     items: [
       <>Go to <L href={LINKS.scripts}>script.google.com</L> signed in to the Gmail you want to forward.</>,
       <>Tap <b>New project</b> and delete the sample code.</>,
@@ -106,7 +102,7 @@ export const STEPS = [
   {
     name: "Setup", where: "your details", time: "1 min", colors: ["#2a9d8f", "#1b6b62"],
     title: "Add your details",
-    icon: icon(<><path d="M4 7h10M18 7h2M4 17h2M10 17h10" /><circle cx="16" cy="7" r="2" /><circle cx="8" cy="17" r="2" /></>),
+    icon: <SlidersHorizontal weight="bold" />,
     items: [
       <>At the top, set <code>BOT_TOKEN</code> and <code>CHAT_ID</code>.</>,
       <>Open <b>Project Settings</b>, tick “Show appsscript.json”, and set <code>timeZone</code> to <L href={LINKS.timeZones}>your time zone</L> (for example <code>Africa/Lagos</code>).</>,
@@ -117,7 +113,7 @@ export const STEPS = [
   {
     name: "Test", where: "testSend", time: "2 min", colors: ["#e0a030", "#a8700f"],
     title: "Test it, then switch it on",
-    icon: icon(<><circle cx="12" cy="12" r="9" /><path d="m8 12 3 3 5-6" /></>),
+    icon: <CheckCircle weight="bold" />,
     items: [
       <>Choose <code>testSend</code> and press <b>Run</b>.</>,
       <>You’ll see an “unverified app” warning. That’s normal for your own script: <b>Advanced → Go to project → Allow</b>.</>,
@@ -129,7 +125,7 @@ export const STEPS = [
   {
     name: "Try", where: "real email", time: "1 min", colors: ["#d8567a", "#9c2c4d"],
     title: "Try it for real",
-    icon: icon(<><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></>),
+    icon: <EnvelopeSimple weight="bold" />,
     items: [
       <>Email yourself from another account.</>,
       <>It shows up in Telegram within about a minute.</>,
@@ -139,23 +135,30 @@ export const STEPS = [
     actions: [{ label: "Write a test email ↗", href: LINKS.testEmail }],
   },
   {
-    name: "Ring", where: "your phone", time: "2 min", colors: ["#5aa832", "#3c7a1e"],
+    name: "Ring", where: "your phone", time: "1 min", colors: ["#5aa832", "#3c7a1e"],
     title: "Make reminders ring",
-    icon: icon(<><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0M2 8c0-2 1-4 2.5-5.5M22 8c0-2-1-4-2.5-5.5" /></>),
-    items: [
-      <><b>Android:</b> open the chat with your bot, tap its <b>name</b> at the top, then <b>Notifications</b> → <b>Customize</b>. Pick a loud, long <b>Sound</b>, set <b>Importance</b> to <b>Urgent</b> and turn on <b>Vibrate</b>.</>,
-      <><b>iPhone:</b> open the chat with your bot, tap its <b>name</b> at the top, then <b>Notifications</b> → <b>Sound</b>, and pick a loud one.</>,
-      <><b>Louder still:</b> send yourself a short alarm sound in Telegram, long-press it, tap <b>Save for notifications</b>, then choose it as the bot’s sound.</>,
-      <>Test it: in Apps Script run <code>testMeetingCall</code>. In about a minute the reminder arrives with your sound.</>,
-      <><b>Optional phone call too:</b> open <L href="https://t.me/CallMeBot_txtbot">@CallMeBot_txtbot</L>, tap <b>Start</b>, and put your Telegram username in <code>CALLMEBOT_USER</code>. Your phone then also rings 10 minutes before. Don’t want calls? Set <code>CALL_ENABLED</code> to <code>false</code>.</>,
+    icon: <BellRinging weight="bold" />,
+    tabs: [
+      { label: "Android", items: [
+        <>Open your bot’s chat → tap its <b>name</b> → <b>Notifications</b> → <b>Customize</b>.</>,
+        <>Pick a loud <b>Sound</b>, set <b>Importance: Urgent</b>, turn on <b>Vibrate</b>.</>,
+      ] },
+      { label: "iPhone", items: [
+        <>Open your bot’s chat → tap its <b>name</b> → <b>Notifications</b>.</>,
+        <>Tap <b>Sound</b> and pick a loud one.</>,
+      ] },
     ],
-    note: <>Every message from your bot now plays your sound, so new emails and reminders stand out. Silent mode and Do Not Disturb still mute it. The phone call uses CallMeBot, a free service that is sometimes busy; the reminder message always arrives.</>,
-    actions: [{ label: "Open @CallMeBot_txtbot ↗", href: "https://t.me/CallMeBot_txtbot" }, { label: "Copy CALL_ENABLED: false", copy: "CALL_ENABLED: false," }],
+    items: [
+      <>Test: run <code>testMeetingCall</code>. The reminder rings in about a minute.</>,
+      <>Want a phone call too? Tap <b>Start</b> in <L href="https://t.me/CallMeBot_txtbot">@CallMeBot_txtbot</L> and set <code>CALLMEBOT_USER</code>.</>,
+    ],
+    note: <>Silent mode and Do Not Disturb still mute it.</>,
+    actions: [{ label: "Open @CallMeBot_txtbot ↗", href: "https://t.me/CallMeBot_txtbot" }],
   },
   {
     name: "Fast", where: "optional", time: "3 min", colors: ["#3f8fd2", "#24609a"],
     title: "Optional: make replies instant",
-    icon: icon(<path d="M13 2 4 14h7l-1 8 9-12h-7Z" />),
+    icon: <Lightning weight="bold" />,
     items: [
       <>In your Apps Script project, click the blue <b>Deploy</b> button (top right), then <b>New deployment</b>.</>,
       <>Click the gear icon next to <b>Select type</b> and choose <b>Web app</b>.</>,

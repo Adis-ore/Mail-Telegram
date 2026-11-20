@@ -1,8 +1,8 @@
+import { GithubLogo, LinkedinLogo, XLogo } from "@phosphor-icons/react";
 import { useEffect, useRef } from "react";
 import { GITHUB_URL, LINKEDIN_URL, X_URL } from "../data";
 import { observeVisibility, prefersReducedMotion } from "../lib/motion";
 
-const line = { fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" };
 
 /** Animated arch of wavy lines with a glow at the bottom centre. */
 function useArchCanvas(canvasRef) {
@@ -71,13 +71,13 @@ export default function Footer() {
         <p className="tg">Your inbox, in your pocket.<br />Free to fork and share.</p>
         <div className="so">
           <a href={X_URL} target="_blank" rel="noopener noreferrer" aria-label="Adis on X">
-            <svg viewBox="0 0 24 24" width="19" height="19" {...line}><path d="M4 4h4.6L20 20h-4.6L4 4Z" /><path d="m19.5 4.5-6.1 6.8M4.5 19.5l6.1-6.8" /></svg>
+            <XLogo size={19} weight="bold" />
           </a>
           <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" aria-label="Adis on LinkedIn">
-            <svg viewBox="0 0 24 24" width="19" height="19" {...line}><path d="M2 12c0-4.7 0-7.1 1.5-8.5C4.9 2 7.3 2 12 2s7.1 0 8.5 1.5C22 4.9 22 7.3 22 12s0 7.1-1.5 8.5C19.1 22 16.7 22 12 22s-7.1 0-8.5-1.5C2 19.1 2 16.7 2 12Z" /><path d="M7 10.5V17M7 7v.01M11 17v-6.5M11 13.75c0-1.8 1.34-3.25 3-3.25s3 1.45 3 3.25V17" /></svg>
+            <LinkedinLogo size={19} weight="bold" />
           </a>
           <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="Project on GitHub">
-            <svg viewBox="0 0 24 24" width="19" height="19" {...line}><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21" /></svg>
+            <GithubLogo size={19} weight="bold" />
           </a>
         </div>
         <small>Built by Adis · Stuck? Message me on X or LinkedIn.</small>
