@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, InfoCircle, RotateLeft, TickCircle } from "../icons";
+import { ArrowLeft, ArrowRight, CheckCircle, Info, RotateLeft, Tick } from "../icons";
 import { LINKEDIN_URL, STEPS, X_URL } from "../data";
 import { scrollToY } from "../lib/smoothScroll";
 import ScriptViewer, { CopyScriptButton } from "./ScriptViewer";
@@ -58,7 +58,7 @@ function StepBody({ s }) {
           <code>{s.code}</code>
         </div>
       )}
-      {s.note && <p className="su-note"><InfoCircle aria-hidden="true" /><span>{s.note}</span></p>}
+      {s.note && <p className="su-note"><Info aria-hidden="true" /><span>{s.note}</span></p>}
       {s.actions && (
         <div className="su-acts">
           {s.actions.map((a) => a.href
@@ -134,7 +134,7 @@ export default function Setup({ step, onStep }) {
                     aria-current={i === step && !finished ? "step" : undefined}
                     onClick={() => go(i)}
                   >
-                    <span className="su-n">{ok ? <TickCircle variant="Bold" /> : i + 1}</span>
+                    <span className="su-n">{ok ? <Tick variant="Bold" /> : i + 1}</span>
                     <span className="su-l">
                       <b>{st.title}</b>
                       <small>{st.where} · {st.time}</small>
@@ -150,7 +150,7 @@ export default function Setup({ step, onStep }) {
         <article className="su-panel" ref={panelRef} aria-live="polite">
           {finished ? (
             <div className="su-fin" key="fin">
-              <TickCircle variant="Bold" />
+              <CheckCircle variant="Bold" />
               <h3>You’re all set.</h3>
               <p>New emails will now arrive in your Telegram within a minute. Try replying to one with a swipe.</p>
               <div className="su-acts">
@@ -171,7 +171,7 @@ export default function Setup({ step, onStep }) {
                   <ArrowLeft /> Back
                 </button>
                 <button type="button" className="btn" onClick={next}>
-                  {step < n - 1 ? <>Done, next step <ArrowRight /></> : <>Finish <TickCircle /></>}
+                  {step < n - 1 ? <>Done, next step <ArrowRight /></> : <>Finish <CheckCircle /></>}
                 </button>
               </footer>
             </div>

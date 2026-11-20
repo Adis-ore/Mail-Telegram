@@ -1,4 +1,4 @@
-import { Android, Copy, DocumentCode, Flash, Hierarchy, NotificationBing, Personalcard, Setting4, Sms, TickCircle } from "./icons";
+import { Bell, Bot, CheckCircle, Copy, FileScript, Flash, GitFork, IdCard, Mail, Sliders } from "./icons";
 // Content for the setup guide. Edit text, links and steps here.
 
 export const GITHUB_URL = "https://github.com/Adis-ore/Mail-Telegram/";
@@ -38,7 +38,7 @@ export const STEPS = [
   {
     name: "Fork", where: "github.com", time: "2 min", colors: ["#5f8f88", "#3c6660"],
     title: "Fork the project on GitHub",
-    icon: <Hierarchy />,
+    icon: <GitFork />,
     items: [
       <>Sign in to <L href="https://github.com/login">GitHub</L> (a free account is fine).</>,
       <>Open <L href={GITHUB_URL}>the project</L> and tap <b>Fork</b> at the top right.</>,
@@ -62,7 +62,7 @@ export const STEPS = [
   {
     name: "Bot", where: "@BotFather", time: "1 min", colors: ["#5b7cfa", "#3a4fc4"],
     title: "Create your Telegram bot",
-    icon: <Android />,
+    icon: <Bot />,
     items: [
       <>In Telegram, open <L href={LINKS.botFather}>@BotFather</L> and send <code>/newbot</code>.</>,
       <>Pick a name, then a username ending in <code>bot</code>.</>,
@@ -74,7 +74,7 @@ export const STEPS = [
   {
     name: "ID", where: "getUpdates", time: "1 min", colors: ["#c2693f", "#8e4121"],
     title: "Get your chat ID",
-    icon: <Personalcard />,
+    icon: <IdCard />,
     items: [
       <>Open your new bot, tap <b>Start</b>, and send “hi”.</>,
       <>Copy the link below, paste it in your browser, and put your token in place of <code>YOUR_TOKEN</code>.</>,
@@ -87,7 +87,7 @@ export const STEPS = [
   {
     name: "Script", where: "script.google.com", time: "1 min", colors: ["#8a5cff", "#5a35c4"],
     title: "Create your Google script",
-    icon: <DocumentCode />,
+    icon: <FileScript />,
     items: [
       <>Go to <L href={LINKS.scripts}>script.google.com</L> signed in to the Gmail you want to forward.</>,
       <>Tap <b>New project</b> and delete the sample code.</>,
@@ -98,7 +98,7 @@ export const STEPS = [
   {
     name: "Setup", where: "your details", time: "1 min", colors: ["#2a9d8f", "#1b6b62"],
     title: "Add your details",
-    icon: <Setting4 />,
+    icon: <Sliders />,
     items: [
       <>At the top, set <code>BOT_TOKEN</code> and <code>CHAT_ID</code>.</>,
       <>Open <b>Project Settings</b>, tick “Show appsscript.json”, and set <code>timeZone</code> to <L href={LINKS.timeZones}>your time zone</L> (for example <code>Africa/Lagos</code>).</>,
@@ -109,7 +109,7 @@ export const STEPS = [
   {
     name: "Test", where: "testSend", time: "2 min", colors: ["#e0a030", "#a8700f"],
     title: "Test it, then switch it on",
-    icon: <TickCircle />,
+    icon: <CheckCircle />,
     items: [
       <>Choose <code>testSend</code> and press <b>Run</b>.</>,
       <>You’ll see an “unverified app” warning. That’s normal for your own script: <b>Advanced → Go to project → Allow</b>.</>,
@@ -121,7 +121,7 @@ export const STEPS = [
   {
     name: "Try", where: "real email", time: "1 min", colors: ["#d8567a", "#9c2c4d"],
     title: "Try it for real",
-    icon: <Sms />,
+    icon: <Mail />,
     items: [
       <>Email yourself from another account.</>,
       <>It shows up in Telegram within about a minute.</>,
@@ -133,7 +133,7 @@ export const STEPS = [
   {
     name: "Ring", where: "your phone", time: "1 min", colors: ["#5aa832", "#3c7a1e"],
     title: "Make reminders ring",
-    icon: <NotificationBing />,
+    icon: <Bell />,
     tabs: [
       { label: "Android", items: [
         <>Open your bot’s chat → tap its <b>name</b> → <b>Notifications</b> → <b>Customize</b>.</>,

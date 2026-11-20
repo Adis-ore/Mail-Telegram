@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CloseCircle, GithubLogo, HambergerMenu } from "../icons";
+import { Close, Github, Menu } from "../icons";
 import { GITHUB_URL } from "../data";
 import ThemeToggle from "./ThemeToggle";
 import Logo from "./Logo";
@@ -57,7 +57,7 @@ export default function Nav({ onStart }) {
         <div className="nv-r">
           <ThemeToggle />
           <a className="nv-gh" href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="Code on GitHub">
-            <GithubLogo />
+            <Github />
           </a>
           <button type="button" className="btn sm" onClick={start}>Set it up free</button>
           <button
@@ -68,13 +68,13 @@ export default function Nav({ onStart }) {
             aria-controls="nv-sheet"
             onClick={() => setOpen((o) => !o)}
           >
-            {open ? <CloseCircle /> : <HambergerMenu />}
+            {open ? <Close /> : <Menu />}
           </button>
         </div>
       </div>
       <div className="nv-sheet" id="nv-sheet" hidden={!open}>
         {LINKS.map((l) => <a key={l.href} href={l.href} onClick={() => setOpen(false)}>{l.label}</a>)}
-        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer"><GithubLogo /> Code on GitHub</a>
+        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer"><Github /> Code on GitHub</a>
         <button type="button" className="btn" onClick={start}>Set it up free</button>
       </div>
     </nav>

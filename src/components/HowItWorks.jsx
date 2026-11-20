@@ -1,19 +1,19 @@
-import { Code, Send2, ShieldTick, Sms } from "../icons";
+import { Mail, ShieldCheck, SourceCode, Telegram } from "../icons";
 import { useReveal } from "../lib/useReveal";
 
 const STEPS = [
   {
-    icon: <Sms />,
+    icon: <Mail />,
     title: "An email lands in Gmail",
     text: "Any new email in your inbox: codes, invoices, interview invites.",
   },
   {
-    icon: <Code />,
+    icon: <SourceCode />,
     title: "Your script picks it up",
     text: "A small Google Apps Script in your own account checks every minute, even with your phone off.",
   },
   {
-    icon: <Send2 />,
+    icon: <Telegram />,
     title: "It arrives in Telegram",
     text: "Your own bot sends you the full email. Reply there and it goes out from your Gmail.",
   },
@@ -38,7 +38,7 @@ export default function HowItWorks() {
         <span className="how-line" aria-hidden="true"><i /></span>
       </ol>
       <div className="how-safe rv" style={{ "--d": "360ms" }}>
-        <span className="how-si"><ShieldTick /></span>
+        <span className="how-si"><ShieldCheck /></span>
         <div>
           <b>Private by design.</b>
           <p>Your emails go from your Gmail to your script to your bot. There’s no server in the middle, so nobody else can read them, including me.</p>

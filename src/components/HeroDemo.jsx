@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Back, Call, CallSlash, Send, Sms, TickCircle } from "../icons";
+import { Call, CallEnd, CheckCircle, Mail, Reply, Send } from "../icons";
 import { prefersReducedMotion } from "../lib/motion";
 import Logo from "./Logo";
 
@@ -155,7 +155,7 @@ function Bubble({ m, state }) {
   const swiped = m.id === "int" && state.swipe;
   return (
     <div className={`dm mail${swiped ? " sw" : ""}`}>
-      <span className="dm-rp" aria-hidden="true"><Back /></span>
+      <span className="dm-rp" aria-hidden="true"><Reply /></span>
       📧 <b>{m.subj}</b><br />
       👤 {m.from}<br />
       🕒 <b>{m.time}</b>
@@ -198,7 +198,7 @@ export default function HeroDemo({ state, belowRef }) {
           {/* Gmail */}
           <div className="gm">
             <div className="gm-bar">
-              <span className="gm-logo"><Sms variant="Bold" /></span>
+              <span className="gm-logo"><Mail variant="Bold" /></span>
               <b>Gmail</b>
               <span className="gm-search">Search mail</span>
             </div>
@@ -226,10 +226,10 @@ export default function HeroDemo({ state, belowRef }) {
                 <div className="ph-msgs">
                   {state.chat.map((m) => <Bubble key={m.id} m={m} state={state} />)}
                 </div>
-                {state.copied && <div className="ph-toast"><TickCircle variant="Bold" /> Code copied</div>}
+                {state.copied && <div className="ph-toast"><CheckCircle variant="Bold" /> Code copied</div>}
               </div>
               <div className={`ph-in-bar${state.quote ? " q" : ""}`}>
-                {state.quote && <span className="ph-q"><Back /><span><b>Reply to Tolu, Northwind</b>Interview tomorrow</span></span>}
+                {state.quote && <span className="ph-q"><Reply /><span><b>Reply to Tolu, Northwind</b>Interview tomorrow</span></span>}
                 <span className="ph-field">
                   <span className={state.typed ? "" : "ph-ph"}>{state.typed ? REPLY.slice(0, state.typed) : "Message"}</span>
                   {state.quote && <i className="caret" />}
@@ -241,7 +241,7 @@ export default function HeroDemo({ state, belowRef }) {
                   <span className="call-av"><Call variant="Bold" /></span>
                   <b>Incoming call</b>
                   <small>“Reminder. Interview tomorrow. Starts in 10 minutes.”</small>
-                  <span className="call-b"><i className="cb-no"><CallSlash variant="Bold" /></i><i className="cb-yes"><Call variant="Bold" /></i></span>
+                  <span className="call-b"><i className="cb-no"><CallEnd variant="Bold" /></i><i className="cb-yes"><Call variant="Bold" /></i></span>
                 </div>
               )}
             </div>
@@ -250,7 +250,7 @@ export default function HeroDemo({ state, belowRef }) {
           {state.jump && <div className="jump">Next day · 2:50 PM</div>}
 
           {state.fly && (
-            <span key={state.fly.n} className={`fly ${state.fly.dir}`}><Sms variant="Bold" /></span>
+            <span key={state.fly.n} className={`fly ${state.fly.dir}`}><Mail variant="Bold" /></span>
           )}
 
           <span className="lbl l1">Your Gmail</span>

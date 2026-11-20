@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { ArrowRight, ArrowSwapHorizontal, Back } from "../icons";
+import { ArrowRight, Reply, Swipe } from "../icons";
 import { SCRIPT } from "../data";
 import { parseScript } from "../lib/scriptInfo";
 import { timeAgo, useLatestScript } from "../lib/useLatestScript";
@@ -103,7 +103,7 @@ export default function Features() {
           </article>
         ))}
       </div>
-      <p className="fswipe" aria-hidden="true"><ArrowSwapHorizontal /> Swipe to see more</p>
+      <p className="fswipe" aria-hidden="true"><Swipe /> Swipe to see more</p>
 
       <div className="livebox rv">
         <div className="live-v">
@@ -121,7 +121,7 @@ export default function Features() {
           <span className="k">Type in your bot chat</span>
           <div className="chips">
             {(typed.length ? typed.flatMap((c) => c.words.slice(0, 1)) : ["help", "send email", "summarize"]).map((w) => <code key={w}>{w}</code>)}
-            <span className="chip-s"><Back /> or swipe-reply any email</span>
+            <span className="chip-s"><Reply /> or swipe-reply any email</span>
           </div>
         </div>
         <a className="live-a" href={SCRIPT.view} target="_blank" rel="noopener noreferrer">

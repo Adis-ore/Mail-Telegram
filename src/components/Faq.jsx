@@ -1,4 +1,4 @@
-import { Add } from "../icons";
+import { Plus } from "../icons";
 import { LINKEDIN_URL, X_URL } from "../data";
 
 const QA = [
@@ -35,7 +35,7 @@ export default function Faq() {
       <div className="faq-l">
         {QA.map(([q, a]) => (
           <details key={q}>
-            <summary>{q}<Add aria-hidden="true" /></summary>
+            <summary>{q}<Plus aria-hidden="true" /></summary>
             <p>{a}</p>
           </details>
         ))}
