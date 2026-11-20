@@ -63,7 +63,7 @@ Single page, top to bottom:
 | How it works | `HowItWorks.jsx` | Four equal cards packed round the logo ball; each inner corner is carved (CSS mask) to wrap it. Hover, click or tap a card to show its detail in the box below. Tapping the logo ball plays a 5-second animation: a mail drops in, becomes a paper plane, flies figure-eights round the cards and lands as the Telegram logo |
 | What you can do | `Features.jsx` | One card per feature showing the real Telegram message; a swipeable row on phones. Swipeable row on phones |
 | Setup | `Setup.jsx` | A book: one step per page. Swipe left / right (or the small arrows, or arrow keys) to turn pages with a page-flip. The Copy step shows the live script (`ScriptViewer.jsx`) |
-| FAQ | `Faq.jsx` | Plain questions and answers |
+| FAQ | `Faq.jsx` | An iPhone lock screen (live clock and date); each question is a notification that arrives stacked and spreads out on scroll. Tap to read the full answer, tap again or another to switch |
 | Latest version | `LatestVersion.jsx` | Just above the footer: version, what’s new and chat commands, live from the script |
 | Footer | `Footer.jsx` | Animated arch lines |
 | Update notice | `ScriptViewer.jsx` (`UpdateToast`) | Shown to visitors whose copied script is out of date |

@@ -1,5 +1,8 @@
-import { Plus } from "../icons";
+import { useEffect, useState } from "react";
+import { Camera, Flashlight, Lock } from "../icons";
 import { LINKEDIN_URL, X_URL } from "../data";
+import { useReveal } from "../lib/useReveal";
+import Logo from "./Logo";
 
 const QA = [
   ["Is it really free?",
@@ -22,23 +25,68 @@ const QA = [
     "The bot messages you when there’s a new version. Copy the new script and paste it over the old one. Your settings are kept if you ran saveSettings once."],
 ];
 
+// "now", "2m ago"… like a real notification list, newest first
+const AGO = ["now", "now", "2m ago", "5m ago", "9m ago", "14m ago", "21m ago", "32m ago", "1h ago"];
+
+function useClock() {
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const t = setInterval(() => setNow(new Date()), 15000);
+    return () => clearInterval(t);
+  }, []);
+  return now;
+}
+
+/**
+ * The FAQ as an iPhone lock screen: each question is a notification from Mail to Telegram.
+ * They arrive as a stack and spread out when the section scrolls into view.
+ * Tap one to read the full answer; tap it again (or another one) to close it.
+ */
 export default function Faq() {
+  const ref = useReveal(0.2);
+  const [open, setOpen] = useState(-1);
+  const now = useClock();
+  const time = now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }).replace(/\s?[AP]M$/i, "");
+  const date = now.toLocaleDateString([], { weekday: "long", day: "numeric", month: "long" });
+
   return (
     <section className="sec faq" id="faq">
       <div className="sec-h">
         <h2>Good <em>questions.</em></h2>
         <p>
-          Still stuck? Message me on <a href={X_URL} target="_blank" rel="noopener noreferrer">X</a> or{" "}
+          Tap a notification to read it. Still stuck? Message me on <a href={X_URL} target="_blank" rel="noopener noreferrer">X</a> or{" "}
           <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer">LinkedIn</a>.
         </p>
       </div>
-      <div className="faq-l">
-        {QA.map(([q, a]) => (
-          <details key={q}>
-            <summary>{q}<Plus aria-hidden="true" /></summary>
-            <p>{a}</p>
-          </details>
-        ))}
+
+      <div className="ls" ref={ref}>
+        <div className="ls-top" aria-hidden="true">
+          <Lock />
+          <span className="ls-date">{date}</span>
+          <span className="ls-time">{time}</span>
+        </div>
+
+        <ul className="ls-list">
+          {QA.map(([q, a], i) => (
+            <li key={q} style={{ "--i": i }} className={open === i ? "open" : ""}>
+              <button type="button" className="nf" aria-expanded={open === i} onClick={() => setOpen((o) => (o === i ? -1 : i))}>
+                <span className="nf-app">
+                  <Logo size={22} />
+                  <span>Mail to Telegram</span>
+                  <time>{AGO[i] || "1h ago"}</time>
+                </span>
+                <b>{q}</b>
+                <span className="nf-msg">{a}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+
+        <div className="ls-foot" aria-hidden="true">
+          <span><Flashlight /></span>
+          <i />
+          <span><Camera /></span>
+        </div>
       </div>
     </section>
   );
