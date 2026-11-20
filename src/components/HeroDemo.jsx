@@ -20,10 +20,10 @@ const REPLY = "3pm works. See you then!";
 
 // The story told next to the demo; t = when each part starts (ms).
 export const SCENES = [
-  { t: 0, title: "An email lands in your Gmail", text: "It shows up in your Telegram chat within a minute, the whole message." },
-  { t: 3300, title: "Tap a code to copy it", text: "Sign-in codes are picked out for you. No more digging through your inbox." },
-  { t: 5200, title: "Swipe to reply", text: "Type your answer in Telegram. It goes out as a normal email from your Gmail." },
-  { t: 12900, title: "Reminders ring your phone", text: "Interviews and meetings in your emails get a reminder and a call before they start." },
+  { t: 0, short: "Arrives", title: "An email lands in your Gmail", text: "It shows up in your Telegram chat within a minute, the whole message." },
+  { t: 3300, short: "Copy", title: "Tap a code to copy it", text: "Sign-in codes are picked out for you. No more digging through your inbox." },
+  { t: 5200, short: "Reply", title: "Swipe to reply", text: "Type your answer in Telegram. It goes out as a normal email from your Gmail." },
+  { t: 12900, short: "Rings", title: "Reminders ring your phone", text: "Interviews and meetings in your emails get a reminder and a call before they start." },
 ];
 export const TOTAL = 18200;
 
@@ -99,16 +99,35 @@ export function useTimeline(rootRef) {
 }
 
 /** Keeps the fixed-size stage scaled to the space it has. */
-function useFit(wrapRef, stageW, stageH) {
+/**
+ * Keeps the fixed-size stage scaled to the space it has. On phones it also fits the height,
+ * so the demo and the step indicator under it (`belowRef`) share one screen.
+ * Only re-fits when the width changes, so the phone's address bar showing/hiding doesn't make it jump.
+ */
+function useFit(wrapRef, stageW, stageH, narrow, belowRef) {
   const [s, setS] = useState(1);
   useLayoutEffect(() => {
     const el = wrapRef.current;
-    const fit = () => setS(Math.min(1, el.clientWidth / stageW));
-    fit();
-    const ro = "ResizeObserver" in window ? new ResizeObserver(fit) : null;
+    let lastW = -1;
+    const fit = (force) => {
+      const w = el.clientWidth;
+      if (!force && w === lastW) return;
+      lastW = w;
+      let k = Math.min(1, w / stageW);
+      if (narrow) {
+        const top = el.getBoundingClientRect().top + window.scrollY;
+        const below = (belowRef?.current?.offsetHeight || 0) + 16;
+        const avail = document.documentElement.clientHeight - top - below;
+        k = Math.min(k, Math.max(0.5, avail / stageH));
+      }
+      setS(k);
+    };
+    fit(true);
+    document.fonts?.ready.then(() => fit(true));
+    const ro = "ResizeObserver" in window ? new ResizeObserver(() => fit(false)) : null;
     ro?.observe(el);
     return () => ro?.disconnect();
-  }, [wrapRef, stageW]);
+  }, [wrapRef, stageW, stageH, narrow, belowRef]);
   return s;
 }
 
@@ -152,12 +171,12 @@ function Bubble({ m, state }) {
   );
 }
 
-export default function HeroDemo({ state }) {
+export default function HeroDemo({ state, belowRef }) {
   const wrapRef = useRef(null);
   const phoneRef = useRef(null);
   const narrow = useNarrow();
   const W = narrow ? 340 : 640, H = narrow ? 612 : 570;
-  const scale = useFit(wrapRef, W, H);
+  const scale = useFit(wrapRef, W, H, narrow, belowRef);
   // a short buzz each time a message lands
   useEffect(() => {
     if (!state.buzz || prefersReducedMotion() || !phoneRef.current?.animate) return;
