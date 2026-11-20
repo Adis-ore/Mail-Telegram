@@ -38,7 +38,7 @@ body{font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .nv.hide{transform:translateY(-110%)}
 .nv-in{display:flex;align-items:center;gap:16px;max-width:1200px;height:64px;margin:0 auto;padding:0 20px}
 .nv-lg{display:inline-flex;align-items:center;gap:10px;color:var(--tx);text-decoration:none;font-weight:600;font-size:1rem;letter-spacing:-.01em;white-space:nowrap}
-.nv-lg img{border-radius:8px}
+.nv-lg svg{flex:none;filter:drop-shadow(0 4px 10px rgba(22,121,201,.35))}
 .nv-links{display:flex;gap:4px;margin:0 auto}
 .nv-links a{padding:8px 14px;border-radius:999px;color:var(--mu);text-decoration:none;font-size:.88rem;font-weight:500;transition:color .2s,background .2s}
 .nv-links a:hover{color:var(--tx);background:var(--so)}
@@ -147,7 +147,7 @@ body{font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .ph-st{display:flex;justify-content:space-between;align-items:center;height:34px;padding:4px 24px 0;background:var(--phd);font-size:.7rem;color:var(--btx)}
 .ph-st span{font-size:.5rem;letter-spacing:.1em;opacity:.7}
 .ph-hd{display:flex;align-items:center;gap:10px;padding:6px 14px 10px;background:var(--phd);border-bottom:1px solid color-mix(in srgb,var(--btx) 8%,transparent)}
-.ph-hd img{border-radius:50%}
+.ph-hd svg{flex:none}
 .ph-hd b{display:block;font-size:.84rem;color:var(--btx);line-height:1.2}.ph-hd small{color:var(--bmu);font-size:.68rem}
 .ph-chat{position:relative;flex:1;min-height:0;overflow:hidden;
   background-image:radial-gradient(color-mix(in srgb,var(--btx) 7%,transparent) 1px,transparent 1.4px);background-size:16px 16px}

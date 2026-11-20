@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Back, Call, CallSlash, Send, Sms, TickCircle } from "../icons";
 import { prefersReducedMotion } from "../lib/motion";
+import Logo from "./Logo";
 
 /*
  * The hero's product demo: a Gmail inbox on the left, your Telegram chat on the right.
@@ -199,7 +200,7 @@ export default function HeroDemo({ state }) {
             <div className="ph-in">
               <div className="ph-st"><b>{state.clock}</b><span>●●● ◔</span></div>
               <div className="ph-hd">
-                <img src="/favicon.svg" alt="" width="34" height="34" />
+                <Logo size={34} round />
                 <span><b>Mail bot</b><small>bot</small></span>
               </div>
               <div className="ph-chat">

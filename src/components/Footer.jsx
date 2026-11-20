@@ -2,6 +2,7 @@ import { GithubLogo, LinkedinLogo, XLogo } from "../icons";
 import { useEffect, useRef } from "react";
 import { GITHUB_URL, LINKEDIN_URL, X_URL } from "../data";
 import { observeVisibility, prefersReducedMotion } from "../lib/motion";
+import Logo from "./Logo";
 
 
 /** Animated arch of wavy lines with a glow at the bottom centre. */
@@ -66,7 +67,7 @@ export default function Footer() {
       <div className="ft-fade" aria-hidden="true" />
     <footer className="ft" id="contact">
       <canvas ref={canvasRef} aria-hidden="true" />
-      <div className="br">Mail to Telegram</div>
+      <div className="br"><Logo size={34} /> Mail to Telegram</div>
       <div>
         <p className="tg">Your inbox, in your pocket.<br />Free to fork and share.</p>
         <div className="so">

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { CloseCircle, GithubLogo, HambergerMenu } from "../icons";
 import { GITHUB_URL } from "../data";
 import ThemeToggle from "./ThemeToggle";
+import Logo from "./Logo";
 
 const LINKS = [
   { label: "How it works", href: "#how" },
@@ -47,7 +48,7 @@ export default function Nav({ onStart }) {
     <nav className={`nv${solid ? " solid" : ""}${hidden && !open ? " hide" : ""}${open ? " open" : ""}`} aria-label="Main">
       <div className="nv-in">
         <a className="nv-lg" href="#top" onClick={() => setOpen(false)}>
-          <img src="/favicon.svg" alt="" width="30" height="30" />
+          <Logo size={30} />
           <span>Mail to Telegram</span>
         </a>
         <div className="nv-links">
