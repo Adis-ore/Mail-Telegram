@@ -24,7 +24,6 @@ export default function HowItWorks() {
   return (
     <section className="sec how" id="how" ref={ref}>
       <div className="sec-h">
-        <span className="eyebrow">How it works</span>
         <h2>Gmail in, <em>Telegram out.</em></h2>
         <p>Set it up once. After that you don’t open anything, it just runs.</p>
       </div>

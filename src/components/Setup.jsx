@@ -110,7 +110,6 @@ export default function Setup({ step, onStep }) {
   return (
     <section className="sec setup" id="setup">
       <div className="sec-h">
-        <span className="eyebrow">Setup</span>
         <h2>Set it up in <em>10 minutes.</em></h2>
         <p>Ten short steps. Copy, paste, done. No coding needed, and your progress is saved on this device.</p>
       </div>

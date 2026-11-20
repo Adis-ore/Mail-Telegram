@@ -26,7 +26,6 @@ export default function Faq() {
   return (
     <section className="sec faq" id="faq">
       <div className="sec-h">
-        <span className="eyebrow">FAQ</span>
         <h2>Good <em>questions.</em></h2>
         <p>
           Still stuck? Message me on <a href={X_URL} target="_blank" rel="noopener noreferrer">X</a> or{" "}

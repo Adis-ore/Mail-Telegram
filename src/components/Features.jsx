@@ -90,7 +90,6 @@ export default function Features() {
   return (
     <section className="sec feat" id="features" ref={ref}>
       <div className="sec-h">
-        <span className="eyebrow">What you can do</span>
         <h2>Your inbox, <em>run from one chat.</em></h2>
         <p>This is exactly what you’ll see in Telegram.</p>
       </div>
