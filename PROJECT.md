@@ -62,10 +62,11 @@ Single page, top to bottom:
 | Hero | `Hero.jsx`, `HeroDemo.jsx` | One-line pitch plus an animated demo: Gmail inbox → Telegram chat (code copy, swipe reply, reminder call). Captions under it jump to each scene |
 | How it works | `HowItWorks.jsx` | Four equal cards packed round the logo ball; each inner corner is carved (CSS mask) to wrap it. Hover, click or tap a card to show its detail in the box below. Tapping the logo ball plays a 5-second animation: a mail drops in, becomes a paper plane, flies figure-eights round the cards and lands as the Telegram logo |
 | What you can do | `Features.jsx` | One card per feature showing the real Telegram message; a swipeable row on phones. Swipeable row on phones |
-| Setup | `Setup.jsx` | A Telegram window: Telegram Desktop look (chat list + chat) on big screens, the Telegram app in a phone-sized frame on phones. Each step is a bot message; "Done ✓" replies, the bot types, then sends the next step. The chat scrolls, then hands the scroll to the page. Progress saved in the browser |
+| Setup | `Setup.jsx`, `lib/telegramConnect.js` | A Telegram window (Desktop look on big screens, the app in a phone frame on phones). Bot first; then the visitor pastes the bot token into the live message bar, the page checks it and finds their chat ID straight from Telegram (in the browser, nothing stored), and the Copy step gives a script with token, chat ID and username filled in. Each step is a bot message; "Done ✓" moves on |
 | FAQ | `Faq.jsx` | A stack of glassy Telegram notifications on a soft aurora background. Tap the stack to open it into a list, tap one for its answer, "Show less" stacks them back |
 | Connect | `Connect.jsx` | "Connect with me" X and LinkedIn buttons: a compact row under the setup chat, a big "Let’s connect" card under the FAQ |
 | Background + scroll motion | `ScrollScene.jsx` | One fixed background for the whole page whose colour blobs drift with scroll; section contents rise in and ease out; progress line under the top bar |
+| Contribute | `Contribute.jsx` | Ways to help (bug, idea, pull request, star) and how a change gets merged |
 | Latest version | `LatestVersion.jsx` | Just above the footer: version, what’s new and chat commands, live from the script |
 | Footer | `Footer.jsx` | Animated arch lines |
 | Update notice | `ScriptViewer.jsx` (`UpdateToast`) | Shown to visitors whose copied script is out of date |
@@ -100,3 +101,11 @@ npm run build    # static site in dist/
 ## Logo
 
 `docs/logo/`: `logo.svg` (vector), `logo-1024.png` / `logo-512.png` (rounded, transparent), `telegram-bot-photo.png` (full square for the bot's profile picture via @BotFather `/setuserpic`). Browser icons are in `public/`.
+
+## Reviewing contributions
+
+- Contributors fork, change, and open a pull request (`CONTRIBUTING.md`, `.github/pull_request_template.md`, issue forms in `.github/ISSUE_TEMPLATE/`).
+- `.github/workflows/check.yml` runs on every pull request: the site builds, `Code.gs` is valid JavaScript, `version.json` is valid, and no real bot token or filled-in `BOT_TOKEN`/`CHAT_ID` is committed.
+- On GitHub, protect `main` (Settings → Branches → rule for `main`: require a pull request, 1 approval, and the "check" status) so nothing lands without review.
+- Vercel posts a preview link on each pull request for site changes. Test script changes in a separate Apps Script project with a test bot before merging.
+- Contributors must not bump versions; bump `VERSION` and `script/version.json` yourself when releasing (that's what triggers users' update alerts).

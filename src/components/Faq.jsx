@@ -16,7 +16,7 @@ const QA = [
   ["Does it work on iPhone and Android?",
     "Yes, and on Telegram for desktop and the web too. Anywhere Telegram runs."],
   ["I don’t code. Can I still set it up?",
-    "Yes. It’s copy and paste: 10 short cards, about 10 minutes. Each card has buttons for the links and text you need."],
+    "Yes. The setup guide is a chat: paste your bot token, and it builds your script with your details already filled in. You copy, paste, and you’re done."],
   ["Can I turn off the phone calls?",
     <>Yes. Set <code>CALL_ENABLED</code> to <code>false</code> at the top of the script. You’ll still get reminder messages.</>],
   ["How do I stop it?",

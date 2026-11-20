@@ -6,7 +6,7 @@ import { prefersReducedMotion } from "../lib/motion";
  * - --p (0 at the top, 1 at the bottom) on <html> drives the background blobs and the nav progress line
  * - each section rises in and settles as it enters, then eases back a little as it leaves
  */
-const SECTIONS = ["how", "setup", "faq", "latest"];
+const SECTIONS = ["how", "setup", "faq", "contribute", "latest"];
 
 export default function ScrollScene() {
   useEffect(() => {

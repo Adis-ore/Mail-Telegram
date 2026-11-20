@@ -1,4 +1,4 @@
-import { Bell, Bot, CheckCircle, Copy, FileScript, Flash, GitFork, IdCard, Mail, Sliders } from "./icons";
+import { Bell, Bot, CheckCircle, Copy, FileScript, Flash, IdCard, Mail, Sliders } from "./icons";
 // Content for the setup guide. Edit text, links and steps here.
 
 export const GITHUB_URL = "https://github.com/Adis-ore/Mail-Telegram/";
@@ -36,53 +36,37 @@ export const LINKS = {
 // Each step can have `actions`: { label, href } opens a link, { label, copy } copies text.
 export const STEPS = [
   {
-    name: "Fork", where: "github.com", time: "2 min", colors: ["#5f8f88", "#3c6660"],
-    title: "Fork the project on GitHub",
-    icon: <GitFork />,
-    items: [
-      <>Sign in to <L href="https://github.com/login">GitHub</L> (a free account is fine).</>,
-      <>Open <L href={GITHUB_URL}>the project</L> and tap <b>Fork</b> at the top right.</>,
-      <>Open the script file in your fork and copy all of it.</>,
-    ],
-    note: <>Don’t want to use GitHub? The next card lets you copy the script straight from this page.</>,
-    actions: [{ label: "Open the project ↗", href: GITHUB_URL }],
-  },
-  {
-    name: "Copy", where: "this page", time: "1 min", colors: ["#2f8f5b", "#1d6440"],
-    title: "Or just copy the script", showScript: true,
-    icon: <Copy />,
-    items: [
-      <>No GitHub account needed. The full script is shown here, always the latest version.</>,
-      <>Tap <b>Copy script</b>.</>,
-      <>You’ll paste it into Google Apps Script in step 5.</>,
-    ],
-    note: <>When the script is updated, this page tells you on your next visit so you can copy the new version.</>,
-    actions: [{ label: "Copy script", copyScript: true }, { label: "View on GitHub ↗", href: SCRIPT.view }],
-  },
-  {
     name: "Bot", where: "@BotFather", time: "1 min", colors: ["#5b7cfa", "#3a4fc4"],
     title: "Create your Telegram bot",
     icon: <Bot />,
     items: [
       <>In Telegram, open <L href={LINKS.botFather}>@BotFather</L> and send <code>/newbot</code>.</>,
       <>Pick a name, then a username ending in <code>bot</code>.</>,
-      <>Copy the <b>token</b> it gives you.</>,
+      <>BotFather replies with a <b>token</b> (it looks like <code>123456789:AAF…</code>). Copy it.</>,
     ],
-    note: <><b>Keep it secret.</b> The token is your bot’s password. Never post it publicly or put it on GitHub.</>,
+    note: <><b>Keep it secret.</b> The token is your bot’s password. In the next step you paste it here, and it never leaves your browser except to talk to Telegram.</>,
     actions: [{ label: "Open @BotFather ↗", href: LINKS.botFather }, { label: "Copy /newbot", copy: "/newbot" }],
   },
   {
-    name: "ID", where: "getUpdates", time: "1 min", colors: ["#c2693f", "#8e4121"],
-    title: "Get your chat ID",
+    name: "Connect", where: "this chat", time: "1 min", colors: ["#c2693f", "#8e4121"],
+    title: "Connect your bot here", kind: "connect",
     icon: <IdCard />,
     items: [
-      <>Open your new bot, tap <b>Start</b>, and send “hi”.</>,
-      <>Copy the link below, paste it in your browser, and put your token in place of <code>YOUR_TOKEN</code>.</>,
-      <>Copy the number after <code>{'"chat":{"id":'}</code>.</>,
+      <>Paste your bot token in the message box below and send it.</>,
+      <>Open your bot, tap <b>Start</b> and send “hi”.</>,
+      <>Tap <b>I sent it</b>. I’ll find your chat ID and put everything into your script.</>,
     ],
-    code: LINKS.getUpdates,
-    note: <>If the result is empty, message the bot again and refresh.</>,
-    actions: [{ label: "Copy the link", copy: LINKS.getUpdates }],
+    note: <>Your token goes straight from your browser to Telegram. It isn’t saved or sent anywhere else, so you’ll paste it again if you reload the page.</>,
+  },
+  {
+    name: "Copy", where: "this chat", time: "1 min", colors: ["#2f8f5b", "#1d6440"],
+    title: "Copy your ready-made script", kind: "script", showScript: true,
+    icon: <Copy />,
+    items: [
+      <>Your bot token and chat ID are already filled in at the top.</>,
+      <>Tap <b>Copy my script</b>. You’ll paste it into Google Apps Script next.</>,
+    ],
+    note: <>When the script is updated, your bot tells you and this page shows the new version.</>,
   },
   {
     name: "Script", where: "script.google.com", time: "1 min", colors: ["#8a5cff", "#5a35c4"],
@@ -96,14 +80,15 @@ export const STEPS = [
     actions: [{ label: "New Apps Script project ↗", href: LINKS.newScript }],
   },
   {
-    name: "Setup", where: "your details", time: "1 min", colors: ["#2a9d8f", "#1b6b62"],
-    title: "Add your details",
+    name: "Setup", where: "Project Settings", time: "1 min", colors: ["#2a9d8f", "#1b6b62"],
+    title: "Set your time zone",
     icon: <Sliders />,
     items: [
-      <>At the top, set <code>BOT_TOKEN</code> and <code>CHAT_ID</code>.</>,
-      <>Open <b>Project Settings</b>, tick “Show appsscript.json”, and set <code>timeZone</code> to <L href={LINKS.timeZones}>your time zone</L> (for example <code>Africa/Lagos</code>).</>,
+      <>In your Apps Script project, open <b>Project Settings</b> (the gear on the left).</>,
+      <>Tick “Show appsscript.json”, open it, and set <code>timeZone</code> to <L href={LINKS.timeZones}>your time zone</L> (for example <code>Africa/Lagos</code>).</>,
       <>Save the project.</>,
     ],
+    note: <>Skipped connecting your bot? Then also set <code>BOT_TOKEN</code> and <code>CHAT_ID</code> at the top of the script.</>,
     actions: [{ label: "Find your time zone ↗", href: LINKS.timeZones }],
   },
   {
@@ -146,7 +131,7 @@ export const STEPS = [
     ],
     items: [
       <>Test: run <code>testMeetingCall</code>. The reminder rings in about a minute.</>,
-      <>Want a phone call too? Tap <b>Start</b> in <L href="https://t.me/CallMeBot_txtbot">@CallMeBot_txtbot</L> and set <code>CALLMEBOT_USER</code>.</>,
+      <>Want a phone call too? Tap <b>Start</b> in <L href="https://t.me/CallMeBot_txtbot">@CallMeBot_txtbot</L>. Your Telegram username is already in the script if you have one; if not, set <code>CALLMEBOT_USER</code>.</>,
     ],
     note: <>Silent mode and Do Not Disturb still mute it.</>,
     actions: [{ label: "Open @CallMeBot_txtbot ↗", href: "https://t.me/CallMeBot_txtbot" }],

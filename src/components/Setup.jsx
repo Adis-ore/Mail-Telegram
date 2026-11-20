@@ -1,6 +1,8 @@
 import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Attach, BackArrow, Battery, Signal, Wifi, Bookmark, CheckCircle, Info, Menu, Mic, More, RotateLeft, Search, Smile } from "../icons";
-import { STEPS } from "../data";
+import { Attach, BackArrow, Battery, Signal, Wifi, Bookmark, CheckCircle, Info, Menu, Mic, More, RotateLeft, Search, Send, Smile } from "../icons";
+import { SCRIPT, STEPS } from "../data";
+import { buildScript, checkToken, findChat, isToken, maskToken, sayHello } from "../lib/telegramConnect";
+import { markCopied, useLatestScript } from "../lib/useLatestScript";
 import { prefersReducedMotion } from "../lib/motion";
 import ScriptViewer, { CopyScriptButton } from "./ScriptViewer";
 import Logo from "./Logo";
@@ -47,7 +49,7 @@ function PlatformTabs({ tabs }) {
   );
 }
 
-function StepBody({ s }) {
+function StepBody({ s, creds }) {
   return (
     <>
       {s.tabs && <PlatformTabs tabs={s.tabs} />}
@@ -71,12 +73,49 @@ function StepBody({ s }) {
               : <CopyButton key={a.label} label={a.label} text={a.copy} />)}
         </div>
       )}
-      {s.showScript && <ScriptViewer />}
+      {s.kind === "script" ? <ReadyScript creds={creds} /> : s.showScript && <ScriptViewer />}
     </>
   );
 }
 
-function StepMsg({ s, i, n }) {
+/** The script with the visitor's token, chat ID and username filled in, ready to copy. */
+function ReadyScript({ creds }) {
+  const s = useLatestScript();
+  const [done, setDone] = useState(false);
+  useEffect(() => {
+    if (!done) return;
+    const t = setTimeout(() => setDone(false), 1800);
+    return () => clearTimeout(t);
+  }, [done]);
+  if (!creds?.chatId) {
+    return (
+      <>
+        <p className="su-note"><Info aria-hidden="true" /><span>You skipped connecting your bot, so this is the plain script. Set <code>BOT_TOKEN</code> and <code>CHAT_ID</code> at the top after pasting it.</span></p>
+        <div className="su-acts"><CopyScriptButton label="Copy script" className="btn sm" /><a className="btn ghost sm" href={SCRIPT.view} target="_blank" rel="noopener noreferrer">View on GitHub ↗</a></div>
+      </>
+    );
+  }
+  const ready = s.status === "ready";
+  const copy = async () => {
+    if (!ready) return;
+    try { await navigator.clipboard.writeText(buildScript(s.code, creds)); markCopied(); setDone(true); } catch { /* clipboard blocked */ }
+  };
+  return (
+    <>
+      <pre className="rs">
+        <span className="rs-c">{"// your details, already filled in"}</span>{"\n"}
+        BOT_TOKEN: <span className="rs-s">"{maskToken(creds.token)}"</span>,{"\n"}
+        CHAT_ID: <span className="rs-s">"{creds.chatId}"</span>,{"\n"}
+        CALLMEBOT_USER: <span className="rs-s">"{creds.username ? "@" + creds.username : "@your_telegram_username"}"</span>,
+      </pre>
+      <div className="su-acts">
+        <button type="button" className="btn sm" onClick={copy} disabled={!ready}>{done ? "Copied ✓" : ready ? "Copy my script" : "Loading…"}</button>
+      </div>
+    </>
+  );
+}
+
+function StepMsg({ s, i, n, creds }) {
   return (
     <div className="msg msg-bot msg-step" data-i={i}>
       <div className="msg-head">
@@ -84,7 +123,7 @@ function StepMsg({ s, i, n }) {
         <span>Step {i + 1} of {n} · {s.time} · {s.where}</span>
       </div>
       <h3>{s.title}</h3>
-      <StepBody s={s} />
+      <StepBody s={s} creds={creds} />
     </div>
   );
 }
@@ -107,6 +146,51 @@ export default function Setup({ focus }) {
   const [, setTick] = useState(0);               // re-render once to run the scroll below
   const bodyRef = useRef(null);
   const scrollTo = useRef(null);                 // which message to bring into view after render
+  // the visitor's bot (kept in memory only: the token is never saved)
+  const [creds, setCreds] = useState(null);      // { token, bot, chatId, username, firstName }
+  const [log, setLog] = useState([]);            // the connect conversation: { id, me, body, acts }
+  const [draft, setDraft] = useState("");
+  const [busy, setBusy] = useState(false);
+  const say = (m) => { setLog((l) => [...l, { id: Date.now() + Math.random(), ...m }]); scrollTo.current = "end"; };
+
+  const sendToken = async (e) => {
+    e.preventDefault();
+    const t = draft.trim();
+    if (!t || busy) return;
+    setDraft("");
+    say({ me: true, body: maskToken(t) });
+    if (!isToken(t)) { say({ body: <>That doesn’t look like a bot token. It looks like <code>123456789:AAF…</code>. Copy it again from <b>@BotFather</b>.</> }); return; }
+    setBusy(true);
+    const r = await checkToken(t);
+    setBusy(false);
+    if (!r.ok) {
+      say({ body: r.error === "network" ? "I couldn’t reach Telegram. Check your connection and send it again." : <>Telegram says that token isn’t valid. Copy it again from <b>@BotFather</b> and send it here.</> });
+      return;
+    }
+    setCreds({ token: t, bot: r.bot });
+    say({ body: <>✅ Connected to <b>{r.bot.name}</b> (@{r.bot.username}). Now open your bot, tap <b>Start</b> and send “hi”. Then tap <b>I sent it</b>.</>, acts: "sent", bot: r.bot.username });
+  };
+
+  const checkSent = async () => {
+    if (!creds || busy) return;
+    say({ me: true, body: "I sent it" });
+    setBusy(true);
+    const r = await findChat(creds.token);
+    setBusy(false);
+    if (!r.ok) {
+      const why = {
+        none: <>I can’t see your message yet. Send “hi” to <b>@{creds.bot.username}</b>, then tap <b>I sent it</b> again.</>,
+        webhook: <>This bot already sends its messages to a web app, so I can’t read them. Run <code>removeWebhook</code> in your script first, or make a new bot.</>,
+        network: "I couldn’t reach Telegram. Try again in a moment.",
+        invalid: "Telegram didn’t accept that. Send your token again.",
+      };
+      say({ body: why[r.error] || why.network, acts: "sent", bot: creds.bot.username });
+      return;
+    }
+    setCreds((c) => ({ ...c, chatId: r.chatId, username: r.username, firstName: r.firstName }));
+    sayHello(creds.token, r.chatId);
+    say({ body: <>🎉 Found you{r.firstName ? `, ${r.firstName}` : ""}! Your chat ID is <code>{r.chatId}</code>. I just sent you a message in Telegram to prove it works. Tap <b>Done</b> and I’ll give you your ready-made script.</> });
+  };
 
   useEffect(() => { if (upto % 1 === 0) try { localStorage.setItem(KEY, String(upto)); } catch { /* storage blocked */ } }, [upto]);
 
@@ -147,13 +231,14 @@ export default function Setup({ focus }) {
       scrollTo.current = to < n ? to : "end";
     }, prefersReducedMotion() ? 0 : 850);
   };
-  const reset = () => { setTyping(false); setUpto(0); scrollTo.current = 0; };
+  const reset = () => { setTyping(false); setUpto(0); setLog([]); setCreds(null); scrollTo.current = 0; };
 
   const shown = Math.floor(upto);               // last bot step message in the chat
   const replied = upto % 1 !== 0 ? shown : shown - 1; // user has said "Done" to steps 0..replied
   const finished = upto >= n;
 
   const clock = useClock();
+  const onConnect = !finished && STEPS[Math.min(shown, n - 1)].kind === "connect" && upto % 1 === 0;
   const status = typing ? "typing…" : finished ? "bot · all done" : `bot · step ${Math.min(shown, n - 1) + 1} of ${n}`;
   const preview = finished ? "You’re all set." : STEPS[Math.min(shown, n - 1)].title;
 
@@ -209,16 +294,27 @@ export default function Setup({ focus }) {
             <div className="chat-b" ref={bodyRef}>
               <span className="chat-day">Set it up in 10 minutes</span>
               <div className="msg msg-bot">
-                Hi! I’ll walk you through the setup. <b>10 short steps</b>, about 10 minutes, no coding.
+                Hi! I’ll walk you through the setup. <b>{n} short steps</b>, about 10 minutes, no coding.
                 Scroll up any time to see a step again.
               </div>
               {STEPS.map((st, i) => i <= Math.min(shown, n - 1) && (
                 <Fragment key={st.name}>
-                  <StepMsg s={st} i={i} n={n} />
-                  {i <= replied && <div className="msg msg-me">Done ✓<span className="msg-t">✓✓</span></div>}
+                  <StepMsg s={st} i={i} n={n} creds={creds} />
+                  {st.kind === "connect" && log.map((m) => (
+                    <div key={m.id} className={`msg ${m.me ? "msg-me" : "msg-bot"}`}>
+                      {m.body}{m.me && <span className="msg-t">✓✓</span>}
+                      {m.acts === "sent" && !creds?.chatId && (
+                        <div className="su-acts">
+                          <a className="btn ghost sm" href={`https://t.me/${m.bot}`} target="_blank" rel="noopener noreferrer">Open @{m.bot} ↗</a>
+                          <button type="button" className="btn sm" onClick={checkSent} disabled={busy}>I sent it</button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                  {i <= replied && <div className="msg msg-me">{st.kind === "connect" && !creds?.chatId ? "Skip" : "Done ✓"}<span className="msg-t">✓✓</span></div>}
                 </Fragment>
               ))}
-              {typing && <div className="msg msg-bot msg-typing" aria-label="typing"><i /><i /><i /></div>}
+              {(typing || busy) && <div className="msg msg-bot msg-typing" aria-label="typing"><i /><i /><i /></div>}
               {finished && (
                 <div className="msg msg-bot msg-fin">
                   <CheckCircle variant="Bold" />
@@ -233,16 +329,31 @@ export default function Setup({ focus }) {
               {finished ? (
                 <button type="button" className="chat-btn" onClick={reset}>Start again</button>
               ) : (
-                <button type="button" className="chat-btn" onClick={next} disabled={typing}>
-                  {shown >= n - 1 ? "Done ✓ Finish" : "Done ✓ Next step"}
+                <button type="button" className="chat-btn" onClick={next} disabled={typing || busy}>
+                  {shown >= n - 1 ? "Done ✓ Finish" : onConnect && !creds?.chatId ? "Skip, I’ll fill it in myself" : "Done ✓ Next step"}
                 </button>
               )}
-              <div className="chat-in" aria-hidden="true">
-                <Attach />
-                <span>Write a message…</span>
-                <Smile />
-                <span className="chat-mic"><Mic /></span>
-              </div>
+              {onConnect && !creds?.chatId ? (
+                /* the message bar is live on the connect step: paste the bot token here */
+                <form className="chat-in live" onSubmit={sendToken}>
+                  <Attach aria-hidden="true" />
+                  <input
+                    value={draft}
+                    onChange={(e) => setDraft(e.target.value)}
+                    placeholder={creds ? "Send another token…" : "Paste your bot token…"}
+                    aria-label="Your bot token"
+                    autoComplete="off" autoCapitalize="off" autoCorrect="off" spellCheck="false"
+                  />
+                  <button type="submit" className="chat-mic" aria-label="Send" disabled={!draft.trim() || busy}><Send /></button>
+                </form>
+              ) : (
+                <div className="chat-in" aria-hidden="true">
+                  <Attach />
+                  <span>Write a message…</span>
+                  <Smile />
+                  <span className="chat-mic"><Mic /></span>
+                </div>
+              )}
             </footer>
           </div>
         </div>

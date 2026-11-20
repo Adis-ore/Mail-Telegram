@@ -6,6 +6,7 @@ import Hero from "./components/Hero";
 import HowItWorks from "./components/HowItWorks";
 import Setup from "./components/Setup";
 import Faq from "./components/Faq";
+import Contribute from "./components/Contribute";
 import LatestVersion from "./components/LatestVersion";
 import Footer from "./components/Footer";
 import { UpdateToast } from "./components/ScriptViewer";
@@ -37,6 +38,7 @@ export default function App() {
         <HowItWorks />
         <Setup focus={focus} />
         <Faq />
+        <Contribute />
         <LatestVersion />
       </main>
       <Footer />

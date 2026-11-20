@@ -43,7 +43,11 @@
 
 It all runs as a Google Apps Script in **your own** Google account, checking once a minute. Nothing goes through anyone else’s server.
 
-## Set it up in 10 steps
+## Set it up
+
+The easiest way is the guide on the website: paste your bot token into its chat and it hands you the script with your details already filled in. Prefer to do it by hand? Follow these steps.
+
+### By hand, in 10 steps
 
 > The setup website walks through the same steps with links and copy buttons.
 
@@ -158,6 +162,10 @@ npm run build    # production build in dist/
 <p align="center">
   Built by Adis · Stuck? Message me on <a href="https://x.com/adisdtechie">X</a> or <a href="https://www.linkedin.com/in/adigun-oreoluwa-78b500237/">LinkedIn</a>.
 </p>
+
+## Contributing
+
+Bug reports, ideas and pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) first: fork, make one change, test it with a test bot, and open a pull request. Every pull request is checked automatically and reviewed before it is merged.
 
 ## License
 
