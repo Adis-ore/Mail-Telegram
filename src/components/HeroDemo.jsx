@@ -175,7 +175,8 @@ export default function HeroDemo({ state, belowRef }) {
   const wrapRef = useRef(null);
   const phoneRef = useRef(null);
   const narrow = useNarrow();
-  const W = narrow ? 340 : 640, H = narrow ? 612 : 570;
+  // phones use a narrower side-by-side stage so the text stays readable when scaled down
+  const W = narrow ? 500 : 640, H = 570;
   const scale = useFit(wrapRef, W, H, narrow, belowRef);
   // a short buzz each time a message lands
   useEffect(() => {
@@ -185,7 +186,7 @@ export default function HeroDemo({ state, belowRef }) {
       { duration: 260, easing: "ease-in-out" },
     );
   }, [state.buzz]);
-  const inboxRows = narrow ? state.inbox.slice(0, 2) : state.inbox.slice(0, 6);
+  const inboxRows = state.inbox.slice(0, 6);
 
   return (
     <div className="demo">

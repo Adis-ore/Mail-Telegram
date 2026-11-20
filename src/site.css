@@ -136,17 +136,18 @@ body{font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .demo-stage.out{opacity:0}
 .lbl{position:absolute;font-size:.68rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mu)}
 .lbl.l1{left:4px;top:46px}.lbl.l2{left:384px;top:2px}
-.demo-stage.n .lbl.l1{left:2px;top:0}.demo-stage.n .lbl.l2{left:34px;top:160px}
+.demo-stage.n .lbl.l2{left:244px}
 
 /* gmail window */
 .gm{position:absolute;left:0;top:72px;width:372px;height:390px;border-radius:18px;background:var(--card);border:1px solid var(--ln);box-shadow:var(--sh);overflow:hidden}
-.demo-stage.n .gm{top:20px;width:340px;height:134px}
+.demo-stage.n .gm{width:290px}
+.demo-stage.n .gm-list li{grid-template-columns:74px minmax(0,1fr);padding-right:66px}
+.demo-stage.n .gm-t,.demo-stage.n .gm-search{display:none}
 .gm-bar{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--ln)}
 .gm-logo{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;background:#ea4335;color:#fff}.gm-logo svg{width:15px;height:15px}
 .gm-bar b{font-size:.88rem;font-weight:600}
 .gm-search{flex:1;margin-left:6px;padding:6px 12px;border-radius:999px;background:var(--so);color:var(--mu);font-size:.7rem}
 .gm-tab{padding:9px 16px 7px;font-size:.72rem;font-weight:600;color:#d93025;border-bottom:1px solid var(--ln);box-shadow:inset 0 -2px 0 #d93025;width:max-content}
-.demo-stage.n .gm-tab{display:none}
 .gm-list{list-style:none;margin:0;padding:0}
 .gm-list li{display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:10px;align-items:center;padding:0 30px 0 16px;height:41px;border-bottom:1px solid var(--ln);font-size:.74rem;color:var(--mu);animation:rowIn .55s cubic-bezier(.2,.8,.2,1)}
 .gm-list li>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -158,7 +159,7 @@ body{font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 
 /* phone */
 .tph{position:absolute;left:360px;top:28px;width:280px;height:540px;padding:9px;border-radius:44px;background:#0b0d12;box-shadow:0 0 0 1px rgba(255,255,255,.06) inset,0 30px 60px -24px rgba(10,20,40,.55)}
-.demo-stage.n .tph{left:30px;top:180px;height:430px}
+.demo-stage.n .tph{left:220px}
 .tph::before{content:"";position:absolute;top:17px;left:50%;width:76px;height:20px;margin-left:-38px;border-radius:12px;background:#0b0d12;z-index:5}
 .ph-in{position:relative;height:100%;border-radius:36px;overflow:hidden;display:flex;flex-direction:column;background:var(--chat)}
 .ph-st{display:flex;justify-content:space-between;align-items:center;height:34px;padding:4px 24px 0;background:var(--phd);font-size:.7rem;color:var(--btx)}
@@ -225,7 +226,7 @@ body{font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 /* "next day" time jump */
 .jump{position:absolute;left:500px;top:290px;z-index:20;padding:11px 20px;border-radius:999px;background:var(--tx);color:var(--bg);font-size:.86rem;font-weight:600;white-space:nowrap;
   transform:translate(-50%,-50%);box-shadow:0 18px 40px -12px rgba(0,0,0,.5);animation:jumpIn .5s cubic-bezier(.2,.9,.25,1.2)}
-.demo-stage.n .jump{left:170px;top:380px}
+.demo-stage.n .jump{left:360px}
 @keyframes jumpIn{from{opacity:0;transform:translate(-50%,-30%) scale(.8)}}
 
 /* envelope flying between Gmail and Telegram */
@@ -234,8 +235,8 @@ body{font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .fly svg{width:20px;height:20px}
 .fly.in{offset-path:path("M 300 170 C 410 70, 540 150, 500 470")}
 .fly.out{offset-path:path("M 490 545 C 360 560, 220 340, 240 170");background:var(--tg);box-shadow:0 12px 24px -8px rgba(42,171,238,.7)}
-.demo-stage.n .fly.in{offset-path:path("M 250 90 C 330 170, 330 320, 170 500")}
-.demo-stage.n .fly.out{offset-path:path("M 170 575 C 10 510, 10 220, 250 90")}
+.demo-stage.n .fly.in{offset-path:path("M 190 170 C 290 70, 400 150, 360 470")}
+.demo-stage.n .fly.out{offset-path:path("M 350 545 C 240 560, 130 340, 150 170")}
 @keyframes fly{0%{offset-distance:0%;transform:scale(.6);opacity:0}12%{opacity:1;transform:scale(1)}85%{opacity:1;transform:scale(1)}100%{offset-distance:100%;transform:scale(.5);opacity:0}}
 
 /* ---------- sections ---------- */
