@@ -267,7 +267,7 @@ export default function Setup({ focus }) {
   const preview = finished ? "You’re all set." : STEPS[Math.min(shown, n - 1)].title;
 
   return (
-    <section className="setup" id="setup" aria-label="Set it up in 10 minutes">
+    <section className={`setup${shut ? " shut" : ""}`} id="setup" aria-label="Set it up in 10 minutes">
       <div className="su">
         {/* a Telegram window: chat list on the left (desktop), the setup chat on the right */}
         {shut ? (
