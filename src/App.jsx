@@ -10,6 +10,7 @@ import LatestVersion from "./components/LatestVersion";
 import Footer from "./components/Footer";
 import { UpdateToast } from "./components/ScriptViewer";
 import TapRipple from "./components/TapRipple";
+import ScrollScene from "./components/ScrollScene";
 import "./index.css";
 import "./site.css";
 
@@ -29,6 +30,7 @@ export default function App() {
 
   return (
     <>
+      <ScrollScene />
       <Nav />
       <main>
         <Hero onStart={start} />

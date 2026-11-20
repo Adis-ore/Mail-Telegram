@@ -65,7 +65,7 @@ export default function ScriptViewer() {
         )}
         <CopyScriptButton className="sv-c" />
       </header>
-      <div className="sv-b" data-lenis-prevent>
+      <div className="sv-b">
         {s.status === "loading" && <p className="sv-m">Loading the latest script…</p>}
         {s.status === "error" && (
           <p className="sv-m">Couldn’t load the script. <a href={SCRIPT.view} target="_blank" rel="noopener noreferrer">Open it on GitHub ↗</a></p>

@@ -81,7 +81,7 @@ export default function Footer() {
             <Github size={19} />
           </a>
         </div>
-        <small>Built by Adis · Stuck? Message me on X or LinkedIn.</small>
+        <small>Built by Adis.</small>
       </div>
     </footer>
     </>

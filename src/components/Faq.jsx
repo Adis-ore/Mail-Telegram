@@ -107,7 +107,7 @@ export default function Faq() {
         </ul>
       </div>
       </div>
-      <Connect className="faq-cx" />
+      <Connect big className="faq-cx" />
     </section>
   );
 }

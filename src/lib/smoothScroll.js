@@ -7,7 +7,9 @@ let lenis = null;
 /** Starts eased, continuous scrolling (wheel, keys and #anchor links). Returns a stop function. */
 export function startSmoothScroll() {
   if (lenis || prefersReducedMotion()) return () => {};
-  lenis = new Lenis({ duration: 1.25, smoothWheel: true, anchors: { duration: 1.6 } });
+  // allowNestedScroll: boxes that scroll on their own (the setup chat, the script window) scroll first,
+  // then the page carries on once they reach their top or bottom.
+  lenis = new Lenis({ duration: 1.25, smoothWheel: true, allowNestedScroll: true, anchors: { duration: 1.6 } });
   let raf = 0;
   const loop = (t) => { lenis?.raf(t); raf = requestAnimationFrame(loop); };
   raf = requestAnimationFrame(loop);

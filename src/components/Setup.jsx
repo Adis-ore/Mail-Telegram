@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { CheckCircle, Info, RotateLeft } from "../icons";
+import { Attach, BackArrow, Bookmark, CheckCircle, Info, Menu, Mic, More, RotateLeft, Search, Smile } from "../icons";
 import { STEPS } from "../data";
 import { prefersReducedMotion } from "../lib/motion";
 import ScriptViewer, { CopyScriptButton } from "./ScriptViewer";
@@ -142,51 +142,91 @@ export default function Setup({ focus }) {
   const replied = upto % 1 !== 0 ? shown : shown - 1; // user has said "Done" to steps 0..replied
   const finished = upto >= n;
 
+  const status = typing ? "typing…" : finished ? "bot · all done" : `bot · step ${Math.min(shown, n - 1) + 1} of ${n}`;
+  const preview = finished ? "You’re all set." : STEPS[Math.min(shown, n - 1)].title;
+
   return (
-    <section className="setup" id="setup" aria-label="Set it up">
+    <section className="setup" id="setup" aria-label="Set it up in 10 minutes">
       <div className="su">
-        <h2 className="su-title">Set it up in <em>10 minutes.</em></h2>
+        {/* a Telegram window: chat list on the left (desktop), the setup chat on the right */}
+        <div className="tgw">
+          <aside className="tgw-side" aria-hidden="true">
+            <div className="tgw-sh"><Menu /><span className="tgw-search"><Search /> Search</span></div>
+            <ul className="tgw-list">
+              <li className="on">
+                <Logo size={46} round />
+                <span><b>Setup guide</b><small>{typing ? "typing…" : preview}</small></span>
+                <time>now</time>
+              </li>
+              <li>
+                <Logo size={46} round />
+                <span><b>Mail bot</b><small>📧 Your sign-in code is 482913</small></span>
+                <time>9:41</time><em>2</em>
+              </li>
+              <li>
+                <span className="tgw-av sv"><Bookmark /></span>
+                <span><b>Saved Messages</b><small>Code.gs</small></span>
+                <time>Mon</time>
+              </li>
+              <li>
+                <span className="tgw-av tg">T</span>
+                <span><b>Telegram</b><small>Login code: 51234. Do not give…</small></span>
+                <time>Sun</time>
+              </li>
+            </ul>
+          </aside>
 
-        <div className="chat">
-          <header className="chat-h">
-            <Logo size={38} round />
-            <span className="chat-who">
-              <b>Setup guide</b>
-              <small>{typing ? "typing…" : finished ? "all done" : `step ${Math.min(shown, n - 1) + 1} of ${n}`}</small>
-            </span>
-            {upto > 0 && <button type="button" className="chat-reset" onClick={reset}><RotateLeft /> Start over</button>}
-          </header>
+          <div className="chat">
+            <header className="chat-h">
+              <span className="chat-back" aria-hidden="true"><BackArrow /></span>
+              <Logo size={40} round />
+              <span className="chat-who">
+                <b>Setup guide</b>
+                <small className={typing ? "on" : ""}>{status}</small>
+              </span>
+              {upto > 0 && <button type="button" className="chat-reset" onClick={reset} title="Start over"><RotateLeft /><span>Start over</span></button>}
+              <span className="chat-ico" aria-hidden="true"><Search /><More /></span>
+            </header>
 
-          <div className="chat-b" ref={bodyRef} data-lenis-prevent>
-            <div className="msg msg-bot">
-              Hi! I’ll walk you through the setup. <b>10 short steps</b>, about 10 minutes, no coding.
-              Scroll up any time to see a step again.
-            </div>
-            {STEPS.map((s, i) => i <= Math.min(shown, n - 1) && (
-              <Fragment key={s.name}>
-                <StepMsg s={s} i={i} n={n} />
-                {i <= replied && <div className="msg msg-me">Done ✓</div>}
-              </Fragment>
-            ))}
-            {typing && <div className="msg msg-bot msg-typing" aria-label="typing"><i /><i /><i /></div>}
-            {finished && (
-              <div className="msg msg-bot msg-fin">
-                <CheckCircle variant="Bold" />
-                <b>You’re all set.</b> New emails will now arrive here within a minute. Try replying to one with a swipe.
+            <div className="chat-b" ref={bodyRef}>
+              <span className="chat-day">Set it up in 10 minutes</span>
+              <div className="msg msg-bot">
+                Hi! I’ll walk you through the setup. <b>10 short steps</b>, about 10 minutes, no coding.
+                Scroll up any time to see a step again.
               </div>
-            )}
-            <span className="msg-end" />
-          </div>
+              {STEPS.map((st, i) => i <= Math.min(shown, n - 1) && (
+                <Fragment key={st.name}>
+                  <StepMsg s={st} i={i} n={n} />
+                  {i <= replied && <div className="msg msg-me">Done ✓<span className="msg-t">✓✓</span></div>}
+                </Fragment>
+              ))}
+              {typing && <div className="msg msg-bot msg-typing" aria-label="typing"><i /><i /><i /></div>}
+              {finished && (
+                <div className="msg msg-bot msg-fin">
+                  <CheckCircle variant="Bold" />
+                  <b>You’re all set.</b> New emails will now arrive here within a minute. Try replying to one with a swipe.
+                </div>
+              )}
+              <span className="msg-end" />
+            </div>
 
-          <footer className="chat-f">
-            {finished ? (
-              <button type="button" className="chat-btn" onClick={reset}>Start again</button>
-            ) : (
-              <button type="button" className="chat-btn" onClick={next} disabled={typing}>
-                {shown >= n - 1 ? "Done ✓ Finish" : "Done ✓ Next step"}
-              </button>
-            )}
-          </footer>
+            <footer className="chat-f">
+              {/* Telegram reply keyboard */}
+              {finished ? (
+                <button type="button" className="chat-btn" onClick={reset}>Start again</button>
+              ) : (
+                <button type="button" className="chat-btn" onClick={next} disabled={typing}>
+                  {shown >= n - 1 ? "Done ✓ Finish" : "Done ✓ Next step"}
+                </button>
+              )}
+              <div className="chat-in" aria-hidden="true">
+                <Attach />
+                <span>Write a message…</span>
+                <Smile />
+                <span className="chat-mic"><Mic /></span>
+              </div>
+            </footer>
+          </div>
         </div>
 
         <Connect className="su-cx" />
