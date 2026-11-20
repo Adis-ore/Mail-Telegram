@@ -69,24 +69,16 @@ body{font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
   -webkit-mask-image:radial-gradient(70% 60% at 50% 40%,#000,transparent);mask-image:radial-gradient(70% 60% at 50% 40%,#000,transparent)}
 .hx-in{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:56px;align-items:center}
 .hx-copy{max-width:36rem}
-.hx h1{text-wrap:balance;margin:20px 0 0;font-size:clamp(2.4rem,4.3vw,3.9rem);line-height:1.02;font-weight:600;letter-spacing:-.04em}
+.hx h1{text-wrap:balance;margin:0;font-size:clamp(2.4rem,4.3vw,3.9rem);line-height:1.02;font-weight:600;letter-spacing:-.04em}
 .hx h1 em{display:inline-block;color:var(--tgi);font-size:1.1em;line-height:.9}
-.hx-sub{margin:20px 0 0;color:var(--mu);font-size:clamp(1rem,1.3vw,1.12rem);line-height:1.65;max-width:32rem}
-.hx-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
-.hx-proof{list-style:none;display:flex;flex-wrap:wrap;gap:8px 20px;margin:26px 0 0;padding:0;color:var(--mu);font-size:.86rem}
-.hx-proof li{display:inline-flex;align-items:center;gap:6px}
-.hx-proof svg{width:15px;height:15px;color:var(--ok)}
 @media (max-width:980px){
   .hx{padding-top:calc(96px + env(safe-area-inset-top,0px));padding-bottom:56px}
   .hx-in{grid-template-columns:1fr;gap:40px}
   .hx-copy{max-width:40rem;margin:0 auto;text-align:center}
-  .hx-sub{margin-inline:auto}
-  .hx-cta,.hx-proof{justify-content:center}
 }
 @media (max-width:560px){
   .hx{padding-left:16px;padding-right:16px}
   .hx h1{font-size:clamp(2.2rem,10.5vw,2.9rem)}
-  .hx-cta .btn{flex:1 1 100%}
 }
 
 /* ---------- hero demo (fixed-size stage, scaled to fit) ---------- */
