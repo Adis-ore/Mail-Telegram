@@ -1,16 +1,21 @@
-import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, CheckCircle, Info } from "../icons";
-import { LINKEDIN_URL, STEPS, X_URL } from "../data";
+import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { CheckCircle, Info, RotateLeft } from "../icons";
+import { STEPS } from "../data";
 import { prefersReducedMotion } from "../lib/motion";
 import ScriptViewer, { CopyScriptButton } from "./ScriptViewer";
+import Logo from "./Logo";
+import Connect from "./Connect";
 
 /*
- * The setup guide as a book: one step per page. Swipe left for the next page, right for the
- * previous one (or the small arrows / arrow keys); each turn plays a page-flip.
- * The last page after step 10 says "You're all set".
+ * The setup guide as a Telegram chat with a setup bot. The bot sends each step as a message;
+ * tap "Done" to reply, the bot types, then sends the next step. Earlier steps stay in the chat,
+ * so people can scroll up and down through everything. Progress is saved in this browser.
  */
 
-const TURN_MS = 850;
+const KEY = "setupUpto";
+const loadUpto = () => {
+  try { const v = Math.floor(Number(localStorage.getItem(KEY))); return v >= 0 && v <= STEPS.length ? v : 0; } catch { return 0; }
+};
 
 /** Copies `text` and briefly says so. */
 function CopyButton({ label, text, className = "btn ghost sm" }) {
@@ -71,25 +76,12 @@ function StepBody({ s }) {
   );
 }
 
-/** One page of the book. */
-function Page({ i }) {
-  const n = STEPS.length;
-  if (i >= n) {
-    return (
-      <div className="pg-in pg-fin">
-        <CheckCircle variant="Bold" />
-        <h3>You’re all set.</h3>
-        <p>New emails will now arrive in your Telegram within a minute. Try replying to one with a swipe.</p>
-        <div className="su-acts"><a className="btn sm" href="#faq">Read the FAQ</a></div>
-      </div>
-    );
-  }
-  const s = STEPS[i];
+function StepMsg({ s, i, n }) {
   return (
-    <div className="pg-in" data-lenis-prevent>
-      <div className="pg-head">
-        <span className="pg-ic" style={{ background: `linear-gradient(160deg,${s.colors[0]},${s.colors[1]})` }}>{s.icon}</span>
-        <span className="pg-k">{s.where} · {s.time}</span>
+    <div className="msg msg-bot msg-step" data-i={i}>
+      <div className="msg-head">
+        <span className="msg-ic" style={{ background: `linear-gradient(160deg,${s.colors[0]},${s.colors[1]})` }}>{s.icon}</span>
+        <span>Step {i + 1} of {n} · {s.time} · {s.where}</span>
       </div>
       <h3>{s.title}</h3>
       <StepBody s={s} />
@@ -97,94 +89,107 @@ function Page({ i }) {
   );
 }
 
-export default function Setup({ step, onStep }) {
+export default function Setup({ focus }) {
   const n = STEPS.length;
-  const [page, setPage] = useState(step);          // 0..n (n = the "all set" page)
-  const [turn, setTurn] = useState(null);           // { from, dir, id } while a page is turning
-  const secRef = useRef(null);
-  const start = useRef(null);
+  const [upto, setUpto] = useState(loadUpto);   // steps 0..upto are in the chat; upto === n means finished
+  const [typing, setTyping] = useState(false);
+  const [, setTick] = useState(0);               // re-render once to run the scroll below
+  const bodyRef = useRef(null);
+  const scrollTo = useRef(null);                 // which message to bring into view after render
 
-  // the nav / hero "Set it up" buttons open a step from outside
-  useEffect(() => { setPage((p) => (p === n && step === n - 1 ? p : step)); }, [step, n]);
+  useEffect(() => { if (upto % 1 === 0) try { localStorage.setItem(KEY, String(upto)); } catch { /* storage blocked */ } }, [upto]);
 
-  const goTo = (to) => {
-    if (turn || to < 0 || to > n || to === page) return;
-    const dir = to > page ? "next" : "prev";
-    if (!prefersReducedMotion()) {
-      const id = Date.now();
-      setTurn({ from: page, dir, id });
-      setTimeout(() => setTurn((t) => (t && t.id === id ? null : t)), TURN_MS);
-    }
-    setPage(to);
-    if (to < n) onStep(to);
-  };
-  const next = () => goTo(page + 1);
-  const prev = () => goTo(page - 1);
-
-  // swipe: left = next page, right = previous page (vertical moves still scroll the page text)
-  const onDown = (e) => { start.current = { x: e.clientX, y: e.clientY }; };
-  const onUp = (e) => {
-    const s0 = start.current; start.current = null;
-    if (!s0) return;
-    const dx = e.clientX - s0.x, dy = e.clientY - s0.y;
-    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.3) (dx < 0 ? next : prev)();
-  };
-
-  // arrow keys while the book is on screen
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
-      const r = secRef.current?.getBoundingClientRect();
-      if (!r || r.top > window.innerHeight / 2 || r.bottom < window.innerHeight / 2) return;
-      if (/input|textarea/i.test(e.target.tagName)) return;
-      e.key === "ArrowRight" ? next() : prev();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+  // bring a message to the top of the chat (smooth unless reduced motion)
+  useLayoutEffect(() => {
+    const body = bodyRef.current, want = scrollTo.current;
+    if (!body || want == null) return;
+    const el = body.querySelector(want === "end" ? ".msg-end" : `[data-i="${want}"]`);
+    if (!el) return;
+    scrollTo.current = null;
+    body.scrollTo({ top: Math.max(0, el.offsetTop - 12), behavior: prefersReducedMotion() ? "auto" : "smooth" });
   });
 
-  // while turning forward the old page flips away over the new one; going back, the previous page flips in over the current one
-  const base = turn && turn.dir === "prev" ? turn.from : page;
-  const flip = turn ? (turn.dir === "next" ? turn.from : page) : null;
+  // first open: show where they are
+  useEffect(() => { scrollTo.current = upto >= n ? "end" : upto; setTick((t) => t + 1); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // "Set it up" buttons elsewhere on the page ask to show a step
+  useEffect(() => {
+    if (!focus || !focus.n) return;
+    if (focus.i < 0) scrollTo.current = upto >= n ? "end" : Math.floor(upto);
+    else {
+      if (focus.i > upto && upto < n) setUpto(focus.i);
+      scrollTo.current = focus.i;
+    }
+    setTick((t) => t + 1);
+  }, [focus]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const next = () => {
+    if (typing || upto >= n) return;
+    const to = upto + 1;
+    setTyping(true);
+    // the user's "Done" bubble shows right away; the bot "types" for a moment, then answers
+    scrollTo.current = "end";
+    setUpto((u) => u + 0.5);
+    setTimeout(() => {
+      setTyping(false);
+      setUpto(to);
+      scrollTo.current = to < n ? to : "end";
+    }, prefersReducedMotion() ? 0 : 850);
+  };
+  const reset = () => { setTyping(false); setUpto(0); scrollTo.current = 0; };
+
+  const shown = Math.floor(upto);               // last bot step message in the chat
+  const replied = upto % 1 !== 0 ? shown : shown - 1; // user has said "Done" to steps 0..replied
+  const finished = upto >= n;
 
   return (
-    <section className="setup" id="setup" ref={secRef} aria-label="Set it up">
+    <section className="setup" id="setup" aria-label="Set it up">
       <div className="su">
         <h2 className="su-title">Set it up in <em>10 minutes.</em></h2>
 
-        <div
-          className="bk"
-          onPointerDown={onDown}
-          onPointerUp={onUp}
-          onPointerCancel={() => { start.current = null; }}
-          aria-live="polite"
-        >
-          <span className="bk-stack" aria-hidden="true" />
-          <article className="bk-page" key={`p${base}`}>
-            <Page i={base} />
-            <span className="pg-no" aria-hidden="true">{base < n ? base + 1 : "✓"}</span>
-          </article>
-          {turn && (
-            <article className={`bk-flip ${turn.dir}`} key={`f${turn.id}`} aria-hidden="true">
-              <div className="bk-face">
-                <Page i={flip} />
-                <span className="pg-no">{flip < n ? flip + 1 : "✓"}</span>
-                <i className="bk-shade" />
+        <div className="chat">
+          <header className="chat-h">
+            <Logo size={38} round />
+            <span className="chat-who">
+              <b>Setup guide</b>
+              <small>{typing ? "typing…" : finished ? "all done" : `step ${Math.min(shown, n - 1) + 1} of ${n}`}</small>
+            </span>
+            {upto > 0 && <button type="button" className="chat-reset" onClick={reset}><RotateLeft /> Start over</button>}
+          </header>
+
+          <div className="chat-b" ref={bodyRef} data-lenis-prevent>
+            <div className="msg msg-bot">
+              Hi! I’ll walk you through the setup. <b>10 short steps</b>, about 10 minutes, no coding.
+              Scroll up any time to see a step again.
+            </div>
+            {STEPS.map((s, i) => i <= Math.min(shown, n - 1) && (
+              <Fragment key={s.name}>
+                <StepMsg s={s} i={i} n={n} />
+                {i <= replied && <div className="msg msg-me">Done ✓</div>}
+              </Fragment>
+            ))}
+            {typing && <div className="msg msg-bot msg-typing" aria-label="typing"><i /><i /><i /></div>}
+            {finished && (
+              <div className="msg msg-bot msg-fin">
+                <CheckCircle variant="Bold" />
+                <b>You’re all set.</b> New emails will now arrive here within a minute. Try replying to one with a swipe.
               </div>
-              <div className="bk-back" />
-            </article>
-          )}
+            )}
+            <span className="msg-end" />
+          </div>
+
+          <footer className="chat-f">
+            {finished ? (
+              <button type="button" className="chat-btn" onClick={reset}>Start again</button>
+            ) : (
+              <button type="button" className="chat-btn" onClick={next} disabled={typing}>
+                {shown >= n - 1 ? "Done ✓ Finish" : "Done ✓ Next step"}
+              </button>
+            )}
+          </footer>
         </div>
 
-        <div className="bk-nav">
-          <button type="button" onClick={prev} disabled={page === 0} aria-label="Previous page"><ArrowLeft /></button>
-          <span>Swipe to turn the page</span>
-          <button type="button" onClick={next} disabled={page === n} aria-label="Next page"><ArrowRight /></button>
-        </div>
-        <p className="su-help">
-          Stuck? Message me on <a href={X_URL} target="_blank" rel="noopener noreferrer">X</a> or{" "}
-          <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer">LinkedIn</a>.
-        </p>
+        <Connect className="su-cx" />
       </div>
     </section>
   );

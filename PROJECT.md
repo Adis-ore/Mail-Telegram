@@ -62,8 +62,9 @@ Single page, top to bottom:
 | Hero | `Hero.jsx`, `HeroDemo.jsx` | One-line pitch plus an animated demo: Gmail inbox → Telegram chat (code copy, swipe reply, reminder call). Captions under it jump to each scene |
 | How it works | `HowItWorks.jsx` | Four equal cards packed round the logo ball; each inner corner is carved (CSS mask) to wrap it. Hover, click or tap a card to show its detail in the box below. Tapping the logo ball plays a 5-second animation: a mail drops in, becomes a paper plane, flies figure-eights round the cards and lands as the Telegram logo |
 | What you can do | `Features.jsx` | One card per feature showing the real Telegram message; a swipeable row on phones. Swipeable row on phones |
-| Setup | `Setup.jsx` | A book: one step per page. Swipe left / right (or the small arrows, or arrow keys) to turn pages with a page-flip. The Copy step shows the live script (`ScriptViewer.jsx`) |
-| FAQ | `Faq.jsx` | An iPhone lock screen (live clock and date); each question is a notification that arrives stacked and spreads out on scroll. Tap to read the full answer, tap again or another to switch |
+| Setup | `Setup.jsx` | A Telegram chat with a setup bot: each step is a bot message; "Done ✓" replies, the bot types, then sends the next step. Earlier steps stay, so the chat scrolls up and down. Progress saved in the browser |
+| FAQ | `Faq.jsx` | A stack of glassy Telegram notifications on a soft aurora background. Tap the stack to open it into a list, tap one for its answer, "Show less" stacks them back |
+| Connect | `Connect.jsx` | "Connect with me" X and LinkedIn buttons (under the setup chat and the FAQ) |
 | Latest version | `LatestVersion.jsx` | Just above the footer: version, what’s new and chat commands, live from the script |
 | Footer | `Footer.jsx` | Animated arch lines |
 | Update notice | `ScriptViewer.jsx` (`UpdateToast`) | Shown to visitors whose copied script is out of date |

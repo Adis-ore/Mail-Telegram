@@ -13,26 +13,19 @@ import TapRipple from "./components/TapRipple";
 import "./index.css";
 import "./site.css";
 
-const STEP_KEY = "setupStep";
-const savedStep = () => {
-  try { const v = Number(localStorage.getItem(STEP_KEY)); return v >= 0 && v < STEPS.length ? v : 0; } catch { return 0; }
-};
-
 export default function App() {
-  const [step, setStep] = useState(savedStep);
+  // asks the setup chat to show a step (n changes each time so the same step can be asked twice)
+  const [focus, setFocus] = useState({ i: 0, n: 0 });
 
   useEffect(() => startSmoothScroll(), []);
-  useEffect(() => {
-    try { localStorage.setItem(STEP_KEY, String(step)); } catch { /* storage blocked */ }
-  }, [step]);
 
   // Opens a setup step and scrolls the guide into view.
   const goToStep = useCallback((i) => {
-    setStep(i);
+    setFocus({ i, n: Date.now() });
     const el = document.getElementById("setup");
     if (el) scrollToY(window.scrollY + el.getBoundingClientRect().top);
   }, []);
-  const start = useCallback(() => goToStep(0), [goToStep]);
+  const start = useCallback(() => goToStep(-1), [goToStep]); // -1 = wherever they got to
 
   return (
     <>
@@ -40,7 +33,7 @@ export default function App() {
       <main>
         <Hero onStart={start} />
         <HowItWorks />
-        <Setup step={step} onStep={setStep} />
+        <Setup focus={focus} />
         <Faq />
         <LatestVersion />
       </main>
