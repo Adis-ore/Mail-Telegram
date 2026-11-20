@@ -60,7 +60,7 @@ Single page, top to bottom:
 |---|---|---|
 | Nav | `Nav.jsx` | Top bar on every screen (logo, theme toggle, GitHub). Phones also get a floating section dock at the bottom with a raised Setup button; desktop has no dock |
 | Hero | `Hero.jsx`, `HeroDemo.jsx` | One-line pitch plus an animated demo: Gmail inbox → Telegram chat (code copy, swipe reply, reminder call). Captions under it jump to each scene |
-| How it works | `HowItWorks.jsx` | Four short cards, two each side of the logo on every screen. Desktop: detail opens inside the card on hover or click. Phones: four equal cards, the tapped one's detail shows in a box below |
+| How it works | `HowItWorks.jsx` | Four equal cards packed round the logo ball; each inner corner is carved (CSS mask) to wrap it. Hover, click or tap a card to show its detail in the box below |
 | What you can do | `Features.jsx` | One card per feature showing the real Telegram message; a swipeable row on phones. Swipeable row on phones |
 | Setup | `Setup.jsx` | All 10 steps listed (progress bar, ticks) beside one open step with Back / “Done, next step”. Progress is saved in the browser. The Copy step shows the live script (`ScriptViewer.jsx`) |
 | FAQ | `Faq.jsx` | Plain questions and answers |
