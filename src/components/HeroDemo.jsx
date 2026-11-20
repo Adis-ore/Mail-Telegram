@@ -20,10 +20,10 @@ const REPLY = "3pm works. See you then!";
 
 // The story told next to the demo; t = when each part starts (ms).
 export const SCENES = [
-  { t: 0, short: "Arrives", title: "An email lands in your Gmail", text: "It shows up in your Telegram chat within a minute, the whole message." },
-  { t: 3300, short: "Copy", title: "Tap a code to copy it", text: "Sign-in codes are picked out for you. No more digging through your inbox." },
-  { t: 5200, short: "Reply", title: "Swipe to reply", text: "Type your answer in Telegram. It goes out as a normal email from your Gmail." },
-  { t: 12900, short: "Rings", title: "Reminders ring your phone", text: "Interviews and meetings in your emails get a reminder and a call before they start." },
+  { t: 0, title: "An email lands in your Gmail", text: "It shows up in your Telegram chat within a minute, the whole message." },
+  { t: 3300, title: "Tap a code to copy it", text: "Sign-in codes are picked out for you. No more digging through your inbox." },
+  { t: 5200, title: "Swipe to reply", text: "Type your answer in Telegram. It goes out as a normal email from your Gmail." },
+  { t: 12900, title: "Reminders ring your phone", text: "Interviews and meetings in your emails get a reminder and a call before they start." },
 ];
 export const TOTAL = 18200;
 

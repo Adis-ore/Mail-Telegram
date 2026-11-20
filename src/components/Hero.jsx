@@ -1,5 +1,4 @@
 import { useRef } from "react";
-import { ArrowRight } from "../icons";
 import HeroDemo, { SCENES, TOTAL, useTimeline } from "./HeroDemo";
 
 /**
@@ -34,7 +33,6 @@ export default function Hero({ onStart }) {
                   <b>{sc.title}</b>
                   <span className="st-x"><span>{sc.text}</span></span>
                 </span>
-                <span className="st-s">{sc.short}</span>
               </button>
             </li>
           ))}
@@ -44,9 +42,7 @@ export default function Hero({ onStart }) {
         </div>
 
         <div className="hx-go">
-          <button type="button" className="btn big" onClick={onStart}>
-            Set it up free <ArrowRight />
-          </button>
+          <button type="button" className="btn" onClick={onStart}>Set it up free</button>
           <span className="hx-meta">About 10 minutes · No server · Runs in your own Google account</span>
         </div>
       </div>
