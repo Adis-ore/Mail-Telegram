@@ -4,7 +4,6 @@ import { scrollToY, startSmoothScroll } from "./lib/smoothScroll";
 import Nav from "./components/Nav";
 import Hero from "./components/Hero";
 import HowItWorks from "./components/HowItWorks";
-import Features from "./components/Features";
 import Setup from "./components/Setup";
 import Faq from "./components/Faq";
 import LatestVersion from "./components/LatestVersion";
@@ -41,7 +40,6 @@ export default function App() {
       <main>
         <Hero onStart={start} />
         <HowItWorks />
-        <Features />
         <Setup step={step} onStep={setStep} />
         <Faq />
         <LatestVersion />

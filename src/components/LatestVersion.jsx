@@ -11,7 +11,7 @@ export default function LatestVersion() {
   const typed = info?.commands.typed || [];
 
   return (
-    <section className="sec latest" aria-label="Latest version">
+    <section className="sec latest" id="latest" aria-label="Latest version">
       <div className="livebox">
         <div className="live-v">
           <b>{s.version ? `Version ${s.version}` : s.status === "error" ? "Latest version" : "Checking…"}</b>

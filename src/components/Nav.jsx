@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Features, Github, Help, Home, Plus, Workflow } from "../icons";
+import { Bell, Github, Help, Home, Plus, Workflow } from "../icons";
 import { GITHUB_URL } from "../data";
 import ThemeToggle from "./ThemeToggle";
 import Logo from "./Logo";
@@ -9,8 +9,8 @@ const ITEMS = [
   { id: "top", label: "Home", icon: <Home /> },
   { id: "how", label: "How it works", icon: <Workflow /> },
   { id: "setup", label: "Set it up", icon: <Plus />, mid: true },
-  { id: "features", label: "Features", icon: <Features /> },
   { id: "faq", label: "FAQ", icon: <Help /> },
+  { id: "latest", label: "What’s new", icon: <Bell /> },
 ];
 
 /** The last section whose top has passed the middle of the screen (works for jumps too). */
@@ -38,7 +38,7 @@ function useActiveSection(ids) {
 }
 
 // Page order, so the check above walks top to bottom.
-const ORDER = ["top", "how", "features", "setup", "faq"];
+const ORDER = ["top", "how", "setup", "faq", "latest"];
 const IDS = ORDER;
 
 /**

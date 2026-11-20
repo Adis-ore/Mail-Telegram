@@ -419,8 +419,8 @@ h1 em,h2 em{font-style:italic;font-weight:700}
 .su-ol b{font-weight:600}
 .su-panel a.il{color:var(--tgi);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
 .su-panel .su-ol code,.su-note code{background:var(--so);color:var(--tgi)}
-.su-code{margin-top:16px;padding:12px 14px;border-radius:12px;background:#0f1117;overflow-x:auto}
-.su-code code{padding:0;background:none;color:#d6dbe8;font-size:.85rem;white-space:nowrap;word-break:normal}
+.su-code{margin-top:16px;padding:12px 14px;border-radius:12px;background:#0f1117}
+.su-code code{padding:0;background:none;color:#d6dbe8;font-size:.85rem;white-space:normal;word-break:break-all}
 .su-note{display:flex;gap:10px;margin:20px 0 0;padding:13px 15px;border-radius:14px;border:1px solid color-mix(in srgb,#f5a524 32%,var(--ln));background:color-mix(in srgb,#f5a524 10%,var(--card));font-size:.92rem;line-height:1.55}
 .su-note svg{flex:none;width:18px;height:18px;margin-top:2px;color:#d48806}
 .su-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
@@ -440,12 +440,12 @@ h1 em,h2 em{font-style:italic;font-weight:700}
 @media (max-width:900px){
   .su{grid-template-columns:minmax(0,1fr);gap:14px}
   .su-side{position:static;padding:14px 10px 8px}
-  .su-list{flex-direction:row;gap:4px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;scroll-snap-type:x proximity}
-  .su-list::-webkit-scrollbar{display:none}
-  .su-list button{flex-direction:column;gap:6px;width:64px;padding:8px 2px;scroll-snap-align:center}
+  .su-list{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:2px;margin-top:10px}
+  .su-list button{justify-content:center;padding:4px 0;border-radius:10px}
+  .su-list button.on{background:none}
   .su-l{display:none}
-  .su-s{display:block;font-size:.7rem;font-weight:500;color:var(--mu)}
-  .on .su-s{color:var(--tx);font-weight:600}
+  .su-n{width:28px;height:28px;font-size:.74rem}
+  .ok .su-n svg{width:13px;height:13px}
   .su-panel{min-height:0;padding:22px 18px;border-radius:22px}
   .su-ol li{font-size:.95rem}
   .su-ft .btn:last-child{flex:1}
