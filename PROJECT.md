@@ -60,9 +60,9 @@ Single page, top to bottom:
 |---|---|---|
 | Nav | `Nav.jsx` | Top bar on every screen (logo, theme toggle, GitHub). Phones also get a floating section dock at the bottom with a raised Setup button; desktop has no dock |
 | Hero | `Hero.jsx`, `HeroDemo.jsx` | One-line pitch plus an animated demo: Gmail inbox → Telegram chat (code copy, swipe reply, reminder call). Captions under it jump to each scene |
-| How it works | `HowItWorks.jsx` | Four equal cards packed round the logo ball; each inner corner is carved (CSS mask) to wrap it. Hover, click or tap a card to show its detail in the box below. Tapping the logo ball plays a short animation: a mail drops in, becomes a paper plane, loops round and lands as the Telegram logo |
+| How it works | `HowItWorks.jsx` | Four equal cards packed round the logo ball; each inner corner is carved (CSS mask) to wrap it. Hover, click or tap a card to show its detail in the box below. Tapping the logo ball plays a 5-second animation: a mail drops in, becomes a paper plane, flies figure-eights round the cards and lands as the Telegram logo |
 | What you can do | `Features.jsx` | One card per feature showing the real Telegram message; a swipeable row on phones. Swipeable row on phones |
-| Setup | `Setup.jsx` | All 10 steps listed (progress bar, ticks) beside one open step with Back / “Done, next step”. Progress is saved in the browser. The Copy step shows the live script (`ScriptViewer.jsx`) |
+| Setup | `Setup.jsx` | A book: one step per page. Swipe left / right (or the small arrows, or arrow keys) to turn pages with a page-flip. The Copy step shows the live script (`ScriptViewer.jsx`) |
 | FAQ | `Faq.jsx` | Plain questions and answers |
 | Latest version | `LatestVersion.jsx` | Just above the footer: version, what’s new and chat commands, live from the script |
 | Footer | `Footer.jsx` | Animated arch lines |

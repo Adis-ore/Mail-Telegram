@@ -25,7 +25,7 @@ export default function HowItWorks() {
   };
   useEffect(() => {
     if (!play) return;
-    const t = setTimeout(() => setPlay(0), 3700);
+    const t = setTimeout(() => setPlay(0), 5100);
     return () => clearTimeout(t);
   }, [play]);
   const hoverable = typeof window !== "undefined" && window.matchMedia("(hover: hover)").matches;

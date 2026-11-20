@@ -1,18 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, CheckCircle, Info, RotateLeft, Tick } from "../icons";
+import { ArrowLeft, ArrowRight, CheckCircle, Info } from "../icons";
 import { LINKEDIN_URL, STEPS, X_URL } from "../data";
+import { prefersReducedMotion } from "../lib/motion";
 import ScriptViewer, { CopyScriptButton } from "./ScriptViewer";
 
 /*
- * The setup guide as one screen: title, ten tappable progress segments, one step card
- * (long steps scroll inside it) and Back / Next. Next marks the step done. Progress is
- * remembered in this browser.
+ * The setup guide as a book: one step per page. Swipe left for the next page, right for the
+ * previous one (or the small arrows / arrow keys); each turn plays a page-flip.
+ * The last page after step 10 says "You're all set".
  */
 
-const DONE_KEY = "setupDone";
-const load = () => {
-  try { const v = JSON.parse(localStorage.getItem(DONE_KEY) || "[]"); return Array.isArray(v) ? v : []; } catch { return []; }
-};
+const TURN_MS = 850;
 
 /** Copies `text` and briefly says so. */
 function CopyButton({ label, text, className = "btn ghost sm" }) {
@@ -73,102 +71,116 @@ function StepBody({ s }) {
   );
 }
 
-export default function Setup({ step, onStep }) {
-  const [done, setDone] = useState(load);
-  const [finished, setFinished] = useState(false);
-  const bodyRef = useRef(null);
+/** One page of the book. */
+function Page({ i }) {
   const n = STEPS.length;
-  const s = STEPS[step];
+  if (i >= n) {
+    return (
+      <div className="pg-in pg-fin">
+        <CheckCircle variant="Bold" />
+        <h3>You’re all set.</h3>
+        <p>New emails will now arrive in your Telegram within a minute. Try replying to one with a swipe.</p>
+        <div className="su-acts"><a className="btn sm" href="#faq">Read the FAQ</a></div>
+      </div>
+    );
+  }
+  const s = STEPS[i];
+  return (
+    <div className="pg-in" data-lenis-prevent>
+      <div className="pg-head">
+        <span className="pg-ic" style={{ background: `linear-gradient(160deg,${s.colors[0]},${s.colors[1]})` }}>{s.icon}</span>
+        <span className="pg-k">{s.where} · {s.time}</span>
+      </div>
+      <h3>{s.title}</h3>
+      <StepBody s={s} />
+    </div>
+  );
+}
 
-  useEffect(() => {
-    try { localStorage.setItem(DONE_KEY, JSON.stringify(done)); } catch { /* storage blocked */ }
-  }, [done]);
+export default function Setup({ step, onStep }) {
+  const n = STEPS.length;
+  const [page, setPage] = useState(step);          // 0..n (n = the "all set" page)
+  const [turn, setTurn] = useState(null);           // { from, dir, id } while a page is turning
+  const secRef = useRef(null);
+  const start = useRef(null);
 
-  // a new step starts at the top of the card
-  useEffect(() => { if (bodyRef.current) bodyRef.current.scrollTop = 0; }, [step, finished]);
+  // the nav / hero "Set it up" buttons open a step from outside
+  useEffect(() => { setPage((p) => (p === n && step === n - 1 ? p : step)); }, [step, n]);
 
-  const go = (i) => { setFinished(false); onStep(i); };
-  const next = () => {
-    setDone((d) => (d.includes(step) ? d : [...d, step]));
-    if (step < n - 1) go(step + 1);
-    else setFinished(true);
+  const goTo = (to) => {
+    if (turn || to < 0 || to > n || to === page) return;
+    const dir = to > page ? "next" : "prev";
+    if (!prefersReducedMotion()) {
+      const id = Date.now();
+      setTurn({ from: page, dir, id });
+      setTimeout(() => setTurn((t) => (t && t.id === id ? null : t)), TURN_MS);
+    }
+    setPage(to);
+    if (to < n) onStep(to);
   };
-  const reset = () => { setDone([]); go(0); };
+  const next = () => goTo(page + 1);
+  const prev = () => goTo(page - 1);
+
+  // swipe: left = next page, right = previous page (vertical moves still scroll the page text)
+  const onDown = (e) => { start.current = { x: e.clientX, y: e.clientY }; };
+  const onUp = (e) => {
+    const s0 = start.current; start.current = null;
+    if (!s0) return;
+    const dx = e.clientX - s0.x, dy = e.clientY - s0.y;
+    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.3) (dx < 0 ? next : prev)();
+  };
+
+  // arrow keys while the book is on screen
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      const r = secRef.current?.getBoundingClientRect();
+      if (!r || r.top > window.innerHeight / 2 || r.bottom < window.innerHeight / 2) return;
+      if (/input|textarea/i.test(e.target.tagName)) return;
+      e.key === "ArrowRight" ? next() : prev();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
+
+  // while turning forward the old page flips away over the new one; going back, the previous page flips in over the current one
+  const base = turn && turn.dir === "prev" ? turn.from : page;
+  const flip = turn ? (turn.dir === "next" ? turn.from : page) : null;
 
   return (
-    <section className="setup" id="setup" aria-label="Set it up">
+    <section className="setup" id="setup" ref={secRef} aria-label="Set it up">
       <div className="su">
-        <header className="su-top">
-          <h2>Set it up in <em>10 minutes.</em></h2>
-          <div className="su-meta">
-            <span>{finished ? "All done" : <>Step <b>{step + 1}</b> of {n}</>} · {done.length} done</span>
-            {done.length > 0 && (
-              <button type="button" className="su-reset" onClick={reset}><RotateLeft /> Start over</button>
-            )}
-          </div>
-          {/* ten segments: tap one to jump to that step */}
-          <ol className="su-seg" aria-label="Setup steps">
-            {STEPS.map((st, i) => {
-              const ok = done.includes(i), on = i === step && !finished;
-              return (
-                <li key={st.name}>
-                  <button
-                    type="button"
-                    className={`${on ? "on" : ""}${ok ? " ok" : ""}`}
-                    aria-current={on ? "step" : undefined}
-                    aria-label={`Step ${i + 1}: ${st.title}${ok ? " (done)" : ""}`}
-                    onClick={() => go(i)}
-                  >
-                    <i />
-                    <span>{st.name}</span>
-                  </button>
-                </li>
-              );
-            })}
-          </ol>
-        </header>
+        <h2 className="su-title">Set it up in <em>10 minutes.</em></h2>
 
-        <article className="su-card" style={{ "--c0": s.colors[0], "--c1": s.colors[1] }} aria-live="polite">
-          {finished ? (
-            <div className="su-fin" key="fin">
-              <CheckCircle variant="Bold" />
-              <h3>You’re all set.</h3>
-              <p>New emails will now arrive in your Telegram within a minute. Try replying to one with a swipe.</p>
-              <div className="su-acts">
-                <a className="btn sm" href="#faq">Read the FAQ</a>
-                <button type="button" className="btn ghost sm" onClick={() => go(0)}>Back to step 1</button>
+        <div
+          className="bk"
+          onPointerDown={onDown}
+          onPointerUp={onUp}
+          onPointerCancel={() => { start.current = null; }}
+          aria-live="polite"
+        >
+          <span className="bk-stack" aria-hidden="true" />
+          <article className="bk-page" key={`p${base}`}>
+            <Page i={base} />
+            <span className="pg-no" aria-hidden="true">{base < n ? base + 1 : "✓"}</span>
+          </article>
+          {turn && (
+            <article className={`bk-flip ${turn.dir}`} key={`f${turn.id}`} aria-hidden="true">
+              <div className="bk-face">
+                <Page i={flip} />
+                <span className="pg-no">{flip < n ? flip + 1 : "✓"}</span>
+                <i className="bk-shade" />
               </div>
-            </div>
-          ) : (
-            <>
-              <div className="su-band" key={`b${step}`}>
-                <span className="su-ic">{s.icon}</span>
-                <div>
-                  <span className="su-k">Step {step + 1} · {s.time} · {s.where}</span>
-                  <h3>{s.title}</h3>
-                </div>
-                <span className="su-big" aria-hidden="true">{String(step + 1).padStart(2, "0")}</span>
-              </div>
-              {/* long steps scroll here, inside the card */}
-              <div className="su-body" ref={bodyRef} data-lenis-prevent key={step}>
-                <StepBody s={s} />
-              </div>
-            </>
+              <div className="bk-back" />
+            </article>
           )}
-          <footer className="su-ft">
-            <button type="button" className="btn ghost su-back" onClick={() => go(Math.max(0, step - 1))} disabled={step === 0 && !finished} aria-label="Previous step">
-              <ArrowLeft />
-            </button>
-            {finished ? (
-              <button type="button" className="btn" onClick={reset}>Start again</button>
-            ) : (
-              <button type="button" className="btn su-next" onClick={next}>
-                {step < n - 1 ? <>Done, next step <ArrowRight /></> : <>Finish <Tick /></>}
-              </button>
-            )}
-          </footer>
-        </article>
+        </div>
 
+        <div className="bk-nav">
+          <button type="button" onClick={prev} disabled={page === 0} aria-label="Previous page"><ArrowLeft /></button>
+          <span>Swipe to turn the page</span>
+          <button type="button" onClick={next} disabled={page === n} aria-label="Next page"><ArrowRight /></button>
+        </div>
         <p className="su-help">
           Stuck? Message me on <a href={X_URL} target="_blank" rel="noopener noreferrer">X</a> or{" "}
           <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer">LinkedIn</a>.
