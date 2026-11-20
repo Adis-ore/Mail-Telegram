@@ -82,7 +82,7 @@ Single page, top to bottom:
 
 **Third-party pieces**
 - npm: `react`, `lenis` (smooth scrolling), `@hugeicons/react` + `@hugeicons/core-free-icons` (icons, all wrapped in `src/icons.jsx`).
-- Fonts: Poppins and Instrument Serif (italic accents) from Google Fonts.
+- Fonts from Google Fonts: Playfair Display 700 for headings (italic for the blue accent words) and Inter 400/600 for body text. Set as `--font-heading` / `--font-body` in `src/site.css`.
 
 ## Running and building
 
