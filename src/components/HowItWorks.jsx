@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Mail, Plus, ShieldCheck, SourceCode, Telegram } from "../icons";
+import { Mail, Plus, Send, ShieldCheck, SourceCode, Telegram } from "../icons";
+import { prefersReducedMotion } from "../lib/motion";
 import { useReveal } from "../lib/useReveal";
 import Logo from "./Logo";
 
@@ -15,6 +16,18 @@ const POINTS = [
 export default function HowItWorks() {
   const ref = useReveal();
   const [open, setOpen] = useState(-1);
+  const [play, setPlay] = useState(0); // >0 while the logo's mail-to-Telegram animation runs
+
+  // tap the logo: a mail drops in, turns into a paper plane, loops round, lands as the Telegram logo
+  const fly = () => {
+    if (play || prefersReducedMotion()) return;
+    setPlay((n) => n + 1);
+  };
+  useEffect(() => {
+    if (!play) return;
+    const t = setTimeout(() => setPlay(0), 3700);
+    return () => clearTimeout(t);
+  }, [play]);
   const hoverable = typeof window !== "undefined" && window.matchMedia("(hover: hover)").matches;
 
   // an opened card closes back by itself after a few seconds
@@ -50,10 +63,17 @@ export default function HowItWorks() {
             </li>
           ))}
         </ul>
-        <div className="hw-core" aria-hidden="true">
-          <span className="hw-ring" />
-          <Logo size={84} />
-        </div>
+        <button type="button" className={`hw-core${play ? " play" : ""}`} onClick={fly} aria-label="Play the mail to Telegram animation">
+          <span className="hw-ring" aria-hidden="true" />
+          <span className="hw-logo" aria-hidden="true"><Logo size={84} /></span>
+          {play > 0 && (
+            <span className="hw-anim" aria-hidden="true" key={play}>
+              <span className="a-mail"><Mail /></span>
+              <span className="a-plane"><Send /></span>
+              <span className="a-tg"><Telegram /></span>
+            </span>
+          )}
+        </button>
       </div>
 
       {/* only shows once a card is chosen */}

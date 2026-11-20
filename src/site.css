@@ -295,9 +295,40 @@ h1 em,h2 em{font-style:italic;font-weight:700}
 .hw-card.open .hw-face{background:color-mix(in srgb,var(--c) 8%,var(--card))}
 .hw-card.open .hw-plus{transform:rotate(45deg);background:var(--c);color:#fff}
 /* the ball in the middle */
-.hw-core{position:absolute;left:50%;top:50%;z-index:2;display:grid;place-items:center;width:var(--ball);height:var(--ball);border-radius:50%;transform:translate(-50%,-50%);
+.hw-core{position:absolute;left:50%;top:50%;z-index:4;display:grid;place-items:center;width:var(--ball);height:var(--ball);border-radius:50%;transform:translate(-50%,-50%);
   background:var(--card);box-shadow:0 0 0 1px var(--ln),0 18px 34px -14px rgba(22,121,201,.45)}
-.hw-core svg{position:relative;z-index:1}
+.hw-core{padding:0;border:0;cursor:pointer;color:inherit;font:inherit;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.hw-core:hover{transform:translate(-50%,-50%) scale(1.04)}
+.hw-core:focus-visible{outline:3px solid var(--tg);outline-offset:4px}
+.hw-logo{position:relative;z-index:1;display:grid;place-items:center}
+/* a soft pulse while idle hints that the ball can be tapped */
+.hw-core::after{content:"";position:absolute;inset:-2px;border-radius:50%;border:2px solid color-mix(in srgb,var(--tg) 55%,transparent);opacity:0;animation:hwping 3.2s ease-out 1.5s infinite;pointer-events:none}
+.hw-core.play::after{animation:none}
+@keyframes hwping{0%{opacity:.8;transform:scale(1)}60%,100%{opacity:0;transform:scale(1.35)}}
+/* tap animation (3.6s): mail drops in, morphs into a plane, loops around the cards, lands as Telegram */
+.hw-core.play .hw-logo{animation:a-logo 3.6s ease both}
+.hw-anim{position:absolute;inset:0;z-index:3;pointer-events:none}
+.hw-anim>span{position:absolute;left:50%;top:50%;display:grid;place-items:center;opacity:0}
+.a-mail{width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:16px;background:#ea4335;color:#fff;box-shadow:0 12px 24px -8px rgba(234,67,53,.6);animation:a-mail 3.6s cubic-bezier(.3,.7,.3,1) both}
+.a-mail svg{width:30px;height:30px}
+.a-plane{width:44px;height:44px;margin:-22px 0 0 -22px;color:var(--tg);filter:drop-shadow(0 6px 10px rgba(42,171,238,.45));animation:a-plane 3.6s linear both}
+.a-plane svg{width:40px;height:40px}
+.a-tg{width:72px;height:72px;margin:-36px 0 0 -36px;border-radius:50%;background:linear-gradient(180deg,#40bcf5,#1d93d2);color:#fff;box-shadow:0 14px 28px -10px rgba(29,147,210,.7);animation:a-tg 3.6s cubic-bezier(.2,.9,.25,1.2) both}
+.a-tg svg{width:40px;height:40px}
+@keyframes a-logo{0%{transform:none;opacity:1}6%,90%{transform:scale(.4);opacity:0}100%{transform:none;opacity:1}}
+@keyframes a-mail{0%{opacity:0;transform:translateY(-150px) rotate(-12deg)}6%{opacity:1}18%{transform:translateY(0) rotate(0)}22%{transform:translateY(-12px)}26%{transform:translateY(0)}32%{opacity:1;transform:scale(1)}38%{opacity:0;transform:scale(.3) rotate(25deg)}100%{opacity:0}}
+@keyframes a-plane{0%,33%{opacity:0;transform:scale(.3) rotate(-20deg)}39%{opacity:1;transform:scale(1) rotate(0)}
+  47%{transform:translate(70px,-60px) rotate(30deg)}55%{transform:translate(120px,10px) rotate(110deg)}63%{transform:translate(40px,80px) rotate(190deg)}
+  71%{transform:translate(-90px,50px) rotate(250deg)}78%{transform:translate(-80px,-50px) rotate(320deg)}84%{opacity:1;transform:translate(0,0) rotate(360deg) scale(1)}88%{opacity:0;transform:scale(.3) rotate(380deg)}100%{opacity:0}}
+@keyframes a-tg{0%,84%{opacity:0;transform:scale(.3)}89%{opacity:1;transform:scale(1.12)}92%{transform:scale(1)}96%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.8)}}
+@media (max-width:760px){
+  .a-mail{width:42px;height:42px;margin:-21px 0 0 -21px;border-radius:12px}.a-mail svg{width:22px;height:22px}
+  .a-tg{width:52px;height:52px;margin:-26px 0 0 -26px}.a-tg svg{width:28px;height:28px}
+  .a-plane svg{width:30px;height:30px}
+  @keyframes a-plane{0%,33%{opacity:0;transform:scale(.3) rotate(-20deg)}39%{opacity:1;transform:scale(1) rotate(0)}
+    47%{transform:translate(50px,-45px) rotate(30deg)}55%{transform:translate(85px,8px) rotate(110deg)}63%{transform:translate(28px,60px) rotate(190deg)}
+    71%{transform:translate(-65px,38px) rotate(250deg)}78%{transform:translate(-58px,-38px) rotate(320deg)}84%{opacity:1;transform:translate(0,0) rotate(360deg) scale(1)}88%{opacity:0;transform:scale(.3) rotate(380deg)}100%{opacity:0}}
+}
 .hw-ring{position:absolute;inset:8px;border-radius:50%;border:1.5px dashed color-mix(in srgb,var(--tg) 45%,transparent);animation:spin 26s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 /* detail of the chosen card */
@@ -317,7 +348,7 @@ h1 em,h2 em{font-style:italic;font-weight:700}
   .hw-plus svg{width:11px;height:11px}
   .pos-tl .hw-plus{top:12px;right:12px}.pos-tr .hw-plus{top:12px;left:12px}
   .pos-bl .hw-plus{bottom:12px;right:12px}.pos-br .hw-plus{bottom:12px;left:12px}
-  .hw-core svg{width:52px;height:52px}
+  .hw-logo svg{width:52px;height:52px}
   .hw-ring{inset:5px}
   .hw-detail{margin-top:12px;padding:14px 16px;font-size:.88rem;border-radius:18px}
   .hw-detail b{font-size:.92rem}
@@ -436,6 +467,6 @@ h1 em,h2 em{font-style:italic;font-weight:700}
 
 @media (prefers-reduced-motion:reduce){
   .rv{opacity:1;transform:none;transition:none}
-  .live,.hw-ring,.call-av,.call-b .cb-yes,.tph.ring,.caret,.fly,.dm,.gm-list li{animation:none!important}
+  .live,.hw-ring,.hw-core::after,.call-av,.call-b .cb-yes,.tph.ring,.caret,.fly,.dm,.gm-list li{animation:none!important}
   .btn{transition:none}
 }
