@@ -7,6 +7,7 @@ import HowItWorks from "./components/HowItWorks";
 import Features from "./components/Features";
 import Setup from "./components/Setup";
 import Faq from "./components/Faq";
+import LatestVersion from "./components/LatestVersion";
 import Footer from "./components/Footer";
 import { UpdateToast } from "./components/ScriptViewer";
 import "./index.css";
@@ -29,7 +30,7 @@ export default function App() {
   const goToStep = useCallback((i) => {
     setStep(i);
     const el = document.getElementById("setup");
-    if (el) scrollToY(window.scrollY + el.getBoundingClientRect().top - 20);
+    if (el) scrollToY(window.scrollY + el.getBoundingClientRect().top - 80);
   }, []);
   const start = useCallback(() => goToStep(0), [goToStep]);
 
@@ -42,6 +43,7 @@ export default function App() {
         <Features />
         <Setup step={step} onStep={setStep} />
         <Faq />
+        <LatestVersion />
       </main>
       <Footer />
       <UpdateToast onOpen={() => goToStep(STEPS.findIndex((s) => s.showScript))} />

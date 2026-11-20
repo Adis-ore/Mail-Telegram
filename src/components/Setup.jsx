@@ -96,7 +96,7 @@ export default function Setup({ step, onStep }) {
   // after Back/Next, bring the top of the step into view if it scrolled away
   const reveal = () => requestAnimationFrame(() => {
     const top = panelRef.current?.getBoundingClientRect().top ?? 0;
-    if (top < 70 || top > window.innerHeight * 0.6) scrollToY(window.scrollY + top - 84);
+    if (top < 100 || top > window.innerHeight * 0.6) scrollToY(window.scrollY + top - 110);
   });
 
   const go = (i) => { setFinished(false); onStep(i); reveal(); };

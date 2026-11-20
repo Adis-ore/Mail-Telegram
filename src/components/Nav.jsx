@@ -13,25 +13,37 @@ const ITEMS = [
   { id: "faq", label: "FAQ", icon: <Help /> },
 ];
 
-/** Which section is in the middle of the screen right now. */
+/** The last section whose top has passed the middle of the screen (works for jumps too). */
 function useActiveSection(ids) {
   const [active, setActive] = useState(ids[0]);
   useEffect(() => {
-    if (!("IntersectionObserver" in window)) return;
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) setActive(e.target.id); });
-    }, { rootMargin: "-45% 0px -50% 0px" });
-    ids.forEach((id) => { const el = document.getElementById(id); if (el) io.observe(el); });
-    return () => io.disconnect();
+    let raf = 0;
+    const check = () => {
+      raf = 0;
+      const mid = window.innerHeight * 0.5;
+      let cur = ids[0];
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= mid) cur = id;
+      }
+      setActive(cur);
+    };
+    const on = () => { if (!raf) raf = requestAnimationFrame(check); };
+    check();
+    window.addEventListener("scroll", on, { passive: true });
+    window.addEventListener("resize", on);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("scroll", on); window.removeEventListener("resize", on); };
   }, [ids]);
   return active;
 }
 
-const IDS = ITEMS.map((i) => i.id);
+// Page order, so the check above walks top to bottom.
+const ORDER = ["top", "how", "features", "setup", "faq"];
+const IDS = ORDER;
 
 /**
- * Top: a slim bar with the logo, theme toggle and GitHub (fades in a background once you scroll).
- * Bottom: a floating pill dock with the sections, the same on desktop and phones. No burger menu.
+ * One top bar on every screen size: logo, the section dock in the middle (pill with a raised
+ * Setup button), theme toggle and GitHub. No burger menu. Gets a background once you scroll.
  */
 export default function Nav() {
   const [solid, setSolid] = useState(false);
@@ -45,36 +57,35 @@ export default function Nav() {
   }, []);
 
   return (
-    <>
-      <header className={`nv${solid ? " solid" : ""}`}>
-        <div className="nv-in">
-          <a className="nv-lg" href="#top">
-            <Logo size={30} />
-            <span>Mail to Telegram</span>
-          </a>
-          <div className="nv-r">
-            <ThemeToggle />
-            <a className="nv-gh" href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="Code on GitHub">
-              <Github />
-            </a>
-          </div>
-        </div>
-      </header>
+    <header className={`nv${solid ? " solid" : ""}`}>
+      <div className="nv-in">
+        <a className="nv-lg" href="#top" aria-label="Mail to Telegram, back to top">
+          <Logo size={30} />
+          <span>Mail to Telegram</span>
+        </a>
 
-      <nav className="dock" aria-label="Sections">
-        {ITEMS.map((it) => (
-          <a
-            key={it.id}
-            href={`#${it.id}`}
-            className={`${it.mid ? "dk-mid" : ""}${active === it.id ? " on" : ""}`}
-            aria-label={it.label}
-            aria-current={active === it.id ? "true" : undefined}
-            data-label={it.label}
-          >
-            {it.icon}
+        <nav className="dock" aria-label="Sections">
+          {ITEMS.map((it) => (
+            <a
+              key={it.id}
+              href={`#${it.id}`}
+              className={`${it.mid ? "dk-mid" : ""}${active === it.id ? " on" : ""}`}
+              aria-label={it.label}
+              aria-current={active === it.id ? "true" : undefined}
+              data-label={it.label}
+            >
+              {it.icon}
+            </a>
+          ))}
+        </nav>
+
+        <div className="nv-r">
+          <ThemeToggle />
+          <a className="nv-gh" href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="Code on GitHub">
+            <Github />
           </a>
-        ))}
-      </nav>
-    </>
+        </div>
+      </div>
+    </header>
   );
 }

@@ -1,14 +1,9 @@
-import { useMemo } from "react";
-import { ArrowRight, Reply, Swipe } from "../icons";
-import { SCRIPT } from "../data";
-import { parseScript } from "../lib/scriptInfo";
-import { timeAgo, useLatestScript } from "../lib/useLatestScript";
+import { Swipe } from "../icons";
 import { useReveal } from "../lib/useReveal";
 
 /*
  * "What you can do": each feature is shown as the real message you'd see in Telegram,
- * so people understand it by looking. The strip at the bottom is read live from the
- * script on GitHub (version, what's new, commands).
+ * so people understand it by looking.
  */
 
 const Me = ({ children }) => <div className="dm me">{children}</div>;
@@ -83,9 +78,6 @@ const FEATURES = [
 
 export default function Features() {
   const ref = useReveal(0.08);
-  const s = useLatestScript();
-  const info = useMemo(() => (s.status === "ready" ? parseScript(s.code) : null), [s.status, s.code]);
-  const typed = info?.commands.typed || [];
 
   return (
     <section className="sec feat" id="features" ref={ref}>
@@ -105,29 +97,6 @@ export default function Features() {
       </div>
       <p className="fswipe" aria-hidden="true"><Swipe /> Swipe to see more</p>
 
-      <div className="livebox rv">
-        <div className="live-v">
-          <span className="eyebrow"><i className="live" aria-hidden="true" />Live from the script</span>
-          <b>{s.version ? `Version ${s.version}` : s.status === "error" ? "Latest version" : "Checking…"}</b>
-          <small>
-            {s.date ? `Updated ${timeAgo(s.date)}. ` : ""}The bot tells you in Telegram when there’s a new one.
-          </small>
-        </div>
-        <div className="live-n">
-          <span className="k">What’s new</span>
-          <p>{s.notes || (s.status === "error" ? "Couldn’t reach GitHub right now." : "Loading…")}</p>
-        </div>
-        <div className="live-c">
-          <span className="k">Type in your bot chat</span>
-          <div className="chips">
-            {(typed.length ? typed.flatMap((c) => c.words.slice(0, 1)) : ["help", "send email", "summarize"]).map((w) => <code key={w}>{w}</code>)}
-            <span className="chip-s"><Reply /> or swipe-reply any email</span>
-          </div>
-        </div>
-        <a className="live-a" href={SCRIPT.view} target="_blank" rel="noopener noreferrer">
-          See the code <ArrowRight />
-        </a>
-      </div>
     </section>
   );
 }

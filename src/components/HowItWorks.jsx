@@ -1,49 +1,53 @@
-import { Mail, ShieldCheck, SourceCode, Telegram } from "../icons";
+import { useState } from "react";
+import { Mail, Plus, ShieldCheck, SourceCode, Telegram } from "../icons";
 import { useReveal } from "../lib/useReveal";
+import Logo from "./Logo";
 
-const STEPS = [
-  {
-    icon: <Mail />,
-    title: "An email lands in Gmail",
-    text: "Any new email in your inbox: codes, invoices, interview invites.",
-  },
-  {
-    icon: <SourceCode />,
-    title: "Your script picks it up",
-    text: "A small Google Apps Script in your own account checks every minute, even with your phone off.",
-  },
-  {
-    icon: <Telegram />,
-    title: "It arrives in Telegram",
-    text: "Your own bot sends you the full email. Reply there and it goes out from your Gmail.",
-  },
+// Four short points; the detail opens on hover (mouse) or tap/click.
+const POINTS = [
+  { icon: <Mail />, tone: "red", title: "An email lands in Gmail", text: "Any new email in your inbox: sign-in codes, invoices, interview invites. Nothing changes in how you use Gmail." },
+  { icon: <SourceCode />, tone: "violet", title: "Your script picks it up", text: "A small Google Apps Script in your own account checks every minute, even when your phone and laptop are off." },
+  { icon: <Telegram />, tone: "blue", title: "It arrives in Telegram", text: "Your own bot sends you the whole email. Swipe to reply and it goes out from your Gmail as a normal email." },
+  { icon: <ShieldCheck />, tone: "green", title: "Private by design", text: "Gmail to your script to your bot. There’s no server in the middle, so nobody else can read your mail, including me." },
 ];
+
+function Point({ p, i, open, onToggle }) {
+  return (
+    <li className={`hw-card rv tone-${p.tone}${open ? " open" : ""}`} style={{ "--d": `${i * 90}ms` }}>
+      <button type="button" aria-expanded={open} onClick={onToggle}>
+        <span className="hw-i">{p.icon}</span>
+        <b>{p.title}</b>
+        <span className="hw-plus" aria-hidden="true"><Plus /></span>
+      </button>
+      <div className="hw-x"><p>{p.text}</p></div>
+    </li>
+  );
+}
 
 export default function HowItWorks() {
   const ref = useReveal();
+  const [open, setOpen] = useState(-1);
+  const toggle = (i) => setOpen((o) => (o === i ? -1 : i));
+
   return (
     <section className="sec how" id="how" ref={ref}>
       <div className="sec-h">
         <h2>Gmail in, <em>Telegram out.</em></h2>
         <p>Set it up once. After that you don’t open anything, it just runs.</p>
       </div>
-      <ol className="how-flow">
-        {STEPS.map((s, i) => (
-          <li key={s.title} className="rv" style={{ "--d": `${i * 120}ms` }}>
-            <span className="how-i">{s.icon}<em>{i + 1}</em></span>
-            <b>{s.title}</b>
-            <p>{s.text}</p>
-          </li>
-        ))}
-        <span className="how-line" aria-hidden="true"><i /></span>
-      </ol>
-      <div className="how-safe rv" style={{ "--d": "360ms" }}>
-        <span className="how-si"><ShieldCheck /></span>
-        <div>
-          <b>Private by design.</b>
-          <p>Your emails go from your Gmail to your script to your bot. There’s no server in the middle, so nobody else can read them, including me.</p>
+      <div className="hw">
+        <ul className="hw-col">
+          {POINTS.slice(0, 2).map((p, i) => <Point key={p.title} p={p} i={i} open={open === i} onToggle={() => toggle(i)} />)}
+        </ul>
+        <div className="hw-core rv" aria-hidden="true">
+          <span className="hw-ring" /><span className="hw-ring r2" />
+          <Logo size={96} />
         </div>
+        <ul className="hw-col">
+          {POINTS.slice(2).map((p, j) => <Point key={p.title} p={p} i={j + 2} open={open === j + 2} onToggle={() => toggle(j + 2)} />)}
+        </ul>
       </div>
+      <p className="hw-hint">Hover or tap a card to see more.</p>
     </section>
   );
 }

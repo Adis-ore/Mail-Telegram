@@ -58,12 +58,13 @@ Single page, top to bottom:
 
 | Section | Component | Notes |
 |---|---|---|
-| Nav | `Nav.jsx` | Slim top bar (logo, theme, GitHub) and a floating section dock at the bottom on every screen size; the raised middle button opens Setup |
+| Nav | `Nav.jsx` | One top bar on every screen: logo, a pill dock of sections in the middle (raised Setup button, dot on the current section), theme toggle, GitHub |
 | Hero | `Hero.jsx`, `HeroDemo.jsx` | One-line pitch plus an animated demo: Gmail inbox → Telegram chat (code copy, swipe reply, reminder call). Captions under it jump to each scene |
-| How it works | `HowItWorks.jsx` | Gmail → your script → your bot, and the privacy note |
-| What you can do | `Features.jsx` | One card per feature showing the real Telegram message; a swipeable row on phones. Bottom strip is live from the script (version, what's new, commands) |
+| How it works | `HowItWorks.jsx` | Four short cards, two each side of the logo (2 × 2 under it on phones); details open on hover or tap |
+| What you can do | `Features.jsx` | One card per feature showing the real Telegram message; a swipeable row on phones. Swipeable row on phones |
 | Setup | `Setup.jsx` | All 10 steps listed (progress bar, ticks) beside one open step with Back / “Done, next step”. Progress is saved in the browser. The Copy step shows the live script (`ScriptViewer.jsx`) |
 | FAQ | `Faq.jsx` | Plain questions and answers |
+| Latest version | `LatestVersion.jsx` | Just above the footer: version, what’s new and chat commands, live from the script |
 | Footer | `Footer.jsx` | Animated arch lines |
 | Update notice | `ScriptViewer.jsx` (`UpdateToast`) | Shown to visitors whose copied script is out of date |
 
