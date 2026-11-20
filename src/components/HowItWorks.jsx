@@ -49,10 +49,13 @@ export default function HowItWorks() {
         </div>
       </div>
 
-      <div id="hw-detail" className={`hw-detail${open >= 0 ? ` on tone-${POINTS[open].tone}` : ""}`} aria-live="polite">
-        {open >= 0
-          ? <><b>{POINTS[open].title}</b><p key={open}>{POINTS[open].text}</p></>
-          : <p>{hoverable ? "Hover or click a card to see more." : "Tap a card to see more."}</p>}
+      {/* only shows once a card is chosen */}
+      <div id="hw-detail" aria-live="polite">
+        {open >= 0 && (
+          <div className={`hw-detail on tone-${POINTS[open].tone}`} key={open}>
+            <b>{POINTS[open].title}</b><p>{POINTS[open].text}</p>
+          </div>
+        )}
       </div>
     </section>
   );
