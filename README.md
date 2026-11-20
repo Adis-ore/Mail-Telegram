@@ -158,3 +158,7 @@ npm run build    # production build in dist/
 <p align="center">
   Built by Adis · Stuck? Message me on <a href="https://x.com/adisdtechie">X</a> or <a href="https://www.linkedin.com/in/adigun-oreoluwa-78b500237/">LinkedIn</a>.
 </p>
+
+## License
+
+MIT. See [LICENSE](LICENSE).
